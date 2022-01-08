@@ -1,0 +1,801 @@
+  Prima tema de la ASC
+  Cerinta 1
+Cerinta 1 va fi evaluata pe 4 teste si va ajuta sa obtineti un punctaj de 4p din nota 10.
+Fie dat ca input un sir hexa, se cere sa se afiseze la standard output instructiunea assembly de
+executat.
+De exemplu, pentru inputul A78801C00A7890EC04, se va afisa la standard output x 1 let x
+-14 div.
+Rezolvare:
+.data
+    //printf("%s\n", var)
+    scan: .asciz "%s"
+    //A78801C00A7890EC04
+    printl: .asciz "%s "
+    printc: .asciz "%d "
+    printendl: .asciz "\n"
+    printcn: .asciz "-%d "
+    caract: .asciz "a"
+    v1: .asciz "let "
+    v2: .asciz "add "
+    v3: .asciz "sub "
+    v4: .asciz "mul "
+    v5: .asciz "div "
+    b0: .space 4
+    sirb16: .space 100
+    x: .long 16
+    y: .long -1
+    
+.text
+
+.global main
+
+main:
+   pushl $sirb16
+   pushl $scan
+   call scanf
+   popl %ebx
+   popl %ebx
+   movl $sirb16, %esi
+   movl $0, %ecx
+   
+et_vector:
+   movl $0, %eax
+   movb (%esi, %ecx, 1), %al
+   cmp $0, %al
+   je et_exit
+   movl %eax, b0
+   incl %ecx
+   movb (%esi, %ecx, 1), %al
+   cmp $58, %al
+   jl et_cifra
+   jg et_litera
+   
+et_cifra:
+   subb $48, %al
+   mull x
+   jmp et_2caracter
+   
+et_litera:
+   subb $55, %al
+   mull x
+   
+et_2caracter:
+   movl $0, %ebx
+   incl %ecx
+   movb (%esi, %ecx, 1), %bl
+   cmp $58, %bl
+   jl et_cifra1
+   jg et_litera1
+   
+et_cifra1:
+   subb $48, %bl
+   addb %al, %bl
+   jmp et_nr
+   
+et_litera1:    
+   subb $55, %bl
+   addb %al, %bl
+   
+et_nr:
+   movl b0, %edx
+   cmp $56, %edx
+   je et_poz
+   cmp $57, %edx
+   je et_neg
+   cmp $65, %edx
+   je et_var
+   cmp $67, %edx
+   je et_operatie
+   
+et_poz:
+   pushl %ecx
+   pushl %ebx
+   pushl $printc
+   call printf
+   popl %ebx
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_neg:
+   
+   pushl %ecx
+   pushl %ebx
+   pushl $printcn
+   call printf
+   popl %ebx
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_var:
+   movl $caract, %edi
+   pushl %ecx
+   movl $0, %ecx
+   movb %bl, (%edi, %ecx, 1)
+   pushl $caract
+   pushl $printl
+   call printf
+   popl %ebx
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_operatie:
+   cmp $0, %ebx
+   je et_let
+   cmp $1, %ebx
+   je et_add
+   cmp $2, %ebx
+   je et_sub
+   cmp $3, %ebx
+   je et_mul
+   cmp $4, %ebx
+   je et_div
+   
+et_let:
+   pushl %ecx
+   pushl $v1
+   call printf
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_add:
+   pushl %ecx
+   pushl $v2
+   call printf
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_sub:
+   pushl %ecx
+   pushl $v3
+   call printf
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_mul:
+   pushl %ecx
+   pushl $v4
+   call printf
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_div:
+   pushl %ecx
+   pushl $v5
+   call printf
+   popl %ebx
+   popl %ecx
+   incl %ecx
+   jmp et_vector
+   
+et_exit:
+   push $printendl
+   call printf
+   pop %ebx
+   mov $1, %eax
+   mov $0, %ebx
+   int $0x80
+   
+   Cerinta 2
+Cerinta 2 va fi evaluata pe 4 teste si va ajuta sa obtineti un punctaj de 2p din nota 10.
+Fie dat ca input o instructiune in limbajul de asamblare al procesorului aritmetic considerat, se
+cere sa se afiseze la standard output evaluarea instructiunii. Pentru aceasta cerinta, in instructiune
+nu exista variabile, ea fiind formata doar din numere intregi si operatii.
+De exemplu, poate fi data instructiunea 2 10 mul 5 div 7 6 sub add. Rezultatul trebuie sa
+fie conform urmatorului algoritm:
+• se adauga 2 pe stiva;
+• se adauga 10 pe stiva;
+• se identifica operatia mul, se aplica inmultirea dintre 2 si 10, se obtine 20, se elimina 2 si 10
+de pe stiva si se pastreaza doar 20;
+• se adauga 5 pe stiva;
+• se identifica div - actioneaza ca 20 div 5, iar rezultatul este 4; se elimina 20 si 5 de pe stiva,
+si se pastreaza doar 4;
+• se adauga 7 pe stiva;
+• se adauga 6 pe stiva;
+• se identifica sub - se calculeaza diferenta dintre 7 si 6, se obtine 1, se elimina 7 si 6 de pe stiva,
+si se adauga pe stiva valoarea 1. Atentie! in acest moment, pe stiva avem 4 (la baza) si 1 in
+varf, intrucat sub este operatie binara si a lucrat doar cu argumentele 7 si 6, dar nu si cu 4
+care era deja la baza stivei.
+• se identifica add - se calculeaza suma dintre 1 si 4, se obtine 5, se elimina 1 si 4 de pe stiva, se
+adauga 5;
+• am terminat de parcurs sirul, iar rezultatul obtinut este, acum, situat in varful stivei. Rezul-
+tatul acestui calcul este 5.
+Rezolvare:
+.data
+   str: .space 100
+   
+   //caracter delimi, delimitez dupa spatiu
+   chDelim: .asciz " "
+   
+   //afisam cuvinte
+   formatPrintf: .asciz "%d\n"
+   
+   //afisam numere
+   formatScanf: .asciz "%300[^\n]"
+   res: .space 4
+   
+.text
+
+.global main
+
+main:
+   //citeste sirul
+   pushl $str
+   pushl $formatScanf
+   call scanf
+   popl %ebx
+   popl %ebx
+   
+   //apelez strtok, primeste un sir si delimi
+   pushl $chDelim
+   pushl $str
+   call strtok
+   popl %ebx
+   popl %ebx
+   
+   //apelez fct atoi
+   pushl %eax
+   call atoi
+   popl %ebx
+   pushl %eax
+   
+et_for:
+   //structura in care obtinem cuvintele
+   
+   pushl $chDelim
+   pushl $0
+   call strtok
+   popl %ebx
+   popl %ebx
+   
+   //daca nu mai sunt cuvinte
+   cmp $0, %eax
+   je exit
+   movl %eax, %edi
+   pushl %eax
+   call atoi
+   popl %ebx
+   
+et_instr:
+   //verific daca e operatie
+   cmp $0, %eax
+   je et_operatie
+   pushl %eax
+   jmp et_for
+   
+et_operatie:
+   movl $0, %ecx
+   movb (%edi, %ecx, 1), %al
+   cmp $97, %al
+   je et_add
+   cmp $115, %al
+   je et_sub
+   cmp $109, %al
+   je et_mul
+   cmp $100, %al
+   je et_div
+   
+et_add:
+   popl %ebx 
+   popl %eax
+   addl %ebx, %eax
+   pushl %eax
+   jmp et_for
+   
+et_sub:
+   popl %ebx
+   popl %eax
+   subl %ebx, %eax
+   pushl %eax
+   jmp et_for
+   
+et_mul:
+   popl %ebx
+   popl %eax
+   mull %ebx
+   pushl %eax
+   jmp et_for
+   
+et_div:
+   movl $0, %edx
+   popl %ebx
+   popl %eax
+   divl %ebx
+   pushl %eax
+   jmp et_for
+   
+exit:
+   pushl $formatPrintf
+   call printf
+   movl $1, %eax
+   movl $0, %ebx
+   int $0x80
+   
+ Cerinta 3
+Cerinta 3 va fi evaluata pe 3 teste si va ajuta sa obtineti 1.5p din nota 10.
+Fie dat ca input o instructiune in limbajul de asamblare al procesorului aritmetic considerat. Se
+cere sa se afiseze la standard output evaluarea instructiunii. Pentru aceasta cerinta, spre deosebire
+de cerinta 2, se folosesc variabile introduse prin let.
+Un exemplu de input poate fi x 1 let 2 x add y 3 let x y add mul.
+Evaluarea va fi facuta astfel:
+• se adauga x si 1 pe stiva, este gasit let, si se intelege de acum ca x = 1 in toata expresia
+aritmetica; sunt eliminati x si 1 de pe stiva;
+• se adauga 2 si 1 pe stiva (deoarece acel x este = 1 de acum);
+• se intalneste add, se calculeaza suma 3, se elimina 2 si 1 de pe stiva si se pastreaza doar 3;
+• se adauga y si 3 pe stiva, este gasit let, si se intelege de acum ca y = 3 in toata expresia
+aritmetica; sunt eliminati y si 3 de pe stiva;
+• se adauga 1 si 3 pe stiva (x, respectiv y);
+• se efectueaza adunarea, rezultatul va fi 4, se elimina 1 si 3 de pe stiva, se adauga 4;
+• este identificat mul, iar pe stiva aveam deja 3 (de la a treia bulinuta din explicatia curenta) si
+4, de la bulinuta anterioara, si se calculeaza rezultatul, 12, se elimina apoi 3 si 4 de pe stiva si
+se adauga 12;
+• nu mai sunt elemente in sir, deci rezultatul final este 12.
+Rezolvare:
+.data
+	op: .space 10
+	str: .space 300
+	formatPrintf: .asciz "%d\n"
+	delim: .asciz " "
+	scanLinie: .asciz "%300[^\n]"
+	add: .asciz "add"
+	sub: .asciz "sub"
+	mul: .asciz "mul"
+	div: .asciz "div"
+	let: .asciz "let"
+	vec: .space 26
+	
+	
+.text
+	
+.global main
+
+main:
+	movl $vec, %edi
+
+	pushl $str
+	pushl $scanLinie
+	call scanf
+	popl %ebx
+	popl %ebx
+
+	pushl $delim
+	pushl $str
+	call strtok
+	popl %ebx
+	popl %ebx
+	
+	movl %eax, op
+	
+	pushl op
+	call atoi
+	popl %ebx
+	
+	cmp $0, %eax
+	je var
+	
+	pushl %eax
+	jmp et_for
+	
+et_for:
+	pushl $delim
+	pushl $0
+	call strtok
+	popl %ebx
+	popl %ebx
+	
+	cmp $0, %eax
+	je et_exit
+	
+	movl %eax, op
+	
+	pushl op
+	call atoi    
+	popl %ebx
+	
+	cmp $0, %eax
+	je oper_var
+	
+	pushl %eax
+	
+	jmp et_for
+	
+oper_var:
+	pushl op
+	call strlen
+	popl %ebx
+	
+	cmp $1, %eax
+	je var
+	
+	pushl op
+	pushl $let
+	call strcmp
+	popl %ebx
+	popl %ebx
+	cmp $0, %eax
+	je let_op
+
+	pushl op
+	pushl $mul
+	call strcmp
+	popl %ebx
+	popl %ebx
+	cmp $0, %eax
+	je mul_op
+
+	pushl op
+	pushl $add
+	call strcmp
+	popl %ebx
+	popl %ebx
+	cmp $0, %eax
+	je add_op
+
+	pushl op
+	pushl $sub
+	call strcmp
+	popl %ebx
+	popl %ebx
+	cmp $0, %eax
+	je sub_op
+
+	pushl op
+	pushl $div
+	call strcmp
+	popl %ebx
+	popl %ebx
+	cmp $0, %eax
+	je div_op
+
+let_op:
+	popl %eax
+	popl %ecx
+	
+	movl %eax, (%edi, %ecx, 4)
+	
+	jmp et_for	
+var:
+	movl op, %esi
+	xorl %ecx, %ecx
+	xorl %eax, %eax
+	movb (%esi, %ecx,1), %al
+	movl %eax, %ecx
+	subl $97, %ecx
+	movl (%edi, %ecx, 4), %ebx
+	cmp $0, %ebx
+	je fara_val
+	
+	pushl %ebx
+	
+	jmp et_for
+	
+fara_val:
+
+	pushl %ecx
+	
+	jmp et_for
+	
+	
+add_op:                                            	
+	popl %edx
+	popl %ecx
+	addl %edx, %ecx                          
+	pushl %ecx 
+	jmp et_for         
+	
+sub_op:
+	popl %edx	
+	popl %ecx
+	subl %edx, %ecx
+	pushl %ecx
+	jmp et_for
+	
+mul_op:
+	popl %eax
+	popl %ecx
+	mull %ecx
+	pushl %eax
+	jmp et_for
+
+div_op:
+	popl %esi
+	popl %eax
+	xorl %edx, %edx
+	divl %esi
+	pushl %eax
+	jmp et_for	
+		
+et_exit:
+	popl %eax
+	
+	pushl %eax
+	pushl $formatPrintf
+	call printf
+	popl %ebx
+	popl %ebx
+	
+	pushl $0
+	call fflush
+	popl %ebx
+	
+	movl $1, %eax
+	xorl %ebx, %ebx
+	int $0x80
+  
+  A doua a tema de la ASC
+  Se citesc de la tastatura n, m si 3 · n elemente care pot fi sau 0, sau cuprinse intre 1 si n, unde se
+respecta conditia 1 ≤ n, m ≤ 30. Se va genera cea mai mica permutare in sens lexicografic a
+multimii {1, ..., n}, unde fiecare element apare de exact 3 ori, avand o distanta de minimum m
+elemente intre oricare doua elemente egale, plecand de la anumite puncte fixe deja specificate.
+De exemplu, pentru n = 5, m = 1 si secventa de 15 elemente
+1 0 0 0 0 0 3 0 0 0 0 0 0 4 5
+avem ca fiecare element din multimea {1, 2, 3, 4, 5} apare de 3 ori, si vrem sa fie cel putin m =
+1 element distanta intre oricare doua elemente egale. Atunci, cea mai mica permutare in sens
+lexicografic, pastrand punctele fixe, este urmatoarea:
+1 2 1 2 1 2 3 4 3 5 3 4 5 4 5
+Se vor afisa la standard output, dupa caz,
+• sau permutarea, daca exista, in formatul de mai sus: elementele se vor afisa cu spatii intre ele
+pe ecran, iar la final recomandam sa afisati un caracter backslash n, in locul utilizarii fflush;
+• sau −1, in cazul in care nu exista o permutare care sa satisfaca toate conditiile.
+
+.data
+   a: .long 3
+   formatscanf: .asciz "%d"
+   formatprintf: .asciz "%d "
+   formatendl: .asciz "\n"
+   formatminus: .asciz "-1"
+   v: .space 500
+   aux: .space 500
+   m: .space 4
+   n: .space 4
+   f: .space 4
+   b: .space 4
+   
+   
+.text
+
+
+.global main
+
+verif:
+  pushl %ebp
+  movl %esp, %ebp
+  pushl %esi
+  pushl %edi
+  pushl %edx
+  pushl %ecx
+  pushl %ebx
+  movl 8(%ebp), %edx 
+  movl $aux, %esi
+  movl $v, %edi
+  
+  
+  movl %edx, %ecx
+  subl m, %ecx  #i=k-m
+	cmp $0, %ecx
+	jge et_parcg1
+	xorl %ecx, %ecx
+
+et_parcg1:
+  cmp %ecx, %edx
+  je et_p2
+  movl (%esi, %ecx, 4), %ebx
+  movl (%esi, %edx, 4), %eax
+  cmp %eax, %ebx
+  je et_inval
+  incl %ecx
+  jmp et_parcg1
+  
+
+et_p2:
+  movl (%edi, %edx, 4), %eax
+  cmp $0, %eax
+  je et_p3
+  movl (%esi, %edx, 4), %ebx
+  cmp %eax, %ebx
+  je et_p3
+  jne et_inval
+  
+et_p3:
+  movl $1, f
+  movl $0, %ecx
+  
+et_p3loop:
+  cmp %ecx, %edx
+  je et_p4
+  movl (%esi, %edx, 4), %ebx
+  movl (%esi, %ecx, 4), %eax
+  cmp %ebx, %eax
+  je et_egale
+  jne et_inegale
+  
+et_egale:
+  incl f
+  incl %ecx
+  jmp et_p3loop
+  
+et_inegale:
+  incl %ecx
+  jmp et_p3loop
+  
+et_p4:
+	movl %edx, %ecx
+	incl %ecx
+	movl (%esi, %edx, 4), %ebx
+
+et_p4loop:
+	cmp a, %ecx
+	jg et_p5
+	
+	movl (%edi, %ecx, 4), %eax
+	cmp %ebx, %eax
+	je et_egale2
+	jne et_inegale2
+	
+	et_egale2:
+	incl f
+	incl %ecx
+	jmp et_p4loop
+
+	et_inegale2:
+	incl %ecx
+	jmp et_p4loop
+
+et_p5:
+  movl f, %eax
+  cmp $3, %eax
+  jg et_inval
+  jmp et_val
+  
+et_val:
+  movl $1, %eax
+  jmp end_verif
+  
+et_inval:
+  movl $0, %eax
+  jmp end_verif
+  
+end_verif:
+  popl %ebx
+  popl %ecx
+  popl %edx
+  popl %edi
+  popl %esi
+  popl %ebp
+  ret
+  
+
+et_back:
+  pushl %ebp
+  movl %esp, %ebp
+  pushl %esi
+  pushl %eax
+  pushl %ebx
+  pushl %ecx
+  pushl %edx
+  movl $1, %ecx
+  movl 8(%ebp), %edx   
+
+  
+  movl $aux, %esi
+  
+
+loop_et_nr:
+   cmp n, %ecx
+   jg end_back
+   movl %ecx, (%esi, %edx, 4)
+   
+   pushl %edx
+   call verif
+   popl %edx
+   cmp $0, %eax
+   je et_contnr
+   cmp a, %edx
+   je et_afis
+   movl %edx, %eax
+   incl %eax
+   pushl %eax
+   call et_back
+   popl %ebx
+   
+et_contnr:
+   incl %ecx
+   jmp loop_et_nr
+
+end_back:
+  popl %edx
+  popl %ecx
+  popl %ebx
+  popl %eax
+  popl %esi
+  popl %ebp
+  ret
+
+
+main:
+  pushl $n
+  pushl $formatscanf
+  call scanf
+  popl %ebx
+  popl %ebx
+  
+  pushl $m
+  pushl $formatscanf
+  call scanf
+  popl %ebx
+  popl %ebx
+  
+  movl n, %eax
+  mull a
+  subl $1, %eax
+  movl %eax, a
+  
+  movl $0, %ecx
+  movl $v, %edi
+  
+et_citire:
+  cmp a, %ecx
+  jg end_citire
+  
+  pushl %ecx
+  pushl $b
+  pushl $formatscanf
+  call scanf
+  popl %ebx
+  popl %ebx
+  popl %ecx
+  movl b, %edx
+  movl %edx, (%edi, %ecx, 4)
+  incl %ecx
+  jmp et_citire
+  
+end_citire:
+  pushl $0
+  call et_back
+  popl %ebx
+  
+  pushl $formatminus
+  call printf
+  popl %ebx
+  jmp et_exit
+
+et_afis:
+  movl $0, %ecx
+  movl $aux, %edi
+  
+et_loopafis:
+  cmp a, %ecx
+  jg et_exit
+  movl (%edi, %ecx, 4), %eax
+  pushl %ecx
+  pushl %eax
+  pushl $formatprintf
+  call printf
+  popl %ebx
+  popl %ebx
+  popl %ecx
+  
+  incl %ecx
+  jmp et_loopafis
+  
+et_exit:
+  pushl $formatendl
+  call printf
+  popl %ebx
+  
+  movl $1, %eax
+  movl $0, %ebx
+  int $0x80
