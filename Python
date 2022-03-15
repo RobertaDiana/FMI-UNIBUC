@@ -1,3 +1,500 @@
+# ex 1
+# s1=input('s1=')
+# s2=input('s2=')
+# s3=''
+# s2=s2[::-1]
+# s1_length=len(s1)
+# s2_length=len(s2)
+# length = max(s1_length, s2_length)
+# for i in range(length):
+#     if i<s1_length:
+#      s3 = s3 + s1[i]
+#     if i<s2_length:
+#         s3 = s3 +s2[i]
+# print(s3)
+
+#TUTORIAT3-Daria
+#ex1
+# citirea unei liste cu n elem
+# n=int(input('n='))
+# list=[int(input()) for i in range(n)]
+# print(list)
+#sau
+# n=int(input('n='))
+# lista=[]
+# for i in range(n):
+#    lista.append(int(input("elem=")))n=int(input())
+#
+# print(lista)
+
+# y=int(input('y='))
+# ls=[x for x in lista if x!=y]
+# print(ls)
+
+
+#ex3
+#a)
+# lista=[x for x in range(2,25) if x%2==0]
+# print(lista)
+#sau
+# lista=[x for x in range(2,25,2)]
+# print(lista)
+
+#b)
+# n=int(input("n="))
+# lista=[x if x%2==0 else -x for x in range(1,n+1)]
+# print(lista)
+
+#c)
+# n=int(input("n="))
+# lista=[]
+# for i in range(n):
+#         lista.append(int(input("elem=")))
+# lista1=[lista[x] for x in range(0,n,2)]
+# print(lista1)
+
+#ex1=pbinfo
+# x=int(input("x="))
+# y=int(input("y="))
+# print(x+y)
+
+#TUTORIAT1-LUNI
+#ex1
+# a=int(input("a="))
+# b=int(input("b="))
+# c=int(input("c="))
+# if (a+b>c and a+c>b and b+c>a):
+#     print("este triunghi")
+# else:
+#     print("nu este")
+
+#ex2
+# n = int(input("n="))
+# i = 1
+# while i * i * i < n:
+#     i = i + 1  # i += 1
+# if i * i * i == n:
+#     print("Este cub")
+# else:
+#     print("Nu este cub")
+
+#ex3
+# n=int(input("n="))
+# if n%2!=0:
+#     print("weird")
+# elif n%2==0 and 2 <= n <= 25:
+#     print("not weird")
+# elif n%2==0 and 6 <= n <= 20:
+#     print ("weird")
+# elif n%2==0 and n > 20:
+#     print("not weird")
+
+# ex4
+# a=int(input("a="))
+# b=int(input("b="))
+#  for i in range(a, b+1):
+#      for d in range(2, i//2+1):
+#         if i%d==0:
+#             break
+#      else:
+#           print(i)
+#           break
+
+#ex5
+# a=int(input("a="))
+# b=int(input("b="))
+# maxim_divizori_primi = -1
+# for i in range(a, b+1):
+#     numar_divizori = 0
+#     divizor = 2
+#     temp = i
+#     while temp > 1:
+#         if temp % divizor == 0:
+#             numar_divizori += 1
+#             while temp % divizor == 0:
+#                 temp /= divizor
+#         else:
+#             divizor += 1
+#     if numar_divizori > maxim_divizori_primi:
+#         maxim_divizori_primi = numar_divizori
+#
+# for i in range (a, b+1):
+#     numar_divizori = 0
+#     divizor = 2
+#     temp = i
+#     while temp > 1:
+#         if temp % divizor == 0:
+#             numar_divizori += 1
+#             while temp % divizor == 0:
+#                 temp /= divizor
+#         else:
+#             divizor += 1
+#     if numar_divizori == maxim_divizori_primi:
+#         print(i, end=" ")
+
+
+#ex6
+# n=int(input("n="))
+# min1=999999999
+# min2=999999999
+# for i in range (1,n-2):
+#     nr=int(input("nr="))
+#     if (nr<min1):
+#         min2=min1
+#         min1=nr
+#     elif nr<min2:
+#         min2=nr
+#     if (min1!=min2):
+#         print(min1, min2)
+
+
+# ex7
+# from math import sqrt
+# print(sqrt(4))
+# x=int(input("x="))
+# if  x<=-9:
+#     nr= abs(x)
+# elif -9 < x < 10:
+#     nr= sqrt(x+9)
+# elif 10 <= x < 20:
+#     nr= x**2
+# print(nr)
+
+
+#TUTORIAT2-MARTI
+#ex1
+# v=[int (x) for x in input("x=").split() ]
+# secvmax=0
+# secv=0
+# for x in v: #sau for i in range(len(v))
+#    if x & (x+1) == 0:
+#       secv+=1
+#       if secv> secvmax:
+#           secvmax=secv
+#    else:
+#           secv=0
+# print(secvmax)
+
+
+#ex2
+# v=[int (x) for x in input("x=").split() ]
+# vectorcaract=[ False for x in range(100) ]
+# for elem in v:
+#     if 10<= elem <=99:
+#         vectorcaract[elem]=True
+# for i in range(10,100):
+#     if vectorcaract[i] == False:
+#      print(i)
+
+#ex3
+# v=[int (x) for x in input("x=").split()]
+# frecv=[0 for x in range(11)]
+# for elem in v:
+#     frecv[elem]+=1
+# for elem in range(10):
+#     for i in range (frecv[elem]):
+#         print(elem, end=' ')
+
+#exsuplimentar
+# se da un vector. sa se afiseze suma elem vectorului
+# print(sum([int(x) for x in input("x=").split()]))
+
+#ex4
+# v=[int(x) for x in input("x=").split()]
+# for i in range(len(v)+1):
+#     if (i+1)%2==0:
+#         print(v[i], end=" ")
+# print()
+# for i in range(len(v)-1, -1, -1):
+#     if (i + 1) % 2 == 1:
+#         print(v[i], end=" ")
+
+# se afiseaza elem pare
+# v=[int(x) for x in input("x=").split()]
+# print(x for x in v if x%2==0)
+
+#se afiseaza elem de pe pozitiile pare in ordine cresc
+# v=[int(x) for x in input("x=").split()]
+# print([v[i] for i in range(len(v)) if i%2==0])
+
+#se afiseaza elem de pe pozitiile impare in ordine descresc
+# v=[int(x) for x in input("x=").split()]
+# print([v[i] for i in range(len(v)-1, -1, -1) if i%2==1])
+
+#seminar3
+# ex3
+# ls=[int(x) for x in input("nr=").split() if int(x)>0]
+# print(f"lista{ls}")
+
+# ex6
+# lista=[-3, -8, 9, -9, -8]
+# i=0
+# while i<len(lista):
+#     if lista[i]<0:
+#         lista.insert(i+1, 0)
+#         i+=1
+#     i+=1
+# print(lista)
+
+# TUTORIAT2-LUNI
+# ex1
+# s1=str(input("s1="))
+# s2=str(input("s2="))
+# s3=""
+# s2 = s2[::-1]
+# l1=len(s1)
+# l2=len(s2)
+# l=max (l1,l2)
+# for i in range(l):
+#     if i < l1:
+#         s3 = s3 + s1[i]
+#     if i < l2:
+#         s3 = s3 + s2[i]
+# print(s3)
+
+# ex2
+# s1=input("s1=")
+# s2=input("s2=")
+# for i in s1:
+#     s1.count(s2)
+# print(s1.count(s2))
+
+# ex3
+# s=input("s=")
+# sum=0
+# pr=1
+# ma=0
+# nr=0
+# for i in s:
+#    if i.isdigit():
+#        sum+=int(i)
+#        pr*=int(i)
+#        nr+=1
+# print(sum,"",pr,"")
+# if nr>0:
+#     print("ma=", sum/nr)
+
+#ex4
+# sir=input("sir=")
+# caract=["/",".","%","$","#","@","&","*","(",","]
+# for i in caract:
+#       sir=sir.replace(i,"*")
+# print(sir)
+
+#ex5
+# sir=input("sir=")
+# s=input("s=")
+# midle_index = int(len(sir)/2)
+# sir = sir[:midle_index:] + s + sir[midle_index:]
+# print(sir)
+
+#ex6
+# s=input("s=")
+# for i in s:
+#     s=s.lower()
+# print(s)
+
+# s = "Programarea este o Disciplina de Viitor"
+# sir = ""
+# for i in range(len(s)):
+#     if s[i].isalpha() and s[i].isupper():
+#         sir = sir + s[i].lower()
+#     else:
+#         sir = sir + s[i]
+# print(sir)
+
+#ex7
+# s=input("s=")
+# s1=""
+# for i in range(len(s)):
+#     if i%2==0:
+#         s1=s1+s[i]
+# print(s1)
+
+#ex8
+# print(round(3.14567263,2))
+
+# sau
+
+# x = 3.1415926
+# y = 12.9999
+# print(x)
+# print("{:.2f}".format(x))
+# print(y)
+# print("{:.2f}".format(y))
+
+
+# # OBSERVATIE!!!!!!!!
+# s=input("s=")
+# for i in s:
+#     print(i,end="")
+# print(" ")
+# for i in range(len(s)):
+#     print(i, end="")
+
+#ex10
+# s1=input("s1=")
+# s2=input("s2=")
+# s3=""
+# if s1[-1]==s2[0]:
+#     s3=s1[0:len(s1)-1]+s2
+# elif s1[1]==s2[-2]:
+#     s3=s1+s2
+# print(s3)
+
+#TUTORIAT3-LUNI
+#ex1
+# n=int(input("n="))
+# lista=[]
+# for i in range(n):
+#     lista.append(int(input("elem=")))
+# y = int(input("y = "))
+# ls = [x for x in lista if x != y]
+# print(ls)
+
+#ex2
+# l_original = [1, 2, [3, [4, 5, [6, 7], 11], 12], 13, 14]
+# l_add = [8, 9, 10]
+# l_original[2][1][2].extend(l_add)
+# print(l_original)
+
+#ex3
+#a)
+# l=[int(x) for x in range(2,25) if x%2==0]
+# print(l)
+
+#b)
+# n=int(input("n="))
+# l=[int(x) if x%2==0 else -x for x in range(1,n+1)]
+# print(l)
+
+#c)
+# n = int(input("n="))
+# lista = []
+# for i in range(n):
+#     lista.append(int(input("elem=")))
+# print(lista)
+# lista3 = [lista[x] for x in range(0, n, 2)]
+# print(lista3)
+
+#d)
+# lista = [2, 4, 5, 8, 10, 15]
+# lista_rez = [lista[x] for x in range(len(lista)) if x % 2 != lista[x] % 2]
+# print(lista_rez)
+
+#e)
+# n = int(input("n="))
+# ls = [[] if l == 0 else [l] * l for l in range(n)]
+# print(ls)
+
+#ex4
+# n = int(input("n="))
+# my_list = []
+# # retinem paritatea sumei cifrelor, astfel:
+# # paritate[i]=0 daca suma cifrelor lui i este para
+# # paritate[i]=1 daca suma cifrelor lui i este impara
+# paritate = []
+# for i in range(n):
+#     my_list.append(int(input("elem=")))
+# # calculam suma cifrelor fiecarui element din lista
+#     aux = my_list[i]
+#     suma_cifre = 0
+#     while aux:
+#         suma_cifre += aux % 10
+#         aux //= 10
+#     if suma_cifre % 2 == 0:
+#         paritate.append(0)
+#     else:
+#         paritate.append(1)
+# print(paritate)
+
+# ordonam elementele astfel:
+# suma cifrelor para -> descrescator
+# suma cifrelor impara -> crescator
+# for i in range(len(my_list)-1):
+#     for j in range(i+1, len(my_list)):
+#         if (paritate[i] == 0 and paritate[j] == 0 and my_list[i] < my_list[j]
+#         or paritate[i] == 1 and paritate[j] == 1 and my_list[i] > my_list[j]
+#         or paritate[i] == 1 and paritate[j] == 0):
+#             aux = my_list[i]
+#             my_list[i] = my_list[j]
+#             my_list[j] = aux
+#             aux = paritate[i]
+#             paritate[i] = paritate[j]
+#             paritate[j] = aux
+#
+# print(my_list)
+
+#ex5
+# m=int(input("m="))
+# n=int(input("n="))
+# x=int(input("x="))
+# matrice=[[0 for j in range(n)] for i in range(m)]
+# for i in range(m):
+#     for j in range(n):
+#          print(matrice[i][j], end=" ")
+#     print()
+#a)
+# for i in range(m):
+#     if i%2==0:
+#         for j in range(n):
+#             matrice[i][j]=(i*n+j)*x
+#     else:
+#         for j in range(n):
+#            matrice[i][j]=(i*n+n-j-1)*x
+# for i in range(m):
+#     for j in range(n):
+#          print(matrice[i][j], end=" ")
+#     print()
+#
+# #b)
+# suma_maxima=-1
+# indice=-1
+# for j in range(n):
+#     suma=0
+#     for i in range(m):
+#         suma+=matrice[i][j]
+#     if suma>suma_maxima:
+#         suma_maxima=suma
+#         indice=j
+# print(suma_maxima, j)
+
+#c)
+# diagonala principala: i=j
+# diagonala secundara: i+j=n-1
+# deasupra diagonalei principale: i<j
+# sub diagonala principala: i>j
+# deasupra diagonalei secundare: i+j< n-1
+# sub diagonala secundara: i+j> n-1
+
+# suma=0
+# for i in range(m):
+#     suma+=matrice[i][i]
+# print(f"suma elem de pe DP:{suma}")
+
+# produs=1
+# for j in range(n):
+#     produs+=matrice[n-j-1][j]
+# print(f"produsul elem de pe DS:{produs}")
+
+# suma_impare=0
+# for i in range(m):
+#     for j in range(n):
+#         if i>j and i+j<n-1 and matrice[i][j]%2==1:
+#             suma_impare+=matrice[i][j]
+# print(f"suma elem din zona data:{suma_impare}")
+
+# citire elem matrice, fiecare linie pe un rand
+# m = int(input("m="))
+# n = int(input("n="))
+# matrice = []
+# for i in range(m):
+#     linie = [int(x) for x in input().split()]
+#     matrice.append(linie)
+# for i in range(m):
+#     for elem in matrice[i]:
+#         print(elem, end='')
+#     print()
 #ex1
 # s = input("s=")
 # suma = 0
