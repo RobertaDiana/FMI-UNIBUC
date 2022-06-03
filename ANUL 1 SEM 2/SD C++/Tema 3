@@ -1,0 +1,227 @@
+1)
+
+#include<iostream>
+using namespace std;
+
+struct node
+{
+    //campul cheie si pointer catre nodul urmator
+    //memorarea efectiva a numarului
+	int data;
+	//memorarea legaturii catre urmatorul nod
+	node* next;
+};
+
+struct Lista
+{
+    //fiecare lista incepe cu un cap, primul nod care nu contine nicio informatie, ci adresa primului elem din lista
+	node* head = nullptr;
+	int lungime = 0;
+
+    //cream lista
+	void push_front(int val)
+	{
+	    //crearea unui elem nou pt a baga cv in lista
+		node* newNode = new node();
+		//fiind variabile dinamine, pt elem listei se aloca memorie heap
+		//facem legatura si dam valoarea
+		newNode->next = head;
+		newNode->data = val;
+		head = newNode;
+		lungime++;
+	}
+    //afisam lista
+	void afisare()
+	{
+		node* curent = head;
+		while (curent != NULL)
+		{
+		    //afisam nodurile
+			cout << curent->data << " ";
+			//trecem la urmatorul nod
+			curent = curent->next;
+		}
+		cout << endl;
+	}
+	//1.1
+	void inserare(int val)
+	{
+	    //cream un nou nod
+	    //un nod pt parcurgere
+	    //un nod pe care il inseram
+		node* newNode = new node();
+		node* curent = new node();
+		//ii atribuim valoarea dorita
+		newNode->data = val;
+		//nodul nou creat devine primul din lista
+		curent = head;
+		while (curent != NULL)
+		{
+		    //in cazul in care lista e vida punem elem in lista
+		    //daca ajungi la ultimul elem
+			if (curent->next == NULL)
+			{
+			    //inseamna ca e cea mai mare val din lista
+				curent->next = newNode;
+				return;
+			}
+			else
+                //parcurgem lista pana la final
+				if (val >= curent->data && val <= curent->next->data)
+				{
+				    //va fi valoarea noastra
+					newNode->next = curent->next;
+					//cream nodul nostru
+					curent->next = newNode;
+					//ultimul elem din lista
+					curent = nullptr;
+					return;
+				}
+				//trecem la urm
+			curent = curent->next;
+		}
+		lungime++;
+	}
+	//1.2
+	void stergere()
+	{
+	    //nodul curent ia valoarea al 2 lea nod
+		node* curent = head->next;
+		//cat timp sunt elem in lista
+		while (curent != NULL)
+		{
+		    //stergem primul nod
+			delete head;
+			//primul nod ia valoarea urmatorului nod
+			head = curent;
+			//si facem legatura cu urmatorul nod
+			curent = curent->next;
+		}
+		//daca lista e vida
+		head = nullptr;
+
+	}
+	//1.3
+	void stergerevaloare(int val)
+	{
+
+	    //nodul curent ia valoarea primului nod
+		node* curent = head;
+		//nod auxiliar ca sa putem parcurge lista
+		node* aux;
+		while (curent->data == val)
+		{
+		    //doar pt prima poz sau pozitii consecutive
+			head = curent->next;
+			delete curent;
+			curent = head;
+		}
+		while (curent->next != NULL)
+		{
+		    //pleaca de la a 2 a pozitie
+			if (curent->next->data == val)
+			{
+			    //daca se gaseste pe a 2 pozitie
+				aux = curent->next;
+				//ia valoarea a 3 pozitie
+				curent->next = aux->next;
+				delete aux;
+			}
+			else
+				curent = curent->next;
+		}
+	}
+};
+
+int main()
+{
+	Lista L;
+	int n, val;
+	//citim lista
+	cin >> n >> val;
+	L.push_front(val);
+	for (int i = 1; i < n; i++)
+	{
+		cin >> val;
+		if (val <= L.head->data)
+			L.push_front(val);
+		else
+			L.inserare(val);
+	}
+	L.afisare();
+	cout << "Ce valoare doriti sa eliminati?" << endl;
+	cin >> val;
+	L.stergerevaloare(val);
+	L.afisare();
+	L.stergere();
+	L.afisare();
+}
+
+
+2)
+
+#include<iostream>
+using namespace std;
+struct node
+{
+    //campul cheie si pointer catre nodul urmator
+    //memorarea efectiva a numarului
+	int data;
+	//memorarea legaturii catre urmatorul nod
+	node* next;
+};
+struct Lista
+{
+    //fiecare lista incepe cu un cap, primul nod care nu contine nicio informatie, ci adresa primului elem din lista
+	node* head = nullptr;
+	int lungime = 0;
+
+    //cream lista
+	void push_front(int val)
+	{
+	    //crearea unui elem nou
+		node* newNode = new node();
+		//fiind variabile dinamine, pt elem listei se aloca memorie heap
+		//facem legatura si dam valoare
+		newNode->next = head;
+		newNode->data = val;
+		head = newNode;
+		lungime++;
+	}
+
+};
+
+int main()
+{
+	Lista L1,L2;
+	int n, cifra,s,r=0,suma=0,p=1;
+	cin >> n;
+	//citim listele
+	for (int i = 0; i < n; i++)
+	{
+		cin >> cifra;
+		L1.push_front(cifra);
+	}
+	for (int i = 0; i < n; i++)
+	{
+		cin >> cifra;
+		L2.push_front(cifra);
+	}
+	//luam un nod auxiliar in care retinem primul nod din fiecare lista
+	node* aux1=L1.head; node* aux2=L2.head;
+	for (int i = 0; i < n; i++)
+	{
+	    //face suma la primul nod
+		s = aux1->data + aux2->data+r;
+		//restul pt sume mai mari decat 9
+		r = s / 10;
+		//suma nr
+		suma = suma + p * (s % 10);
+		p = p * 10;
+		aux1 = aux1->next;
+		aux2 = aux2->next;
+	}
+	if (r != 0)
+		suma = suma + p * r;
+	cout << suma;
+}
