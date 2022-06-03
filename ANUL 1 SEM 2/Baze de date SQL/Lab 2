@@ -1,0 +1,34 @@
+--Laborator 2
+
+--1
+
+SELECT CONCAT (CONCAT(first_name, ' '), last_name) || ' castiga ' || salary || ' dar doreste ' || salary*3 AS "Salariu ideal" 
+FROM employees;
+
+--2
+
+select INITCAP(first_name)AS 'nume', UPPER(last_name) AS 'prenume', LENGTH(last_name) AS 'Lungime'
+from employees
+WHERE UPPER(last_name) LIKE 'J%' OR UPPER(last_name) LIKE 'M%' OR LOWER (last_name) LIKE '_a%' ORDER BY LENGTH (last_name) DESC;
+
+--3
+select last_name, TRIM(BOTH FROM first_name), employee_id, department_id from employees where UPPER (first_name) LIKE 'STEVEN';
+
+--4
+select last_name, employee_id, length(last_name), INSTR(UPPER(last_name), 'A', 1, 1) AS "Aparitia lui A" 
+from employees where last_name LIKE '%e';
+
+--5
+select last_name, first_name, hire_date, mod(ROUND(sysdate-hire_date), 7) 
+from employees 
+where mod(ROUND(sysdate-hire_date), 7)=0;
+
+ -- 6
+
+SELECT employee_id, last_name, salary, round(salary*1.15, 2) AS "Salariu nou", round(salary *1.15/100,2) AS "numar sute" 
+FROM employees
+WHERE mod(salary, 1000) !=0;
+
+--8
+
+select TO_CHAR(sysdate+30, "HH:MI:SS") from dual;
