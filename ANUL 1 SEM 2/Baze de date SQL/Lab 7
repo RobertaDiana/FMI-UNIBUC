@@ -1,0 +1,119 @@
+--lab7
+--1
+
+CREATE TABLE EMP_aza AS SELECT * FROM employees;
+CREATE TABLE DEPT_aza AS SELECT * FROM departments;
+
+--2
+desc employees;
+desc emp_aza;
+
+--3
+select * from dept_aza;
+
+--4
+ALTER TABLE emp_aza
+ADD CONSTRAINT pk_emp_aza PRIMARY KEY(employee_id);
+ALTER TABLE dept_pnu
+ADD CONSTRAINT pk_dept_aza PRIMARY KEY(department_id);
+ALTER TABLE emp_aza
+ADD CONSTRAINT fk_emp_dept_aza 
+FOREIGN KEY(department_id) REFERENCES dept_aza(department_id);
+
+--5
+--nu am precizat valori pt toate coloanele 
+a)INSERT INTO DEPT_pnu VALUES (300, ‘Programare’);
+b)INSERT INTO DEPT_pnu (department_id, department_name)VALUES (300, ‘Programare’);
+c)INSERT INTO DEPT_pnu (department_name, department_id)VALUES (300, ‘Programare’);
+d)INSERT INTODEPT_pnu (department_id, department_name, location_id)VALUES (300, ‘Programare’, null);
+e)INSERT INTO DEPT_pnu (department_name, location_id)VALUES (‘Programare’, null);
+
+
+--6
+desc emp_aza;
+insert into emp_aza
+values (250, 'prenume', 'nume', 'nume@nume.ro', null, sysdate, 'sa_rep', null, null, null, 300);
+
+select * from emp_aza
+commit;
+
+--8
+INSERT INTO emp_pnu (employee_id, last_name, email, hire_date,job_id, salary, commission_pct) 
+VALUES (252, 'Nume252', 'nume252@emp.com',SYSDATE, 'SA_REP', 5000, NULL);
+
+SELECT employee_id, last_name, email, hire_date, job_id, salary, commission_pct 
+FROM emp_pnu
+WHERE employee_id=252;ROLLBACK;
+INSERT INTO (SELECT employee_id, last_name, email, hire_date, job_id, salary,commission_pct 
+FROM emp_pnu) VALUES (252, 'Nume252', 'nume252@emp.com',SYSDATE, 'SA_REP', 5000,NULL);
+SELECT employee_id, last_name, email, hire_date, job_id, salary,commission_pct 
+FROM emp_pnu
+WHERE employee_id=252;
+ROLLBACK;
+
+
+--10
+CREATE TABLE emp1_aza AS SELECT * FROM employees WHERE 1=0;
+
+select * from emp1_aza;
+
+INSERT INTO emp1_aza
+SELECT * FROM employees
+WHERE commission_pct > 0.25;
+SELECT employee_id, last_name, salary, commission_pct
+FROM emp1_aza;
+
+
+--11
+
+insert into emp_aza
+values (0, 'user', 'user', 'total', null, sysdate, 'total', (select sum(salary) from emp_aza), (select avg(commission_pct)from emp_aza)
+
+select * from emp_aza;
+
+--13
+
+CREATE TABLE emp2_aza AS SELECT * FROM employees WHERE 1=0;
+CREATE TABLE emp3_aza AS SELECT * FROM employees WHERE 1=0;
+
+insert all 
+when salary < 5000 then into emp1_aza
+when salary >= 5000 and salary <=10000 then into emp2_aza
+when salary >10000 then into emp3-aza 
+select * from employees;
+
+select * from emp3_aza;
+
+rollback;
+
+-- 15. Măriţi salariul tuturor angajaţilor din tabelul EMP_PNU cu 5%. Vizualiza?i, iar apoi anulaţi modificările.
+UPDATE emp_aza
+SET salary = salary*1.05;
+
+SELECT * FROM emp_aza;
+ROLLBACK;
+
+-- 16. Schimbaţi jobul tuturor salariaţilor din departamentul 80 care au comision în 'SA_REP'. Anulaţi modificările.
+UPDATE emp_aza
+SET job_id = 'SA_REP'
+WHERE commission_pct is not null;
+
+-- 17. Să se promoveze Douglas Grant la func?ia de manager în departamentul 20, având o creştere de salariu de 1000. 
+-- Se poate realiza modificarea prin intermediul unei singure comenzi?
+
+UPDATE dept_pnu
+SET manager_id = (SELECT employee_id FROM emp_pnu WHERE upper(last_name||first_name) = 'DOUGLASGRANT')
+WHERE department_id = 20;
+
+
+UPDATE emp_pnu
+SET salary = salary + 1000
+WHERE upper(last_name||first_name) = 'DOUGLASGRANT';
+
+--18
+update emp_aza
+set (salary, commission_pct) = (select salary, commission_pct from emp_aza e where employee_id = e.manager_id)
+where salary = (select min(salary) from emp_aza);
+
+--23
+delete dept_aza;
