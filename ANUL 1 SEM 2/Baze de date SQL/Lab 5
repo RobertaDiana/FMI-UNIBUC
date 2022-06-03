@@ -1,0 +1,120 @@
+--lab 5
+--1
+select department_id, job_id, sum(salary) from employees
+group by department_id, job_id;
+
+--2
+select department_id, department_name job_id, job_title, sum(salary)
+from employees join departments using (department_id) join jobs using (job_id)
+group by department_id, job_id, department_name, job_title;
+
+--3
+select department_name, min(salary)
+from departments join employees using (department_id)
+group by department_name
+having avg(salary) in (select max(avg(salary)) from employees group by department_id);
+
+--4
+
+--a)
+select department_id, department_name, count(*)
+from employees join departments using(department_id)
+group by department_id, department_name
+having count(*) <4;
+
+--b)
+select department_id, department_name, count(*)
+from employees join departments using(department_id)
+group by department_id, department_name
+having count(*) in (select max(count(*))
+from employees join departments using(department_id)
+group by department_id, department_name);
+
+--5
+select last_name, hire_date
+from employees
+where to_char(hire_date, 'DD') = (select to_char(hire_date, 'DD')
+from employees
+group by to_char(hire_date, 'DD') 
+having count(*) in (select max(count(*)) from employees group by to_char(hire_date, 'DD')));
+
+--6
+select count(count(*))
+from employees 
+group by department_id
+having count(*)>15;
+
+--7
+select department_id, sum(salary)
+from employees
+group by department_id
+having count(*) >10 and department_id!=30
+order by sum(salary);
+
+--8
+select department_id, department_name, count(*), round(avg(salary),2), last_name, first_name, salary
+from employees right join departments using (department_id)
+group by department_id, department_name, last_name, first_name, salary;
+
+--9
+select city , department_name  , job_id  , sum(salary) 
+from employees join departments using (department_id)
+            join locations using (location_id)
+group by department_id, department_name, job_id, city
+having department_id > 80;
+
+--10
+
+select employee_id, last_name
+from employees join job_history using(employee_id)
+group by employee_id, last_name
+having count(*)>1;
+
+--11
+select avg(nvl(commission_pct, 0))
+from employees;
+
+--12
+select job_id "Job" , sum(decode(department_id, 30, salary)) "Dep30",
+sum(decode(department_id, 50, salary)) "Dep50",
+sum(decode(department_id, 80, salary)) "Dep80",
+sum(salary) "Total"
+from employees
+group by job_id;
+
+--var 2
+
+select job_id, (select sum(salary) from employees where department_id =30 and e.job_id=job_id) "dep 30",
+(select sum(salary) from employees where department_id =50 and e.job_id=job_id) "dep 50",
+(select sum(salary) from employees where department_id =80 and e.job_id=job_id) "dep 80",
+sum(salary) "total"
+from employees e
+group by job_id;
+
+--13
+select count(*) as "total" ,
+sum(decode(to_char(hire_date, 'yyyy'), 1997, 1, 0)) as "1997",
+sum(decode(to_char(hire_date, 'yyyy'), 1998, 1, 0)) as "1998",
+sum(decode(to_char(hire_date, 'yyyy'), 1999, 1, 0)) as "1999"
+from employees;
+
+--14
+select d.department_id, department_name, a.suma
+from departments d, (select department_id, sum(salary) suma
+from employees
+group by department_id) a
+where d.department_id=a.department_id;
+
+--15
+select job_title, (max_salary-min_salary)/2, max_salary-min_salary, a.medie
+from jobs j join (select job_id, avg(salary) medie, from employees group by job_id) a using (job_id);
+
+--16
+select job_title, (max_salary-min_salary)/2, max_salary-min_salary, a.medie, a.numar
+from jobs j join (select job_id, avg(salary) medie, count(*) numar from employees group by job_id) a using (job_id);
+
+--17
+select department_name, last_name, salary
+from departments join (select e.department_id, last_name, salary 
+from employees e join departments d on (e.department_id=d.department_id) 
+where salary <= ALL(select salary from employees where department_id =d.department_id)) using (department_id);
