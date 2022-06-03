@@ -1,0 +1,865 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+
+//interfata din laborator
+class IOInterface
+{
+public:
+    virtual istream& citire(istream& in)=0;
+    virtual ostream& afisare (ostream& out) const=0;
+
+};
+class Malware: public IOInterface
+{
+protected:
+    float rating;
+    int zi;
+    int luna;
+    int an;
+    string nume;
+    string metoda;
+    vector <string> registrii;
+public:
+    //constructor cu toti parametri
+    Malware(float rating, int zi, int luna, int an, string nume, string metoda, const vector <string> registrii)
+    {
+        this->rating=rating;
+        this->zi=zi;
+        this->luna=luna;
+        this->an=an;
+        this->nume=nume;
+        this->metoda=metoda;
+        this->registrii=registrii;
+    }
+    //constructor fara parametri
+    Malware ()
+    {
+        this->rating=0;
+        this->zi=0;
+        this->luna=0;
+        this->an=0;
+        this->nume="anonim";
+        this->metoda="anonim";
+    }
+    //copy-constructor
+    Malware(const Malware& p)
+    {
+        this->rating=p.rating;
+        this->zi=p.zi;
+        this->luna=p.luna;
+        this->an=p.an;
+        this->nume=p.nume;
+        this->metoda=p.metoda;
+        this->registrii=p.registrii;
+    }
+
+    //operator =
+    Malware& operator = (const Malware& p)
+    {
+        if (this!=&p)
+        {
+            this->rating=p.rating;
+            this->zi=p.zi;
+            this->luna=p.luna;
+            this->an=p.an;
+            this->nume=p.nume;
+            this->metoda=p.metoda;
+            this->registrii=p.registrii;
+        }
+        return *this;
+    }
+
+    //citire
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Ratingul este: ";
+        in>>this->rating;
+        cout<<"Ziua este: ";
+        in>>this->zi;
+        cout<<"Luna este: ";
+        in>>this->luna;
+        cout<<"Anul este: ";
+        in>>this->an;
+        cout<<"Numele este: ";
+        in>>this->nume;
+        cout<<"Metoda este: ";
+        in>>this->metoda;
+        int nr;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr de registrii sunt: ";
+                in>>nr;
+                in.get();
+                if (nr<0)
+                    throw string ("nr invalid");
+                else break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for(int i=0; i<nr; ++i)
+        {
+            cout << "Registrii sunt: ";
+            string reg;
+            getline(in, reg);
+            registrii.push_back(reg);
+        }
+        return in;
+    }
+
+    //afisare
+    virtual ostream& afisare(ostream& out) const
+    {
+        out<<"Ratingul este: "<<this->rating<<endl;
+        out<<"Ziua este: "<<this->zi<<endl;
+        out<<"Luna este: "<<this->luna<<endl;
+        out<<"Anul este: "<<this->an<<endl;
+        out<<"Numele este: "<<this->nume<<endl;
+        out<<"Metoda este: "<<this->metoda<<endl;
+        for (int i=0; i<this->registrii.size(); i++)
+            out<<this->registrii[i];
+
+        return out;
+    }
+
+    friend istream& operator >> (istream& in, Malware& p)
+    {
+        return p.citire(in);
+    }
+    friend ostream& operator << (ostream& out, const Malware& p)
+    {
+        return p.afisare(out);
+    }
+
+    void setRating(float rating)
+    {
+        this->rating=rating;
+    }
+    void setZi(int zi)
+    {
+        this->zi=zi;
+    }
+    void setLuna(int luna)
+    {
+        this->luna=luna;
+    }
+    void setAn(int an)
+    {
+        this->an=an;
+    }
+    void setNume(string nume)
+    {
+        this->nume=nume;
+    }
+    void setMetoda(string metoda)
+    {
+        this->metoda=metoda;
+    }
+    void setRegistrii(const vector <string> registrii)
+    {
+        this->registrii=registrii;
+    }
+    float getRating()
+    {
+        return this->rating;
+    }
+    int getZi()
+    {
+        return this->zi;
+    }
+    int getLuna()
+    {
+        return this->luna;
+    }
+    int getAn()
+    {
+        return this->an;
+    }
+    string getNume()
+    {
+        return this->nume;
+    }
+    string getMetoda()
+    {
+        return this->metoda;
+    }
+    const vector <string> getRegistrii()
+    {
+        return this->registrii;
+    }
+
+    ~Malware()
+    {
+        registrii.clear();
+    }
+};
+
+class Rootkit:virtual public Malware
+{
+protected:
+    vector <string> importuri;
+    vector <string> semnificative;
+public:
+    Rootkit(float rating, int zi, int luna, int an, string nume, string metoda, const vector <string> registrii, const vector <string> importuri, const vector <string> semnficative) : Malware (rating, zi, luna, an, nume, metoda, registrii)
+    {
+        this->importuri=importuri;
+        this->semnificative=semnificative;
+    }
+    Rootkit(): Malware()
+    {
+    }
+    Rootkit(const Rootkit& p):Malware(p)
+    {
+        this->importuri=p.importuri;
+        this->semnificative=p.semnificative;
+    }
+    Rootkit& operator=(const Rootkit& p)
+    {
+        if (this!=&p)
+        {
+            Malware::operator=(p);
+            this->importuri=p.importuri;
+            this->semnificative=p.semnificative;
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Malware::citire(in);
+
+        int nr;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr de importuri: ";
+                in>>nr;
+                in.get();
+                if (nr<0)
+                    throw string("Nr invalid");
+                else break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+
+        for(int i=0; i<nr; ++i)
+        {
+            string importurile;
+            cout << "Importurile sunt: ";
+            getline(in,importurile);
+            importuri.push_back(importurile);
+        }
+        int nr1;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr de semnificative: ";
+                in>>nr1;
+                in.get();
+                if (nr1<0)
+                    throw string("nr invalid");
+                else break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for (int i=0; i< nr1; i++)
+        {
+            string semnificativele;
+            cout<<"Semnificative sunt: ";
+            getline(in, semnificativele);
+            semnificative.push_back(semnificativele);
+        }
+        return in;
+    }
+
+    virtual ostream& afisare(ostream& out) const
+    {
+        Malware::afisare(out);
+        for (int i=0; i<this->importuri.size(); i++)
+            out<<this->importuri[i]<<endl;
+        for (int i=0; i<this->semnificative.size(); i++)
+            out<<this->semnificative[i]<<endl;
+
+        return out;
+    }
+
+    void setImporturi(const vector <string> importuri)
+    {
+        this->importuri=importuri;
+    }
+
+    void setSemnificative(const vector <string> semnificative)
+    {
+        this->semnificative=semnificative;
+    }
+
+    const vector <string> getImporturi()
+    {
+        return this->importuri;
+    }
+    const vector <string> getSemnificative()
+    {
+        return this->semnificative;
+    }
+
+    ~Rootkit()
+    {
+        importuri.clear();
+        semnificative.clear();
+    }
+};
+
+class Keylogger: virtual public Malware
+{
+protected:
+    vector <string> functii;
+    vector <string> taste;
+public:
+    Keylogger(float rating, int zi, int luna, int an, string nume, string metoda, const vector <string> registrii, const vector <string> functii, const vector <string> taste):Malware (rating, zi, luna, an, nume, metoda, registrii)
+    {
+        this->functii=functii;
+        this->taste=taste;
+    }
+    Keylogger():Malware()
+    {
+    }
+    Keylogger(const Keylogger& p):Malware(p)
+    {
+        this->functii=p.functii;
+        this->taste=p.taste;
+    }
+    Keylogger& operator=(const Keylogger& p)
+    {
+        if (this!=&p)
+        {
+            this->functii=p.functii;
+            this->taste=p.taste;
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Malware::citire(in);
+        int nr;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr functii:\n";
+                in>>nr;
+                in.get();
+                if (nr<0)
+                    throw string("Nr invalid");
+                else
+                    break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for(int i=0; i<nr; ++i)
+        {
+            cout << "Functiile sunt: ";
+            string functiile;
+            getline(in,functiile);
+            functii.push_back(functiile);
+        }
+        int nr1;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr de taste este: ";
+                in>>nr1;
+                in.get();
+                if (nr1<0)
+                    throw string("Nr invalid!");
+                else
+                    break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for (int i=0; i<nr1; i++)
+        {
+            cout<<"Tastele sunt: ";
+            string tastele;
+            getline(in, tastele);
+            taste.push_back(tastele);
+        }
+        return in;
+    }
+
+    virtual ostream& afisare(ostream& out) const
+    {
+        Malware::afisare(out);
+        for (int i=0; i<this->functii.size(); i++)
+            out<<this->functii[i]<<endl;
+        for (int i=0; i<this->taste.size(); i++)
+            out<<this->taste[i]<<endl;
+
+        return out;
+    }
+    void setFunctii(const vector <string> functii)
+    {
+        this->functii=functii;
+    }
+    void setTaste(const vector <string> taste)
+    {
+        this->taste=taste;
+    }
+    const vector <string> getFunctii()
+    {
+        return this->functii;
+    }
+    const vector <string> getTaste ()
+    {
+        return this->taste;
+    }
+
+    ~Keylogger()
+    {
+        functii.clear();
+        taste.clear();
+    }
+
+};
+
+
+class KernelKeylogger: public Rootkit, public Keylogger
+{
+protected:
+    bool ascunde_fisiere;
+    bool ascunde_registrii;
+public:
+    KernelKeylogger( float rating, int zi, int luna, int an, string nume, string metoda, vector <string> registrii, vector <string> importuri, vector <string> semnificative, vector <string> functii, vector <string> taste, bool ascunde_fisiere,
+                     bool ascunde_registrii):Malware(rating, zi, luna, an, nume, metoda, registrii), Rootkit(rating, zi, luna, an, nume, metoda, registrii, importuri, semnificative), Keylogger(rating, zi, luna, an, nume, metoda, registrii,functii, taste)
+    {
+        this->ascunde_fisiere=ascunde_fisiere;
+        this->ascunde_registrii=ascunde_registrii;
+    }
+    KernelKeylogger():Rootkit(), Keylogger(), Malware()
+    {
+
+    }
+    KernelKeylogger(const KernelKeylogger &p):Rootkit(p), Keylogger(p), Malware(p)
+    {
+        this->ascunde_fisiere=p.ascunde_fisiere;
+        this->ascunde_registrii=p.ascunde_registrii;
+    }
+
+    KernelKeylogger& operator = (const KernelKeylogger& p)
+    {
+        if (this!=&p)
+        {
+            Rootkit::operator=(p);
+            this->functii=p.functii;
+            this->taste=p.taste;
+            this->ascunde_fisiere=p.ascunde_fisiere;
+            this->ascunde_registrii=p.ascunde_registrii;
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Rootkit::citire(in);
+        int nr;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr functii:\n";
+                in>>nr;
+                in.get();
+                if (nr<0)
+                    throw string("Nr invalid");
+                else
+                    break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for(int i=0; i<nr; ++i)
+        {
+            cout << "Functiile sunt: ";
+            string functiile;
+            getline(in,functiile);
+            functii.push_back(functiile);
+        }
+        int nr1;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr de taste este: ";
+                in>>nr1;
+                in.get();
+                if (nr1<0)
+                    throw string("Nr invalid!");
+                else
+                    break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for (int i=0; i<nr1; i++)
+        {
+            cout<<"Tastele sunt: ";
+            string tastele;
+            getline(in, tastele);
+            taste.push_back(tastele);
+        }
+        cout<<"A ascuns fisiere? ";
+        in>>this->ascunde_fisiere;
+        cout<<"A ascuns registrii? ";
+        in>>this->ascunde_registrii;
+        return in;
+
+    }
+
+    virtual ostream& afisare(ostream& out) const
+    {
+        Rootkit::afisare(out);
+        for (int i=0; i<this->functii.size(); i++)
+            out<<this->functii[i]<<endl;
+        for (int i=0; i<this->taste.size(); i++)
+            out<<this->taste[i]<<endl;
+        out<<"A ascuns fisiere? "<<this->ascunde_fisiere;
+        out<<"A ascuns registrii? "<<this->ascunde_registrii;
+
+        return out;
+
+    }
+
+    void setAscundeFisiere(bool ascunde_fisiere)
+    {
+        this->ascunde_fisiere=ascunde_fisiere;
+    }
+    void setAscundeRegistrii(bool ascunde_registrii)
+    {
+        this->ascunde_registrii=ascunde_registrii;
+    }
+    bool getAscundeFisiere()
+    {
+        return this->ascunde_fisiere;
+    }
+    bool getAscundeRegistrii()
+    {
+        return this->ascunde_registrii;
+    }
+    ~KernelKeylogger()
+    {
+        ascunde_fisiere=ascunde_registrii=0;
+    }
+};
+
+class Ransomware:public virtual Malware
+{
+private:
+    int ratingCriptare;
+    float ratingObfuscare;
+public:
+    Ransomware(float rating, int zi, int luna, int an, string nume, string metoda, const vector <string> registrii, int ratingCriptare, float ratingObfuscare): Malware(rating, zi, luna, an, nume, metoda, registrii)
+    {
+        this->ratingCriptare=ratingCriptare;
+        this->ratingObfuscare=ratingObfuscare;
+    }
+    Ransomware():Malware()
+    {
+
+    }
+    Ransomware(const Ransomware& p):Malware(p)
+    {
+        this->ratingCriptare=p.ratingCriptare;
+        this->ratingObfuscare=p.ratingObfuscare;
+    }
+    Ransomware& operator=(const Ransomware& p)
+    {
+        if (this!=&p)
+        {
+            Malware::operator=(p);
+            this->ratingCriptare=p.ratingCriptare;
+            this->ratingObfuscare=p.ratingObfuscare;
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Malware::citire(in);
+        cout<<"Ratingul de criptare este: ";
+        in>>this->ratingCriptare;
+        cout<<"Ratingul de obsfuscare este: ";
+        in>>this->ratingObfuscare;
+
+        return in;
+    }
+
+    virtual ostream& afisare(ostream& out) const
+    {
+        Malware::afisare(out);
+        out<<"Ratingul de criptare este: "<<this->ratingCriptare<<endl;
+        out<<"Ratingul de obsfuscare este: "<<this->ratingObfuscare<<endl;
+
+        return out;
+    }
+
+    void setRatingCriptare(int ratingCriptare)
+    {
+        this->ratingCriptare=ratingCriptare;
+    }
+    void setRatingObsfuscare(float ratingObfuscare)
+    {
+        this->ratingObfuscare=ratingObfuscare;
+    }
+    int getRatingCriptare()
+    {
+        return this->ratingCriptare;
+    }
+    float getRatingObfuscare()
+    {
+        return this->ratingObfuscare;
+    }
+    ~Ransomware()
+    {
+        ratingCriptare=0;
+        ratingObfuscare=0;
+    }
+
+};
+
+
+class Calculator
+{
+private:
+    static int id;
+    vector <string> virusi;
+    int ratingFinal;
+public:
+    Calculator(int id, vector <string> virusi, int ratingFinal)
+    {
+        this->id=id;
+        this->virusi=virusi;
+        this->ratingFinal=ratingFinal;
+    }
+    Calculator()
+    {
+
+    }
+    Calculator(const Calculator& p)
+    {
+        this->id=p.id;
+        this->virusi=p.virusi;
+        this->ratingFinal=p.ratingFinal;
+    }
+    Calculator& operator= (const Calculator& p)
+    {
+        if (this!=&p)
+        {
+            this->id=p.id;
+            this->virusi=p.virusi;
+            this->ratingFinal=p.ratingFinal;
+        }
+        return *this;
+    }
+
+    //supraincarcarea operatorului >>
+    friend istream& operator >> (istream& in, Calculator& p)
+    {
+        return p.citire(in);
+    }
+
+//supraincarcarea operatorului <<
+    friend ostream& operator << (ostream& out, const Calculator& p)
+    {
+        return p.afisare(out);
+    }
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Id-ul persoanei este: ";
+        in>>this->id;
+        int nr;
+        while (true)
+        {
+            try
+            {
+                cout<<"Virusii sunt: ";
+                in>>nr;
+                in.get();
+                if (nr<0)
+                    throw string("nr invalid");
+                else
+                    break;
+
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for(int i=0; i<nr; ++i)
+        {
+            cout << "Nr de virusi este: ";
+            string vir;
+            getline(in,vir);
+            virusi.push_back(vir);
+        }
+        cout<<"Rating-ul final este: ";
+        in>>this->ratingFinal;
+
+        return in;
+    }
+
+    virtual ostream& afisare(ostream& out) const
+    {
+        out<<"Id-ul persoanei este: "<<this->id<<endl;
+        for (int i=0; i<this->virusi.size(); i++)
+            out<<this->virusi[i]<<endl;
+        out<<"Ratingul final este: "<<this->ratingFinal<<endl;
+
+        return out;
+    }
+    void setVirusi(vector <string>virusi)
+    {
+        this->virusi=virusi;
+    }
+    void setRatingFinal(int ratingFinal)
+    {
+        this->ratingFinal=ratingFinal;
+    }
+
+    static int getId ()
+    {
+        return id;
+    }
+    vector <string> getVirusi()
+    {
+        return this->virusi;
+    }
+    int getRatingFinal()
+    {
+        return this->ratingFinal;
+    }
+    ~Calculator()
+    {
+        id = 0;
+        virusi.clear();
+        ratingFinal = 0;
+    }
+};
+int Calculator::id=0;
+
+int main()
+{
+
+    vector <Malware*> listaMalware;
+    vector <Calculator*> listaCalculatoare;
+    while (true)
+    {
+        int valoare;
+        cout<<"Apasa 0 ca sa adaugi un Malware\n ";
+        cout<<"Malware contine ratingul, zi, luna, an, nume, metoda, vector cu registrii\n ";
+        cout<<"Apasa 1 ca sa adaugi un Rootkit\n ";
+        cout<<"cele de la malware(lista importuri, lista stringuri)\n ";
+        cout<<"Apasa 2 ca sa adaugi un Keylogger\n ";
+        cout<<"Cele de la malware(lista functii, lista taste)\n ";
+        cout<<"Apasa 3 ca sa adaugi un Ransomware\n ";
+        cout<<"cele de la malware(rating criptare, rating obfuscare)\n ";
+        cout<<"Apasa 4 ca sa adaugi un KernelKeylogger\n ";
+        cout<<"cele de la rootkit dar si keylogger(ascundefisire, ascunderegistrii)\n ";
+        cout<<"Apasa 5 ca sa adaugi un Calculator\n ";
+        cout<<"id, lista malware, rating final\n ";
+        cout<<"Apasa 6 ca sa stergi un malware\n ";
+        cout<<"Apasa 7 ca sa stergi un calculator\n ";
+        cout<<"Apasa 8 ca sa afisezi\n ";
+        cin>>valoare;
+        if (valoare==0)
+        {
+
+            Malware* p = new Malware();
+            cin>> *p;
+            listaMalware.push_back (new Malware(*p));
+        }
+        else if (valoare==1)
+        {
+            Malware* p=new Rootkit();
+            cin>>*p;
+            listaMalware.push_back(new Malware(*p));
+        }
+        else if (valoare==2)
+        {
+            Malware* p=new Keylogger();
+            cin>>*p;
+            listaMalware.push_back(new Malware(*p));
+        }
+        else if (valoare==3)
+        {
+            Malware* p=new Ransomware();
+            cin>>*p;
+            listaMalware.push_back(new Malware(*p));
+        }
+        else if (valoare==4)
+        {
+            Malware* p=new KernelKeylogger();
+            cin>>*p;
+            listaMalware.push_back(new Malware(*p));
+        }
+        else if (valoare==5)
+        {
+            Calculator* p=new Calculator();
+            cin>>*p;
+            listaCalculatoare.push_back(new Calculator(*p));
+        }
+        else if (valoare == 6)
+        {
+            cout<<"Alege indexul: ";
+            int index;
+            cin>>index;
+            listaMalware.erase(listaMalware.begin() + index);
+        }
+        else if (valoare == 7)
+        {
+            cout<<"Alege indexul: ";
+            int index;
+            cin>>index;
+            listaCalculatoare.erase(listaCalculatoare.begin() + index);
+        }
+        else if (valoare == 8)
+        {
+            for(int i = 0; i < listaMalware.size(); i++)
+            {
+                cout << *listaMalware[i];
+            }
+            for(int i = 0; i < listaCalculatoare.size(); i++)
+            {
+                cout << *listaCalculatoare[i];
+            }
+            cout<<endl;
+        }
+        else break;
+    }
+}
