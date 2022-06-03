@@ -1,0 +1,565 @@
+//Avem o biblioteca
+//Biblioteca are proza si poezie dar si un id
+//Pt fiecare carte trebuie sa stim titlul, numele autorilor(vector), editura, anul aparitiei
+//Pt proza trebuie sa stim nr de pagini
+//Pt poezie trebuie sa stim nr de poezii, dar si un vector cu numele poeziei
+//Proza poate sa fie roman si nuvela
+//Pt roman trebuie sa stim nr de capitole
+//Pt nuvela trebuie sa stim nr de personaje dar si numele lor(vector)
+//Pt poezie poate sa fie si romantica
+//Poezia romantica contine genul, tema poeziei
+//Putem avea carti care contin si proza si poezie, iar aici avem ca atribut pretul cartii
+
+
+
+
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+class IOInterface
+{
+public:
+    virtual istream& citire(istream& in)=0;
+    virtual ostream& afisare(ostream& out) const=0;
+};
+class Biblioteca:public IOInterface
+{
+protected:
+    string titlul;
+    vector <string> autori;
+    string editura;
+    int an;
+public:
+    Biblioteca(string titlul, vector <string> autori, string editura, int an);
+    Biblioteca();
+    Biblioteca(const Biblioteca& p);
+    Biblioteca& operator = (const Biblioteca& p);
+    ~Biblioteca();
+    friend istream& operator >> (istream& in, Biblioteca& p);
+    friend ostream& operator << (ostream& out, const Biblioteca& p);
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Titlul este: ";
+        in>>this->titlul;
+        int nr;
+        cout<<"Nr de autori este: ";
+        in>>nr;
+        in.get();
+        for (int i=0; i<nr; i++)
+        {
+            string aut;
+            getline(in, aut);
+            autori.push_back(aut);
+        }
+        cout<<"Editura este: ";
+        in>>this->editura;
+        cout<<"Anul este: ";
+        in>>this->an;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        out<<"Titlul este: "<<this->titlul<<endl;
+
+        for (int i=0; i<this->autori.size(); i++)
+        {
+            out<<this->autori[i]<<endl;
+        }
+        out<<"Editura este: "<<this->editura<<endl;
+        out<<"Anul este: "<<this->an<<endl;
+        return out;
+    }
+
+};
+
+Biblioteca::Biblioteca(string titlul, vector <string> autori, string editura, int an)
+{
+    this->titlul=titlul;
+    this->autori=autori;
+    this->editura=editura;
+    this->an=an;
+}
+Biblioteca::Biblioteca()
+{
+    this->titlul="";
+    this->autori={};
+    this->editura="";
+    this->an=0;
+}
+Biblioteca::Biblioteca(const Biblioteca& p)
+{
+    this->titlul=p.titlul;
+    this->autori=p.autori;
+    this->editura=p.editura;
+    this->an=p.an;
+}
+Biblioteca& Biblioteca::operator = (const Biblioteca& p)
+{
+    if (this!=&p)
+    {
+        this->titlul=p.titlul;
+        this->autori=p.autori;
+        this->editura=p.editura;
+        this->an=p.an;
+    }
+    return *this;
+}
+Biblioteca::~Biblioteca()
+{
+    this->titlul="NULL";
+    autori.clear();
+    this->editura="NULL";
+    this->an=0;
+}
+istream& operator >> (istream& in, Biblioteca& p)
+{
+    return p.citire(in);
+}
+ostream& operator << (ostream& out, const Biblioteca& p)
+
+{
+    return p.afisare(out);
+}
+
+class Proza:public virtual Biblioteca
+{
+protected:
+    int nrPagini;
+public:
+    Proza(string titlul, vector <string> autori, string editura, int an, int nrPagini );
+    Proza();
+    Proza(const Proza& p);
+    Proza& operator = (const Proza& p);
+    ~Proza();
+    virtual istream& citire(istream& in)
+    {
+        Biblioteca::citire(in);
+        cout<<"Nr de pagini este: ";
+        in>>this->nrPagini;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out ) const
+    {
+        Biblioteca::afisare(out);
+        out<<"Nr  de pagini este: "<<this->nrPagini<<endl;
+        return out;
+    }
+};
+Proza::Proza(string titlul, vector <string> autori, string editura, int an,int nrPagini ):Biblioteca(titlul, autori, editura, an)
+{
+    this->nrPagini=nrPagini;
+}
+Proza::Proza():Biblioteca()
+{
+    this->nrPagini=3;
+}
+Proza::Proza(const Proza& p):Biblioteca(p)
+{
+    this->nrPagini=p.nrPagini;
+}
+Proza& Proza::operator = (const Proza& p)
+{
+    if (this!=&p)
+    {
+        Biblioteca:: operator = (p);
+        this->nrPagini=p.nrPagini;
+    }
+    return *this;
+}
+Proza::~Proza()
+{
+    this->nrPagini=0;
+}
+
+class ProzaRoman:public virtual Proza
+{
+private:
+    int nrCapitole;
+public:
+    ProzaRoman(string titlul, vector <string> autori, string editura, int an,int nrPagini, int nrCapitole);
+    ProzaRoman();
+    ProzaRoman(const ProzaRoman& p);
+    ProzaRoman& operator = (const ProzaRoman& p);
+    ~ProzaRoman();
+    virtual istream& citire(istream& in)
+    {
+        Proza::citire(in);
+        cout<<"Nr de capitole este: ";
+        in>>this->nrCapitole;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out ) const
+    {
+        Proza::afisare(out);
+        out<<"Nr de capitole este: "<<this->nrCapitole<<endl;
+        return out;
+    }
+
+};
+
+ProzaRoman::ProzaRoman(string titlul, vector <string> autori, string editura, int an, int nrPagini, int nrCapitole):Proza(titlul, autori, editura, an, nrPagini)
+{
+    this->nrCapitole=nrCapitole;
+}
+ProzaRoman:: ProzaRoman():Proza()
+{
+    this->nrCapitole=2;
+}
+ProzaRoman:: ProzaRoman(const ProzaRoman& p):Proza(p)
+{
+    this->nrCapitole=p.nrCapitole;
+
+}
+ProzaRoman& ProzaRoman::operator = (const ProzaRoman& p)
+{
+    if (this!=&p)
+    {
+        Proza::operator =(p);
+        this->nrCapitole=p.nrCapitole;
+    }
+    return *this;
+}
+ProzaRoman::~ProzaRoman()
+{
+
+    this->nrCapitole=0;
+}
+
+class ProzaNuvela:public virtual Proza
+
+{
+private:
+    int nrPersonaje;
+    vector <string> numePersonaje;
+public:
+    ProzaNuvela(string titlul, vector <string> autori, string editura, int an, int nrPagini, int nrPersonaje, vector <string> numePersonaje);
+    ProzaNuvela();
+    ProzaNuvela(const ProzaNuvela& p);
+    ProzaNuvela& operator = (const ProzaNuvela& p);
+    ~ProzaNuvela();
+    virtual istream& citire(istream& in)
+    {
+        Proza::citire(in);
+        cout<<"Nr de personaje este: ";
+        in>>this->nrPersonaje;
+        int nr;
+        cout<<"Cate nume de personaje sunt? ";
+        in>>nr;
+        in.get();
+        for (int i=0; i<nr; i++)
+        {
+            string num;
+            getline(in, num);
+            numePersonaje.push_back(num);
+        }
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Proza::afisare(out);
+        out<<"Nr de personaje este: "<<this->nrPersonaje<<endl;
+        for (int i=0; i<this->numePersonaje.size(); i++)
+            out<<this->numePersonaje[i]<<endl;
+        return out;
+    }
+
+};
+
+
+ProzaNuvela::ProzaNuvela(string titlul, vector <string> autori, string editura, int an, int nrPagini, int nrPersonaje, vector <string> numePersonaje):Proza(titlul, autori, editura, an, nrPagini)
+{
+    this->nrPersonaje=nrPersonaje;
+    this->numePersonaje=numePersonaje;
+}
+ProzaNuvela::ProzaNuvela():Proza()
+{
+    this->nrPersonaje=0;
+    this->numePersonaje={};
+}
+ProzaNuvela:: ProzaNuvela(const ProzaNuvela& p)
+{
+    this->nrPersonaje=p.nrPersonaje;
+    this->numePersonaje=p.numePersonaje;
+}
+ProzaNuvela& ProzaNuvela::operator = (const ProzaNuvela& p)
+{
+    if (this!=&p)
+
+    {
+        Proza::operator = (p);
+        this->nrPersonaje=p.nrPersonaje;
+        this->numePersonaje=p.numePersonaje;
+
+    }
+    return *this;
+}
+ProzaNuvela::~ProzaNuvela()
+{
+    this->nrPersonaje=0;
+    numePersonaje.clear();
+}
+class Poezie: public virtual Biblioteca
+{
+protected:
+    int nrPoezii;
+    vector <string> nume;
+
+public:
+    Poezie(string titlul, vector <string> autori, string editura, int an, int nrPoezii, vector <string> nume);
+    Poezie();
+    Poezie(const Poezie& p);
+    Poezie& operator = (const Poezie& p);
+    ~Poezie();
+    virtual istream& citire(istream& in)
+    {
+        Biblioteca::citire(in);
+        cout<<"Nr de poezii este: ";
+        in>>this->nrPoezii;
+        int nr;
+        cout<<"Cate poezii sunt si care sunt ele? ";
+        in>>nr;
+        in.get();
+        for (int i=0; i<nr; i++)
+        {
+            string numele;
+            getline(in, numele);
+            nume.push_back(numele);
+        }
+        return in;
+    }
+    virtual ostream& afisare (ostream& out) const
+    {
+        Biblioteca::afisare(out);
+        out<<"Nr de poezii este: "<<this->nrPoezii<<endl;
+        for (int i=0; i<this->nume.size(); i++)
+            out<<this->nume[i]<<endl;
+        return out;
+    }
+
+};
+Poezie::  Poezie(string titlul, vector <string> autori, string editura, int an, int nrPoezii,vector <string> nume):Biblioteca(titlul, autori, editura, an)
+{
+    this->nrPoezii=nrPoezii;
+    this->nume=nume;
+}
+Poezie::Poezie():Biblioteca()
+{
+    this->nrPoezii=0;
+    this->nume={};
+
+}
+Poezie:: Poezie(const Poezie& p)
+{
+    this->nrPoezii=p.nrPoezii;
+    this->nume=p.nume;
+
+}
+Poezie& Poezie::operator = (const Poezie& p)
+{
+    if (this!=&p)
+    {
+
+        Biblioteca::operator = (p);
+        this->nrPoezii=p.nrPoezii;
+        this->nume=p.nume;
+    }
+    return *this;
+}
+Poezie::~Poezie()
+{
+    this->nrPoezii=0;
+    nume.clear();
+}
+class PoezieRomantica:public virtual Poezie
+{
+private:
+    string gen;
+    string tema;
+public:
+    PoezieRomantica(string titlul, vector <string> autori, string editura, int an, int nrPoezii, vector <string> nume, string gen, string tema);
+    PoezieRomantica();
+    PoezieRomantica(const PoezieRomantica& p);
+    PoezieRomantica& operator = (const PoezieRomantica& p);
+    ~PoezieRomantica();
+    virtual istream & citire(istream& in)
+    {
+        Poezie::citire(in);
+        cout<<"Genul este: ";
+        in>>this->gen;
+        cout<<"Tema este: ";
+        in>>this->tema;
+        return in;
+    }
+    virtual ostream& afisare (ostream& out) const
+    {
+        Poezie::afisare(out);
+        out<<"Genul este: "<<this->gen<<endl;
+        out<<"Tema este: "<<this->tema<<endl;
+        return out;
+    }
+};
+PoezieRomantica::PoezieRomantica(string titlul, vector <string> autori, string editura, int an, int nrPoezii, vector <string> nume, string gen, string tema):Poezie(titlul, autori, editura, an, nrPoezii, nume)
+{
+    this->gen=gen;
+    this->tema=tema;
+}
+PoezieRomantica::PoezieRomantica():Poezie()
+{
+    this->gen="drama";
+    this->tema="eul liric";
+}
+PoezieRomantica::PoezieRomantica(const PoezieRomantica& p)
+{
+    this->gen=p.gen;
+    this->tema=p.tema;
+}
+PoezieRomantica& PoezieRomantica::operator = (const PoezieRomantica& p)
+{
+    if (this!=&p)
+    {
+        Poezie::operator =(p);
+        this->gen=p.gen;
+        this->tema=p.tema;
+    }
+    return *this;
+}
+PoezieRomantica::~PoezieRomantica()
+{
+    this->gen="null";
+    this->tema="null";
+}
+class ProzaPoezie: public virtual Proza, public virtual Poezie
+{
+private:
+    int pret;
+public:
+    ProzaPoezie(string titlul, vector <string> autori, string editura, int an, int nrPagini, int nrPoezii, vector <string> nume, int pret);
+    ProzaPoezie();
+    ProzaPoezie(const ProzaPoezie& p);
+    ProzaPoezie& operator = (const ProzaPoezie& p);
+    ~ProzaPoezie();
+    virtual istream& citire(istream& in)
+    {
+        Proza::citire(in);
+       cout<<"Nr de poezii este: ";
+        in>>this->nrPoezii;
+        int nr;
+        cout<<"Cate poezii sunt si care sunt ele? ";
+        in>>nr;
+        in.get();
+        for (int i=0; i<nr; i++)
+        {
+            string numele;
+            getline(in, numele);
+            nume.push_back(numele);
+        }
+        cout<<"Pretul este: ";
+        in>>this->pret;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Proza::afisare(out);
+        out<<"Pretul este: "<<this->pret<<endl;
+        out<<"Nr de poezii este: "<<this->nrPoezii<<endl;
+        for (int i=0; i<this->nume.size(); i++)
+            out<<this->nume[i]<<endl;
+        return out;
+    }
+};
+ProzaPoezie::ProzaPoezie(string titlul, vector <string> autori, string editura, int an, int nrPagini,int nrPoezii, vector <string> nume, int pret)
+    :Biblioteca(titlul, autori, editura, an), Proza(titlul, autori, editura, an, nrPagini), Poezie(titlul, autori, editura, an, nrPoezii, nume)
+{
+
+    this->pret=pret;
+}
+
+ProzaPoezie::ProzaPoezie():Biblioteca(), Proza(), Poezie()
+{
+    this->pret=13;
+}
+ProzaPoezie::ProzaPoezie(const ProzaPoezie& p):Biblioteca(p), Proza(p), Poezie(p)
+{
+    this->pret=p.pret;
+
+}
+ProzaPoezie& ProzaPoezie::operator = (const ProzaPoezie& p)
+{
+    if (this!=&p)
+    {
+        Proza::operator = (p);
+        this->nrPoezii=p.nrPoezii;
+        this->nume=p.nume;
+        this->pret=p.pret;
+    }
+    return *this;
+}
+ProzaPoezie::~ProzaPoezie()
+{
+    this->pret=0;
+}
+
+int main()
+{
+    vector <Biblioteca*> listaCarti;
+    vector <Proza*> listaProza;
+    vector <Poezie*> listaPoezie;
+    int valoare;
+    while (true)
+    {
+        cout<<"Apasa 0 pt a adauga o carte \n";
+        cout<<"Apasa 1 pt a adauga o proza \n";
+        cout<<"Apasa 2 pt a adauga un roman \n";
+        cout<<"Apasa 3 pt a adauga o nuvela \n";
+        cout<<"Apasa 4 pt a adauga o poezie \n";
+        cout<<"Apasa 5 pt a adauga o poezie romantica \n";
+        cout<<"Apasa 6 pt a adauga o proza si o poezie \n";
+        cin>>valoare;
+        if (valoare==0)
+        {
+            Biblioteca* p=new Biblioteca();
+            cin>>*p;
+            listaCarti.push_back(new Biblioteca(*p));
+        }
+        else if (valoare==1)
+        {
+            Biblioteca* p=new Proza();
+            cin>>*p;
+            listaCarti.push_back(new Biblioteca(*p));
+        }
+        else if (valoare==2)
+        {
+            Proza* p=new ProzaRoman();
+            cin>>*p;
+            listaProza.push_back(new Proza(*p));
+        }
+        else if (valoare==3)
+        {
+            Proza* p=new ProzaNuvela();
+            cin>>*p;
+            listaProza.push_back(new Proza(*p));
+        }
+        else if (valoare==4)
+        {
+            Biblioteca* p=new Poezie();
+            cin>>*p;
+            listaCarti.push_back(new Biblioteca(*p));
+        }
+        else if (valoare==5)
+        {
+            Poezie* p=new PoezieRomantica();
+            cin>>*p;
+            listaPoezie.push_back(new Poezie(*p));
+        }
+        else if (valoare==6)
+        {
+            Proza* p=new ProzaPoezie();
+            cin>>*p;
+            listaCarti.push_back(new Biblioteca(*p));
+        }
+        else break;
+    }
+    return 0;
+}
