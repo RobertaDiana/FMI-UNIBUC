@@ -1,1 +1,474 @@
+1) Fie urmatoarea functie f, definita astfel:f(x) =stop x= 1; f(x2), x par; f(3x+ 1) , x impar))))
+Sa se implementeze functia recursiva f in limbajul de asamblare Intel x86,  sintaxaAT&T, care primeste ca argument unnumar natural nenul si returneaza numarul  de  
+autoapeluri  pana  la  obtinerea  rezultatului. Se accepta variabila care numara autoapelurile sa fie declarata in sectiunea .data.Sa se scrie un program complet, 
+in care se citeste un numar de la tastatura, se apeleaza procedura f si se afiseaza pe ecran cate autoapeluri au fost necesare pentru a obtine1.De exemplu, pentru
+x = 5, apelurile sunt 5→16→8→4→2→1, insemnand 5 apeluri.
 
+.data
+ 	n: .space 4
+	formatscanf: .asciz "%d"
+ 	formatprintf: .asciz "%d\n"
+  reapelari: .long -1
+  x: .space 4
+   
+.text
+
+f:
+	pushl %ebp
+	movl %esp, %ebp
+	pushl %ebx
+	pushl %edi
+	pushl %esi
+	incl reapelari
+	
+	movl 8(%ebp), %eax
+	
+	movl %eax, x
+	cmp $1, %eax
+	je final
+	xorl %edx, %edx
+	movl $2, %ebx
+	divl %ebx
+	
+	cmp $0, %edx
+	je este_par
+	jne este_impar
+	
+este_par:
+	pushl %eax
+	call f
+	popl %ebx
+	jmp final
+	
+este_impar:
+	movl x, %eax
+	xorl %edx, %edx
+	movl $3, %ebx
+	mull %ebx
+	incl %eax
+	pushl %eax
+	call f
+	popl %ebx
+	jmp final
+	
+final:
+	popl %esi
+	popl %edi
+	popl %ebx
+	popl %ebp
+	ret
+
+.global main	
+
+main:
+	pushl $n
+	pushl $formatscanf
+	call scanf
+	popl %ebx
+	popl %ebx
+	
+	pushl n
+	call f
+	popl %ebx
+	
+et_exit:
+	pushl reapelari
+	pushl $formatprintf
+	call printf
+	popl %ebx
+	popl %ebx
+	
+  mov $1, %eax
+  mov $0, %ebx
+  int $0x80
+  
+2)
+// impartirea a doua numere
+
+.data
+x: .long 30
+y: .long 4
+cat: .space 4
+rest: .space 4
+.text
+
+.global main
+
+main:
+movl $0, %edx
+
+movl x, %eax
+divl y
+movl %eax, cat
+movl %edx, rest
+
+et_exit:
+movl $1, %eax
+movl $0, %ebx
+int $0x80
+
+3)
+// suma elementelor dintr-un array
+.data
+n: .long 5
+v: .long 4, 5, 9, 2, 11
+.text
+
+.global main
+
+main:
+movl $v, %edi 
+movl $0, %eax 
+movl $0, %ecx 
+et_for:
+cmp n, %ecx
+je et_exit
+movl (%edi, %ecx, 4), %ebx # edi + ecx * 4
+addl %ebx, %eax
+incl %ecx
+jmp et_for
+
+et_exit:
+movl $1, %eax
+movl $0, %ebx
+int $0x80
+
+4)
+// suma a doua numere prin procedura
+// eax = suma(x, y)
+// citim x si y de la tastatura
+// calculam prin procedura suma dintre x si y
+// si afisam suma respectiva pe ecran
+
+.data
+x: .space 4
+y: .space 4
+formatScanf: .asciz "%d"
+formatPrintf: .asciz "Suma este: %d\n"
+.text
+
+.global main
+
+suma:
+// %esp:(<adr de in>)(x)(y)
+// conventia %ebp: se pregateste restaurarea
+// se face %ebp pointer in cadrul de apel
+pushl %ebp
+// %esp:(%ebp v)(<adr de in>)(x)(y)
+movl %esp, %ebp
+// %esp:%ebp:(%ebp v)(<adr de in>)(x)(y)
+// incarc primul arg in %eax
+// si pe al doilea in %ebx
+pushl %ebx
+// %esp:(%ebx v)%ebp:(%ebp v)(<adr de in>)(x)(y)
+movl 8(%ebp), %eax
+movl 12(%ebp), %ebx
+addl %ebx, %eax
+// %eax += %ebx
+popl %ebx
+// %esp:%ebp:(%ebp v)(<adr de in>)(x)(y)
+popl %ebp
+// %esp:(<adr de in>)(x)(y)
+ret
+
+main:
+// scanf("%d", &x)
+pushl $x
+pushl $formatScanf
+call scanf
+popl %ebx
+popl %ebx
+// scanf("%d", &y)
+pushl $y
+pushl $formatScanf
+call scanf
+popl %ebx
+popl %ebx
+// suma(x, y)
+pushl y
+pushl x
+call suma
+popl %ebx # <<--
+popl %ebx
+// in momentul asta, rezultatul este in %eax
+// printf("Suma este: %d\n", eax);
+pushl %eax
+pushl $formatPrintf
+call printf
+popl %ebx
+popl %ebx
+exit:
+movl $1, %eax
+xorl %ebx, %ebx
+int $0x80
+
+5)
+Se citeste de la tastatura un numar natural x. Sa se implementeze procedura este_par, care returneaza prin intermediul reg. %eax valoarea 1 daca x este par, 
+respectiv valoarea 0 daca x este impar. Se va afisa pe ecran un mesaj corespunzator: ("Numarul %d este par", respectiv "Numarul %d este impar")
+.data
+x: .space 4
+formatScanf: .asciz "%d"
+formatPar: .asciz "Numarul %d este par\n"
+formatImpar: .asciz "Numarul %d este impar\n"
+.text
+.global main
+
+estePar:
+    pushl %ebp 
+    movl %esp, %ebp
+    movl 8(%ebp), %eax
+    andl $0x01, %eax
+    xorl $0x01, %eax    
+    popl %ebp
+    ret
+
+main:
+pushl $x
+pushl $formatScanf
+call scanf
+popl %ebx
+popl %ebx
+
+pushl x
+call estePar
+popl %ebx
+
+cmp $0x01, %eax
+je et_WritePar
+jne et_WriteImpar
+et_exit:
+movl $0x01, %eax
+xorl %ebx, %ebx
+int $0x80
+et_WritePar:
+    pushl x
+    pushl $formatPar
+    call printf
+    popl %ebx
+    popl %ebx
+    jmp et_exit
+et_WriteImpar:
+    pushl x
+    pushl $formatImpar
+    call printf
+    popl %ebx
+    popl %ebx
+    jmp et_exit
+6)
+// sa se scrie o procedura care primeste adresa unui array si dimensiunea acestuia
+// si returneaza in %eax elementul maxim
+// %eax = maxim(*v, n)
+
+.data
+v: .long 3, 15, 27, 11, 42, 8, 35
+n: .long 7
+formatPrintf: .asciz "Elementul maxim din array este %d\n"
+.text
+
+.global main
+// %ebx, %esi, %edi, %ebp, %esp
+maxim:
+// %esp:(<adr de in>)(*v)(n)
+pushl %ebp
+movl %esp, %ebp
+// %esp:%ebp:(%ebp v)(<adr de in>)(*v)(n)
+pushl %edi
+// %esp:(%edi v)%ebp:(%ebp v)(<adr de in>)(*v)(n)
+movl 8(%ebp), %edi # adresa array-ului
+movl 12(%ebp), %edx # dimensiunea array-ului
+
+ xorl %ecx, %ecx # pe post de "i"
+movl (%edi, %ecx, 4), %eax # eax = v[0]
+incl %ecx
+pushl %ebx
+// %esp:(%ebx v)(%edi v)%ebp:(%ebp v)(<adr de in>)(*v)(n)
+maxim_for:
+// for (ecx = 1; ecx < edx; ecx++) { if (v[i] > eax) { eax = v[i] } }
+cmp %edx, %ecx
+je maxim_exit
+movl (%edi, %ecx, 4), %ebx
+cmp %eax, %ebx
+jg change_max
+maxim_cont:
+incl %ecx
+jmp maxim_for
+
+change_max:
+movl %ebx, %eax
+jmp maxim_cont
+
+maxim_exit:
+popl %ebx
+popl %edi
+popl %ebp
+ret
+
+main:
+pushl n
+pushl $v
+call maxim
+popl %ebx
+popl %ebx
+// printf("Elementul maxim ...", eax)
+pushl %eax
+pushl $formatPrintf
+call printf
+popl %ebx
+popl %ebx
+
+et_exit:
+movl $1, %eax
+xorl %ebx, %ebx
+int $0x80
+
+7)
+// sa se scrie o procedura care primeste adresa unui array si dimensiunea acestuia
+// si returneaza in %eax de cate ori apare elementul maxim in array
+// %eax = countmax(*v, n)
+
+
+.data
+v: .long 3, 15, 42, 11, 42, 8, 42
+n: .long 7
+formatPrintf: .asciz "Elementul maxim apare de %d ori\n"
+.text
+
+.global main
+
+countmax:
+pushl %ebp
+movl %esp, %ebp
+// %esp:%ebp:(%ebp v)(<adr de in>)(*v)(n)
+pushl %edi
+// %esp:(%edi v)%ebp:(%ebp v)(<adr de in>)(*v)(n)
+movl 8(%ebp), %edi
+movl 12(%ebp), %edx
+pushl %ebx
+// %esp:(%ebx v)(%edi v)%ebp:(%ebp v)(<adr de in>)(*v)(n)
+pushl %edx # n
+pushl %edi # *v
+call maxim
+popl %edi
+popl %edx
+// in momentul acesta, am in %eax elementul maxim din array
+pushl %esi
+// %esp:(%esi v)(%ebx v)(%edi v)%ebp:(%ebp v)(<adr de in>)(*v)(n)
+movl %eax, %esi
+xorl %eax, %eax
+xorl %ecx, %ecx
+countmax_for:
+// for(ecx = 0; ecx < edx; ecx++) { if (v[i] == esi) eax++ }
+cmp %edx, %ecx
+je countmax_exit
+movl (%edi, %ecx, 4), %ebx
+cmp %ebx, %esi
+je found_max
+countmax_cont:
+incl %ecx
+jmp countmax_for
+found_max:
+incl %eax
+jmp countmax_cont
+
+countmax_exit:
+popl %esi
+popl %ebx
+popl %edi
+popl %ebp
+ret
+
+// -----
+maxim:
+pushl %ebp
+movl %esp, %ebp
+pushl %edi
+
+ movl 8(%ebp), %edi # adresa array-ului
+movl 12(%ebp), %edx # dimensiunea array-ului
+
+ xorl %ecx, %ecx # pe post de "i"
+movl (%edi, %ecx, 4), %eax # eax = v[0]
+incl %ecx
+pushl %ebx
+
+maxim_for:
+cmp %edx, %ecx
+je maxim_exit
+movl (%edi, %ecx, 4), %ebx
+cmp %eax, %ebx
+jg change_max
+maxim_cont:
+incl %ecx
+jmp maxim_for
+
+change_max:
+movl %ebx, %eax
+jmp maxim_cont
+
+maxim_exit:
+popl %ebx
+popl %edi
+popl %ebp
+ret
+
+main:
+pushl n
+pushl $v
+call countmax
+popl %ebx
+popl %ebx
+pushl %eax
+pushl $formatPrintf
+call printf
+popl %ebx
+popl %ebx
+
+et_exit:
+movl $1, %eax
+xorl %ebx, %ebx
+int $0x80
+
+8)
+// sa se scrie o procedura recursiva care sa calculeze suma elementelor
+// de la n la 0
+// suma_rec(5) = 5 + 4 + 3 + 2 + 1 + 0
+// suma_rec(0) este cazul de oprire
+// altfel, apelez suma_rec(n - 1)
+.data
+n: .long 5
+formatPrintf: .asciz "Suma este %d\n"
+.text
+
+.global main
+
+suma_rec:
+pushl %ebp
+movl %esp, %ebp
+// %esp:%ebp:(%ebp v)(<adr de in>)(n)
+movl 8(%ebp), %ecx
+cmp $0, %ecx
+je suma_rec_exit
+addl %ecx, %eax
+sub $1, %ecx
+pushl %ecx
+call suma_rec
+popl %ecx
+suma_rec_exit:
+popl %ebp
+ret
+
+main:
+xorl %eax, %eax
+pushl n
+call suma_rec
+popl %ebx
+pushl %eax
+pushl $formatPrintf
+call printf
+popl %ebx
+popl %ebx
+
+et_exit:
+movl $1, %eax
+xorl %ebx, %ebx
+int $0x80
