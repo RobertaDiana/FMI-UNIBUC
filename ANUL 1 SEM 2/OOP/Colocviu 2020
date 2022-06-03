@@ -1,0 +1,640 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class IOInterface
+{
+public:
+    virtual istream& citire(istream& in)=0;
+    virtual ostream& afisare(ostream& out) const=0;
+};
+
+class Masca: public IOInterface
+{
+protected:
+    string tipProtectie;
+public:
+    Masca(string tipProtectie)
+    {
+        this->tipProtectie;
+    }
+    Masca()
+    {
+        this->tipProtectie="";
+    }
+    Masca(const Masca& p)
+    {
+        this->tipProtectie=p.tipProtectie;
+    }
+    Masca& operator=(const Masca& p)
+    {
+        if (this!=&p)
+        {
+            this->tipProtectie=p.tipProtectie;
+        }
+        return *this;
+    }
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Tipul de protectie este: ";
+        getline(in>>ws,tipProtectie);
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        out<<"Tipul de protectie este: "<<this->tipProtectie<<endl;
+        return out;
+    }
+    friend istream& operator >> (istream& in, Masca& p)
+    {
+        return p.citire(in);
+    }
+    friend ostream& operator << (ostream& out, const Masca& p)
+    {
+        return p.afisare(out);
+    }
+
+    void setTipProtectie(string tipProtectie)
+    {
+        this->tipProtectie;
+    }
+    const string getTipProtectie()
+    {
+        return this->tipProtectie;
+    }
+    ~Masca()
+    {
+        this->tipProtectie="";
+    }
+};
+
+class MascaChirurgicala: public Masca
+{
+private:
+    string culoare;
+    int nrPliuri;
+public:
+    MascaChirurgicala(string tipProtectie, string culoare, int nrPliuri):Masca(tipProtectie)
+    {
+        this->culoare=culoare;
+        this->nrPliuri=nrPliuri;
+    }
+    MascaChirurgicala():Masca()
+    {
+        this->culoare="";
+        this->nrPliuri=0;
+    }
+    MascaChirurgicala(const MascaChirurgicala& p)
+    {
+        this->culoare=p.culoare;
+        this->nrPliuri=p.nrPliuri;
+    }
+    MascaChirurgicala& operator = (const MascaChirurgicala& p)
+    {
+        if (this!=&p)
+        {
+        this->culoare=p.culoare;
+        this->nrPliuri=p.nrPliuri;
+        }
+        return *this;
+    }
+    virtual istream& citire (istream& in)
+    {
+        Masca::citire(in);
+        cout<<"Culoarea este: ";
+        in>>this->culoare;
+        cout<<"Nr de pliuri este: ";
+        in>>this->nrPliuri;
+
+        return in;
+    }
+    virtual ostream& afisare (ostream& out) const
+    {
+        Masca::afisare(out);
+        out<<"Culoarea este: "<<this->culoare<<endl;
+        out<<"Nr de pliuri este: "<<this->nrPliuri<<endl;
+        return out;
+    }
+    void setCuloare(string culoare)
+    {
+        this->culoare=culoare;
+    }
+    void setNrPliuri(int nrPliuri)
+    {
+        this->nrPliuri=nrPliuri;
+    }
+    const string getCuloare()
+    {
+        return this->culoare;
+    }
+   const  int getNrPliuri()
+    {
+        return this->nrPliuri;
+    }
+    ~MascaChirurgicala()
+    {
+        this->culoare="";
+        this->nrPliuri=0;
+    }
+};
+
+class MascaPolicarbonat: public Masca
+{
+private:
+    string tipPrindere;
+public:
+    MascaPolicarbonat(string tipProtectie, string tipPrindere):Masca(tipProtectie)
+    {
+        this->tipPrindere=tipPrindere;
+    }
+    MascaPolicarbonat():Masca()
+    {
+        this->tipPrindere="";
+    }
+    MascaPolicarbonat(const MascaPolicarbonat& p): Masca(p)
+    {
+        this->tipPrindere=p.tipPrindere;
+    }
+    MascaPolicarbonat& operator = (const MascaPolicarbonat& p)
+    {
+        if (this!=&p)
+        {
+            Masca::operator =(p);
+            this->tipPrindere=p.tipPrindere;
+        }
+        return *this;
+    }
+    virtual istream& citire (istream& in)
+    {
+        Masca::citire(in);
+        cout<<"Tipul de prindere este: ";
+        getline(in>>ws,tipPrindere);
+        return in;
+    }
+    virtual ostream& afisare (ostream& out) const
+    {
+        Masca::afisare(out);
+        out<<"Tipul de prindere: "<<this->tipPrindere<<endl;
+        return out;
+    }
+    void setTipPrindere(string tipPrindere)
+    {
+        this->tipPrindere=tipPrindere;
+    }
+    const string getTipPrindere()
+    {
+        return this->tipPrindere;
+    }
+    ~MascaPolicarbonat()
+    {
+        this->tipPrindere="";
+    }
+};
+
+class Dezinfectati: public IOInterface
+{
+protected:
+    int nrSpecii;
+    vector <string> ingrediente;
+    vector <string> tip;
+public:
+    Dezinfectati(int nrSpecii, vector <string> ingrediente, vector <string> tip)
+    {
+        this->nrSpecii=nrSpecii;
+        this->ingrediente=ingrediente;
+        this->tip=tip;
+    }
+    Dezinfectati()
+    {
+        this->nrSpecii=0;
+    }
+    Dezinfectati(const Dezinfectati& p)
+    {
+        this->nrSpecii=p.nrSpecii;
+        this->ingrediente=p.ingrediente;
+        this->tip=p.tip;
+    }
+    Dezinfectati& operator = (const Dezinfectati& p)
+    {
+        if (this!=&p)
+        {
+        this->nrSpecii=p.nrSpecii;
+        this->ingrediente=p.ingrediente;
+        this->tip=p.tip;
+        }
+        return *this;
+    }
+    friend istream& operator >> (istream& in, Dezinfectati& p)
+    {
+        return p.citire(in);
+
+    }
+
+    friend ostream& operator << (ostream& out, const Dezinfectati& p)
+    {
+        return p.afisare(out);
+    }
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Nr de specii este: ";
+        in>>this->nrSpecii;
+        int nr;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr de ingrediente sunt: ";
+                in>>nr;
+                in.get();
+                if (nr<0)
+                    throw string ("nr invalid");
+                else break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for(int i=0; i<nr; ++i)
+        {
+            cout << "Ingredientele sunt: ";
+            string ing;
+            getline(in>>ws, ing);
+            ingrediente.push_back(ing);
+        }
+        int nr1;
+        while (true)
+        {
+            try
+            {
+                cout<<"Nr de tipuri sunt: ";
+                in>>nr1;
+                in.get();
+                if (nr1<0)
+                    throw string ("nr invalid");
+                else break;
+            }
+            catch (string s)
+            {
+                cout<<s<<'\n';
+            }
+        }
+        for(int i=0; i<nr; ++i)
+        {
+            cout << "Tipurile sunt: ";
+            string tipu;
+            getline(in, tipu);
+            tip.push_back(tipu);
+        }
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        out<<"Nr de specii este: "<<this->nrSpecii<<endl;
+        for (int i=0; i<this->ingrediente.size(); i++)
+            out<<this->ingrediente[i]<<endl;
+        for (int i=0; i<this->tip.size(); i++)
+            out<<this->tip[i]<<endl;
+
+        return out;
+    }
+    void setNrSpecii(int nrSpecii)
+    {
+        this->nrSpecii=nrSpecii;
+    }
+    void setIngrediente(vector <string> ingrediente)
+    {
+        this->ingrediente=ingrediente;
+    }
+    void setTip(vector <string> tip)
+    {
+        this->tip=tip;
+    }
+    const int getNrSpecii()
+    {
+        return this->nrSpecii;
+    }
+    const vector <string> getIngrediente()
+    {
+        return this->ingrediente;
+    }
+    const vector <string> getTip()
+    {
+        return this->tip;
+    }
+    ~Dezinfectati()
+    {
+        this->nrSpecii=0;
+        ingrediente.clear();
+        tip.clear();
+    }
+
+};
+
+class DezinfectatiBacterii: public Dezinfectati
+{
+public:
+      DezinfectatiBacterii(int nrSpecii, vector <string> ingrediente, vector <string> tip):Dezinfectati(nrSpecii, ingrediente, tip)
+    {
+
+    }
+    DezinfectatiBacterii():Dezinfectati()
+    {
+    }
+    DezinfectatiBacterii(const Dezinfectati& p):Dezinfectati(p)
+    {
+    }
+    DezinfectatiBacterii& operator = (const DezinfectatiBacterii& p)
+    {
+        if (this!=&p)
+        {
+        Dezinfectati::operator=(p);
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Dezinfectati::citire(in);
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Dezinfectati::afisare(out);
+
+        return out;
+    }
+};
+
+class DezinfectatiFungi: public Dezinfectati
+{
+public:
+     DezinfectatiFungi(int nrSpecii, vector <string> ingrediente, vector <string> tip):Dezinfectati(nrSpecii, ingrediente, tip)
+    {
+
+    }
+    DezinfectatiFungi():Dezinfectati()
+    {
+    }
+    DezinfectatiFungi(const Dezinfectati& p):Dezinfectati(p)
+    {
+    }
+    DezinfectatiFungi& operator = (const DezinfectatiFungi& p)
+    {
+        if (this!=&p)
+        {
+        Dezinfectati::operator=(p);
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Dezinfectati::citire(in);
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Dezinfectati::afisare(out);
+
+        return out;
+    }
+
+};
+
+class DezinfectatiVirusi: public Dezinfectati
+{
+public:
+     DezinfectatiVirusi(int nrSpecii, vector <string> ingrediente, vector <string> tip):Dezinfectati(nrSpecii, ingrediente, tip)
+    {
+
+    }
+    DezinfectatiVirusi():Dezinfectati()
+    {
+    }
+    DezinfectatiVirusi(const Dezinfectati& p):Dezinfectati(p)
+    {
+    }
+    DezinfectatiVirusi& operator = (const DezinfectatiVirusi& p)
+    {
+        if (this!=&p)
+        {
+        Dezinfectati::operator=(p);
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Dezinfectati::citire(in);
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Dezinfectati::afisare(out);
+
+        return out;
+    }
+
+};
+
+class DezinfectatiTotal: public Dezinfectati
+{
+public:
+     DezinfectatiTotal(int nrSpecii, vector <string> ingrediente, vector <string> tip):Dezinfectati(nrSpecii, ingrediente, tip)
+    {
+
+    }
+    DezinfectatiTotal():Dezinfectati()
+    {
+    }
+    DezinfectatiTotal(const Dezinfectati& p):Dezinfectati(p)
+    {
+    }
+    DezinfectatiTotal& operator = (const DezinfectatiTotal& p)
+    {
+        if (this!=&p)
+        {
+        Dezinfectati::operator=(p);
+        }
+        return *this;
+    }
+
+    virtual istream& citire(istream& in)
+    {
+        Dezinfectati::citire(in);
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Dezinfectati::afisare(out);
+
+        return out;
+    }
+
+};
+
+class Achizitie:public IOInterface
+{
+private:
+    string data;
+    string numeClient;
+    int total;
+public:
+    Achizitie(string data, string numeClient, int total)
+    {
+        this->data=data;
+        this->numeClient=numeClient;
+        this->total=total;
+    }
+    Achizitie()
+    {
+        this->data="";
+        this->numeClient="";
+        this->total=0;
+    }
+    Achizitie(const Achizitie& p)
+    {
+        this->data=p.data;
+        this->numeClient=p.numeClient;
+        this->total=p.total;
+    }
+    Achizitie& operator = (const Achizitie& p)
+    {
+        if (this!=&p)
+        {
+        this->data=p.data;
+        this->numeClient=p.numeClient;
+        this->total=p.total;
+        }
+        return *this;
+    }
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Data este: ";
+        in>>this->data;
+        cout<<"Numele clientului este: ";
+        getline(in>>ws,numeClient);
+        cout<<"Totalul este: ";
+        in>>this->total;
+
+        return in;
+
+    }
+     virtual ostream& afisare (ostream& out) const
+     {
+         out<<"Data este: "<<this->data<<endl;
+        out<<"Numele clientului este: "<<this->numeClient<<endl;
+        out<<"Totalul este: "<<this->total<<endl;
+
+            return out;
+     }
+     friend istream& operator >> (istream& in, Achizitie& p)
+     {
+         return p.citire(in);
+     }
+     friend ostream& operator << (ostream& out, const Achizitie& p)
+     {
+         return p.afisare(out);
+     }
+
+     void setData(string data)
+     {
+         this->data=data;
+     }
+     void setNumeClient(string numeClient)
+     {
+         this->numeClient=numeClient;
+     }
+     void setTotal(int total)
+     {
+         this->total=total;
+     }
+     const string getData()
+     {
+         return this->data;
+     }
+     const string getNumeClient()
+     {
+         return this->numeClient;
+     }
+     const int getTotal()
+     {
+         return this->total;
+     }
+
+};
+int main()
+{
+    vector <Masca*>listaMasti;
+    vector <Dezinfectati*>listaDezinfectanti;
+    vector <Achizitie*>listaAchizitii;
+    int valoare;
+    while (true)
+    {
+        cout<<"Apasa 0 pt a adauga o masca \n";
+        cout<<"Apasa 1 pt a adauga o masca chirurgicala\n";
+        cout<<"Apasa 2 pt a adauga o masca policarbonat\n";
+        cout<<"Apasa 3 pt a adauga un dezinfectant \n";
+        cout<<"Apasa 4 pt a adauga un dezinfectant 1 \n";
+        cout<<"Apasa 5 pt a adauga un dezinfectant 2\n";
+        cout<<"Apasa 6 pt a adauga un dezinfectant 3\n";
+        cout<<"Apasa 7 pt a adauga un dezinfectant 4\n";
+        cout<<"Apasa 8 pt a adauga o achizitie \n";
+        cin>>valoare;
+        if (valoare==0)
+        {
+            Masca* p=new Masca();
+            cin>>*p;
+            listaMasti.push_back(new Masca(*p));
+        }
+        else if (valoare==1)
+        {
+            Masca* p=new MascaChirurgicala();
+            cin>>*p;
+            listaMasti.push_back(new Masca(*p));
+        }
+        else if (valoare==2)
+        {
+            Masca* p=new MascaPolicarbonat();
+            cin>>*p;
+            listaMasti.push_back(new Masca(*p));
+        }
+        else if (valoare==3)
+        {
+            Dezinfectati* p=new Dezinfectati();
+            cin>>*p;
+            listaDezinfectanti.push_back(new Dezinfectati(*p));
+        }
+        else if (valoare==4)
+        {   Dezinfectati* p=new DezinfectatiBacterii();
+            cin>>*p;
+            listaDezinfectanti.push_back(new Dezinfectati(*p));
+        }
+         else if (valoare==5)
+        {   Dezinfectati* p=new DezinfectatiFungi();
+            cin>>*p;
+            listaDezinfectanti.push_back(new Dezinfectati(*p));
+        }
+         else if (valoare==6)
+        {   Dezinfectati* p=new DezinfectatiVirusi();
+            cin>>*p;
+            listaDezinfectanti.push_back(new Dezinfectati(*p));
+        }
+         else if (valoare==7)
+        {   Dezinfectati* p=new DezinfectatiTotal();
+            cin>>*p;
+            listaDezinfectanti.push_back(new Dezinfectati(*p));
+        }
+        else if (valoare==8)
+        {
+            Achizitie* p=new Achizitie();
+            cin>>*p;
+            listaAchizitii.push_back(new Achizitie(*p));
+        }
+        else
+            break;
+    }
+    return 0;
+
+}
