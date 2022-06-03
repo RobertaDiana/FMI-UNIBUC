@@ -1,0 +1,71 @@
+--Laborator4
+
+--11
+select round(max(salary)) "Maxim", round(min(salary)) "Minim", round(sum(salary)) "Suma", round(avg(salary)) "Media" 
+from employees;
+
+--12 
+select job_id, round(max(salary)) "Maxim", round(min(salary)) "Minim", round(sum(salary)) "Suma", round(avg(salary)) "Media" 
+from employees
+group by job_id;
+
+--13
+select count(*) from employees group  by job_id;
+
+--14
+select count(distinct(manager_id)) "Nr manageri" 
+from employees;
+
+--15
+select department_id,max(salary)-min(salary) "Diferenta" from employees group by department_id;
+
+--16
+select department_name, location_id, count(*) "Nr angajati" , avg(salary) "Salariu mediu" 
+from employees join departments using (department_id) 
+group by department_name, location_id;
+
+--17
+select employee_id, last_name, salary
+from employees
+where salary> (select avg(salary) from employees)
+order by salary desc;
+
+--18
+select manager_id, min(salary)
+from employees
+where manager_id is not null 
+group by manager_id
+having min(salary) >1000
+order by 2 desc;
+
+--19
+select department_id, department_name, max(salary)
+from departments join employees e using (department_id)
+having max(e.salary) > 3000
+group by department_id, department_name;
+
+--20
+select min(avg(salary)) 
+from employees
+group by job_id;
+
+--21
+select department_id, department_name, sum(salary)
+from departments join employees e using (department_id)
+group by department_id, department_name;
+
+--22
+select max(avg(salary)) 
+from employees
+group by department_id;
+
+--23
+select job_id, job_title, avg(salary) 
+from jobs join employees e using (job_id)
+having avg(salary)=(select min(avg(salary)) from employees group by job_id)
+group by job_id, job_title;
+
+--24
+select avg(salary) 
+from employees 
+having avg(salary)>2500;
