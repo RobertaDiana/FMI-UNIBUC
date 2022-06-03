@@ -1,1 +1,1837 @@
+//Gestiunea unui supermarket
+//4 clase:supermarket, persoana, livrare, produs
+//SUPERMARKET
+//pt supermarket am nume magazin care e string, locatie care e string, nume proprietar care e string,
+//data deschidere care e string, nr proprietari pana acum care e int
+//pt functionalitate am nr de prop pana acum daca e mai mare decat 6 inseamna ca e lant de magazine, daca e mai putin e afacere de familie
+//PERSOANA
+//pt persoana am nume, prenume, varsta, id, cheltuieli in ultima luna si aici am o lista si lungime lista si produse, daca e angajat si cate
+//cheltuieli are
+//LIVRARE
+//livrare am nume curier, data livrarii, firma curier, pret livrare;
+//PRODUS
+// string nume, string furnizor, int cantitate, float pretFurnizor, int codProdus;
 
+
+#include <iostream>
+#include <string>
+
+
+using namespace std;
+
+
+class Supermarket
+{
+private:
+    string numeMagazin;
+    string locatie;
+    string numeProprietar;
+    string dataDeschidere;
+    int nrProprietariPanaAcum;
+
+public:
+    //constructor cu toti parametrii declarat
+    Supermarket(string numeMagazin, string locatie, string numeProprietar, string dataDeschidere, int nrProprietariPanaAcum);
+
+    //constructor de copiere
+    //clasa si obiectul
+    Supermarket(const Supermarket& supermarket);
+
+    //constructor fara parametru
+    Supermarket();
+
+    //constructor cu 2 parametrii
+    Supermarket(string numeMagazin, string locatie);
+
+    //constructor cu 3 parametrii
+    Supermarket(string numeMagazin, string locatie, string dataDeschidere);
+
+    //supraincarcarea operatorului =
+    Supermarket& operator= (const Supermarket&);
+
+    //supraincarcarea operatorului >>
+    friend istream& operator >> (istream& in, Supermarket&);
+
+    //supraincarcarea operatorului <<
+    friend ostream& operator << (ostream& out, const Supermarket&);
+
+    //supraincarcarea operatorului ==
+    bool operator==(const Supermarket& supermarket);
+
+    //supraincarcarea operatorului <
+    bool operator < (const Supermarket& supermarket);
+
+    //supraincarcarea operatorului >
+    bool operator > (const Supermarket& supermarket);
+
+    //supraincarcarea operatorului >=
+    bool operator >= (const Supermarket& supermarket);
+
+    //supraincarcarea operatorului <=
+    bool operator <= (const Supermarket& supermarket);
+
+    //supraincarcarea operatorului !=
+    bool operator != (const Supermarket& supermarket);
+
+    //supraincarcarea operatorului ++ (cele 2 forme)
+    const Supermarket& operator++();  //pre
+    const Supermarket operator++(int); //post
+
+    //operator +
+    friend Supermarket operator+(Supermarket a, int x);
+    friend Supermarket operator+(int x, Supermarket a);
+
+    //operator -
+    friend Supermarket operator-(Supermarket a, int x);
+    friend Supermarket operator-(int x, Supermarket a);
+
+    //operatorul de indexare
+    char operator[](int index);
+
+    //operator cast
+    explicit operator int()
+    {
+        return (int)this->nrProprietariPanaAcum;
+    }
+
+    //cream o functionalitate
+    void categorieSupermarket();
+
+
+    //setters
+    void setNumeMagazin(string numemagazin)
+    {
+        this->numeMagazin=numemagazin;
+    }
+    void setLocatie(string locatie)
+    {
+        this->locatie=locatie;
+    }
+    void setNumeProprietar(string numeProprietar)
+    {
+        this->numeProprietar=numeProprietar;
+        this->nrProprietariPanaAcum++;
+    }
+    void setDataDeschidere(string dataDeschidere)
+    {
+        this->dataDeschidere=dataDeschidere;
+    }
+
+    //getters
+    string getNumeMagazin()
+    {
+        return this->numeMagazin;
+    }
+    string getLocatie()
+    {
+        return this->locatie;
+    }
+    string getNumeProprietar()
+    {
+        return this->numeProprietar;
+    }
+    string getDataDeschidere()
+    {
+        return this->dataDeschidere;
+    }
+    int getNrProprietariPanaAcum()
+    {
+        return this->nrProprietariPanaAcum;
+    }
+
+    //destructor
+    ~Supermarket();
+};
+//constructor scris
+Supermarket::Supermarket(string numeMagazin, string locatie, string numeProprietar, string dataDeschidere, int nrProprietariPanaAcum)
+{
+    this->numeMagazin= numeMagazin;
+    this->locatie= locatie;
+    this->numeProprietar= numeProprietar;
+    this->dataDeschidere=dataDeschidere;
+    this->nrProprietariPanaAcum=nrProprietariPanaAcum;
+}
+
+//constructor de copiere scris
+Supermarket::Supermarket(const Supermarket& supermarket)
+{
+    this->numeMagazin=supermarket.numeMagazin;
+    this->locatie= supermarket.locatie;
+    this->numeProprietar= supermarket.numeProprietar;
+    this->dataDeschidere=supermarket.dataDeschidere;
+    this->nrProprietariPanaAcum=supermarket.nrProprietariPanaAcum;
+}
+
+//constructor fara parametri scris
+Supermarket::Supermarket()
+{
+    this->numeMagazin="penny";
+    this->locatie="bucuresti";
+    this->numeProprietar="Roberta";
+    this->dataDeschidere="12/2020";
+    this->nrProprietariPanaAcum=4;
+}
+//constructor cu 2 parametrii
+Supermarket::Supermarket(string numeMagazin, string locatie)
+{
+    this->numeMagazin=numeMagazin;
+    this->locatie=locatie;
+    this->numeProprietar="roberta";
+    this->dataDeschidere="12/2020";
+    this->nrProprietariPanaAcum=1;
+}
+//constructor cu 3 parametrii
+Supermarket::Supermarket(string numeMagazin, string locatie, string dataDeschidere)
+{
+    this->numeMagazin=numeMagazin;
+    this->locatie=locatie;
+    this->dataDeschidere=dataDeschidere;
+    this->numeProprietar="roberta";
+    this->nrProprietariPanaAcum=1;
+}
+
+//supraincarcarea operatorului =
+Supermarket& Supermarket:: operator = (const Supermarket& supermarket)
+{
+    if (this!=&supermarket)
+    {
+        this->numeMagazin=supermarket.numeMagazin;
+        this->locatie=supermarket.locatie;
+        this->numeProprietar=supermarket.numeProprietar;
+        this->dataDeschidere=supermarket.dataDeschidere;
+        this->nrProprietariPanaAcum=supermarket.nrProprietariPanaAcum;
+    }
+    return *this;
+}
+//supraincarcarea operatorului >>
+istream& operator >> (istream& in, Supermarket& p)
+{
+    cout<<"Numele magazinului este: ";
+    getline(in>>ws,p.numeMagazin);
+    cout<<"Locatia magazinului este: ";
+    getline(in>>ws,p.locatie);
+    cout<<"Data deschiderii magazinului este: ";
+    in>>p.dataDeschidere;
+    cout<<"Numele proprietarului este: ";
+    getline(in>>ws,p.numeProprietar);
+    cout<<"Nr de proprietari pana acum este: ";
+    in>>p.nrProprietariPanaAcum;
+
+    return in;
+}
+
+//Supraincarcarea operatorului <<
+ostream& operator << (ostream& out, const Supermarket& p)
+{
+    out<<"Numele magazinului este: "<<p.numeMagazin<<endl;
+    out<<"Locatia magazinului este: "<<p.locatie<<endl;
+    out<<"Data deschiderii magazinului este: "<<p.dataDeschidere<<endl;
+    out<<"Numele proprietarului este: "<<p.numeProprietar<<endl;
+    out<<"Nr de proprietari pana acum este: "<<p.nrProprietariPanaAcum<<endl;
+
+    return out;
+
+}
+//supraincarcarea operatorului ==
+bool Supermarket::operator==(const Supermarket& supermarket)
+{
+    if (this->numeMagazin==supermarket.numeMagazin && this->locatie==supermarket.locatie && this->numeProprietar==supermarket.numeProprietar && this->dataDeschidere==supermarket.dataDeschidere, this->nrProprietariPanaAcum==supermarket.nrProprietariPanaAcum)
+        return true;
+    return false;
+}
+//supraincarcarea operatorului <
+bool Supermarket::operator < (const Supermarket& supermarket)
+{
+    if (this->nrProprietariPanaAcum<supermarket.nrProprietariPanaAcum)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >
+bool Supermarket::operator > (const Supermarket& supermarket)
+{
+    if (this->nrProprietariPanaAcum>supermarket.nrProprietariPanaAcum)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >=
+bool Supermarket::operator >= (const Supermarket& supermarket)
+{
+    if (this->nrProprietariPanaAcum >= supermarket.nrProprietariPanaAcum)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului <=
+bool Supermarket::operator <= (const Supermarket& supermarket)
+{
+    if (this->nrProprietariPanaAcum <= supermarket.nrProprietariPanaAcum)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului !=
+bool Supermarket::operator != (const Supermarket& supermarket)
+{
+    if (this->numeMagazin!=supermarket.numeMagazin || this->locatie!=supermarket.locatie || this->numeProprietar!=supermarket.numeProprietar || this->dataDeschidere!=supermarket.dataDeschidere || this->nrProprietariPanaAcum!=supermarket.nrProprietariPanaAcum)
+        return true;
+    return false;
+}
+
+//Supraincarcarea operatorului ++
+const Supermarket& Supermarket::operator++()
+{
+    this->nrProprietariPanaAcum++;
+    return *this;
+}
+const Supermarket Supermarket::operator++(int)
+{
+    Supermarket aux(*this);
+    this->nrProprietariPanaAcum++;
+    return aux;
+}
+
+//operator +
+Supermarket operator+(Supermarket a, int x)
+{
+    a.nrProprietariPanaAcum+=x;
+    return a;
+}
+Supermarket operator+(int x, Supermarket a)
+{
+    a.nrProprietariPanaAcum+=x;
+    return a;
+}
+
+//operator -
+Supermarket operator-(Supermarket a, int x)
+{
+    a.nrProprietariPanaAcum-=x;
+    return a;
+}
+Supermarket operator-(int x, Supermarket a)
+{
+    a.nrProprietariPanaAcum-=x;
+    return a;
+}
+
+//operatorul de indexare
+
+char Supermarket::operator[](int index)
+{
+    if (0 <= index && index < this->numeMagazin.length())
+        return this->numeMagazin[index];
+    cout << "Index introdus gresit"<<endl;
+
+}
+
+//cream o functionalitate
+void Supermarket::categorieSupermarket()
+{
+    if (this->nrProprietariPanaAcum >= 6)
+        cout<<"Lant de magazin\n ";
+    else
+        cout<<"Afacere locala\n ";
+}
+
+//destructorul scris
+Supermarket::~Supermarket()
+{
+    this->numeMagazin="";
+    this->locatie="";
+    this->numeProprietar="";
+    this->dataDeschidere="";
+    this->nrProprietariPanaAcum=0;
+}
+
+
+
+class Produs
+{
+private:
+    string nume;
+    string furnizor;
+    int cantitate;
+    float pretFurnizor;
+    int codProdus;
+public:
+    //constructor cu toti parametrii
+    Produs(string nume, string furnizor, int cantitate, float pretFurnizor, int codProdus);
+
+    //constructor fara parametru
+    Produs();
+
+    //constructor de copiere
+    Produs(const Produs& produs);
+
+    //constructor cu 4 parametrii
+    Produs(string nume, string furnizor, float pretFurnizor, int codProdus);
+
+    //constructor cu 3 parametrii
+    Produs(string nume, string furnizor, int codProdus);
+
+    //supraincarcarea operatorului =
+    Produs& operator= (const Produs&);
+
+    //supraincarcarea operatorului >>
+    friend istream& operator >> (istream& in, Produs& p);
+
+    //supraincarcarea operatorului <<
+    friend ostream& operator << (ostream& out, const Produs& p);
+
+    //supraincarcarea operatorului ++ (cele 2 forme)
+    const Produs& operator++();  //pre
+    const Produs operator++(int); //post
+
+    //supraincarcarea operatorului ==
+    bool operator==(const Produs& produs);
+
+    //supraincarcarea operatorului <
+    bool operator<(const Produs& produs);
+
+    //supraincarcarea operatorului >=
+    bool operator>=(const Produs& produs);
+
+    //supraincarcarea operatorului !=
+    bool operator != (const Produs& produs);
+
+    //supraincarcarea operatorului >
+    bool operator > (const Produs& produs);
+
+    //supraincarcarea operatorului <=
+    bool operator<=(const Produs& produs);
+
+    //operator +
+    friend Produs operator+(Produs a, int x);
+    friend Produs operator+(int x, Produs a);
+
+    //operator -
+    friend Produs operator-(Produs a, int x);
+    friend Produs operator-(int x, Produs a);
+
+    //operatorul de indexare
+    char operator[](int index);
+
+    //operator cast
+    explicit operator int()
+    {
+        return (int)this->pretFurnizor;
+    }
+
+    //destructor
+    ~Produs();
+
+    //setters
+    void setFurnizor(string furnizor)
+    {
+        this->furnizor=furnizor;
+    }
+    void setCantitate(int cantitate)
+    {
+        this->cantitate=cantitate;
+    }
+    void setNume(string nume)
+    {
+        this->nume=nume;
+    }
+    void setPretFurnizor(float pretFurnizor)
+    {
+        this->pretFurnizor=pretFurnizor;
+    }
+    void setCodProdus(int codProdus)
+    {
+        this->codProdus=codProdus;
+    }
+
+    //getters
+    string getFurnizor()
+    {
+        return this->furnizor;
+    }
+    int getCantitate()
+    {
+        return this->cantitate;
+    }
+    int getCodProdus()
+    {
+        return this->codProdus;
+    }
+    float getPretFurnizor()
+    {
+        return this->pretFurnizor;
+    }
+    string getNume()
+    {
+        return this->nume;
+    }
+
+    //functionalitate
+    void categorieProdus();
+};
+
+
+//constructor cu toti parametrii scris
+Produs::Produs(string nume, string furnizor, int cantitate, float pretFurnizor, int codProdus)
+{
+    this->nume=nume;
+    this->furnizor=furnizor;
+    this->cantitate=cantitate;
+    this->pretFurnizor=pretFurnizor;
+    this->codProdus=codProdus;
+}
+
+
+//constructor fara parametri scris
+Produs::Produs()
+{
+    this->nume="ciocolata";
+    this->furnizor="milka";
+    this->cantitate=50;
+    this->pretFurnizor=5.99;
+    this->codProdus=100;
+}
+//constructorul de copiere scris
+Produs::Produs(const Produs& produs)
+{
+    this->nume=produs.nume;
+    this->furnizor=produs.furnizor;
+    this->cantitate= produs.cantitate;
+    this->pretFurnizor= produs.pretFurnizor;
+    this->codProdus=produs.codProdus;
+}
+
+//constructor cu 4 parametrii
+Produs::Produs(string nume, string furnizor, float pretFurnizor, int codProdus)
+{
+    this->nume=nume;
+    this->furnizor=furnizor;
+    this->pretFurnizor=pretFurnizor;
+    this->codProdus=codProdus;
+    this->cantitate=0;
+}
+
+//constructor cu 3 parametrii
+Produs::Produs(string nume, string furnizor, int codProdus)
+{
+    this->nume=nume;
+    this->furnizor=furnizor;
+    this->codProdus=codProdus;
+    this->cantitate=0;
+    this->pretFurnizor=0;
+}
+
+//supraincarcarea operatorului =
+Produs& Produs:: operator =(const Produs& produs)
+{
+    if (this!=&produs)
+    {
+        this->nume=produs.nume;
+        this->furnizor=produs.furnizor;
+        this->codProdus=produs.codProdus;
+        this->cantitate=produs.cantitate;
+        this->pretFurnizor=produs.pretFurnizor;
+    }
+    return *this;
+}
+
+//supraincarcarea operatorului >>
+istream& operator >> (istream& in, Produs& p)
+{
+    cout<<"Numele produsului este: ";
+    //white spaces
+    getline(in>>ws, p.nume);
+    cout<<"Pretul produsului este: ";
+    in>>p.pretFurnizor;
+    cout<<"Furnizorul produsului este: ";
+    getline(in>>ws, p.furnizor);
+    cout<<"Cantitatea produsului este: ";
+    in>>p.cantitate;
+    cout<<"Codul produsului este: ";
+    in>>p.codProdus;
+
+    return in;
+}
+
+//supraincarcarea operatorului <<
+ostream& operator << (ostream& out, const Produs& p)
+{
+    out<<"numele produsului este "<<p.nume<<endl;
+    out<<"pretul produsului este "<<p.pretFurnizor<<endl;
+    out<<"furnizorul produsului este "<<p.furnizor<<endl;
+    out<<"cantitatea produsului este "<<p.cantitate<<endl;
+    out<<"codul produsului este "<<p.codProdus<<endl;
+
+    return out;
+}
+
+//Supraincarcarea operatorului ++
+const Produs& Produs::operator++()
+{
+    this->cantitate++;
+    return *this;
+}
+const Produs Produs::operator++(int)
+{
+    Produs aux(*this);
+    this->cantitate++;
+    return aux;
+}
+
+//supraincarcarea operatorului ==
+bool Produs::operator==(const Produs& produs)
+{
+    if (this->nume==produs.nume && this->cantitate==produs.cantitate && this->codProdus==produs.codProdus && this->furnizor==produs.furnizor && this->pretFurnizor==produs.pretFurnizor)
+        return true;
+    return false;
+
+}
+
+//supraincarcarea operatorului <
+bool Produs::operator<(const Produs& produs)
+{
+    if (this->pretFurnizor<produs.pretFurnizor)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >=
+bool Produs::operator>=(const Produs& produs)
+{
+    if (this->pretFurnizor>=produs.pretFurnizor)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului !=
+bool Produs::operator != (const Produs& produs)
+{
+    if (this->nume!=produs.nume || this->cantitate!=produs.cantitate || this->codProdus!=produs.codProdus || this->furnizor!=produs.furnizor || this->pretFurnizor!=produs.pretFurnizor)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >
+bool Produs::operator>(const Produs& produs)
+{
+    if (this->pretFurnizor>produs.pretFurnizor)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului <=
+bool Produs::operator<=(const Produs& produs)
+{
+    if (this->pretFurnizor<=produs.pretFurnizor)
+        return true;
+    return false;
+}
+
+//operator +
+Produs operator+(Produs a, int x)
+{
+    a.pretFurnizor+=x;
+    return a;
+}
+Produs operator+(int x, Produs a)
+{
+    a.pretFurnizor+=x;
+    return a;
+}
+
+//operator -
+Produs operator-(Produs a, int x)
+{
+    a.pretFurnizor-=x;
+    return a;
+}
+Produs operator-(int x, Produs a)
+{
+    a.pretFurnizor-=x;
+    return a;
+}
+
+//operatorul de indexare
+char Produs::operator[](int index)
+{
+    if (0 <= index && index < this->nume.length())
+        return this->nume[index];
+    cout << "Index introdus gresit"<<endl;
+
+}
+
+//destructor scris
+Produs::~Produs()
+{
+    this->nume="";
+    this->furnizor="";
+    this->cantitate=0;
+    this->pretFurnizor=0;
+    this->codProdus=0;
+}
+
+//functionalitate
+void Produs::categorieProdus()
+{
+    if(this->pretFurnizor>=100)
+        cout<<"produs scump\n ";
+    else
+        cout<<"produs ieftin\n ";
+}
+
+/*
+void  Persoana::setNume(char* nume){
+
+         if(this->nume!=NULL)
+            delete[] this->nume;
+        this->nume=new char[strlen(nume)+1];
+        strcpy(this->nume,nume);
+
+    }
+void Persoana::setCheltuieli(float * cheltuieliInUltimeleNLuni, int nLuni){
+        if(this->cheltuieliInUltimeleNLuni!=NULL)
+            delete[] this->cheltuieliInUltimeleNLuni;
+        this->nLuni=nLuni;
+        this->cheltuieliInUltimeleNLuni=new float[this->nLuni];
+        for(int i=0; i<this->nLuni; i++)
+            this->cheltuieliInUltimeleNLuni[i]=cheltuieliInUltimeleNLuni[i];
+
+    }
+const float*   Persoana::getCheltuieliInUltimeleNLuni()const {
+        return this->cheltuieliInUltimeleNLuni;
+*/
+
+class Persoana
+{
+private:
+    string nume;
+    string prenume;
+    int varsta;
+    const int idPersoana;
+    static int contorId;
+    float* cheltuieliInUlimaLuna;
+    Produs* listaProduse;
+    int lungimeLista;
+    bool angajat;
+    int nrCheltuieli;
+
+public:
+    //constructor declarat
+    Persoana(string nume, string prenume, int varsta, float* cheltuieliInUlimaLuna, Produs* listaProduse, int lungimeLista, bool angajat, int nrCheltuieli);
+
+    //constructor de copiere
+    //clasa si obiectul
+    Persoana(const Persoana& persoana);
+
+    //constructor fara parametru
+    Persoana();
+
+    //constructor cu 3 parametrii
+    Persoana(string nume, string prenume, int varsta);
+
+    //constructor cu 4 parametrii
+    Persoana(string nume, string prenume, int varsta, bool angajat);
+
+    //supraincarcarea operatorului >>
+    friend istream& operator >> (istream& in, Persoana& p);
+
+    //supraincarcarea operatorului <<
+    friend ostream& operator << (ostream& out, const Persoana& p);
+
+    //supraincarcarea operatorului ==
+    bool operator == (const Persoana& a);
+
+    //supraincarcarea operatorului =
+    Persoana& operator = (const Persoana& a);
+
+    //supraincarcarea operatorului <=
+    bool operator<=(const Persoana& a);
+
+    //supraincarcarea operatorului >
+    bool operator > (const Persoana& a);
+
+    //supraincarcarea operatorului <
+    bool operator < (const Persoana& a);
+
+    //supraincarcarea operatorului >=
+    bool operator>=(const Persoana& a);
+
+    //supraincarcarea operatorului !=
+    bool operator != (const Persoana& persoana);
+
+    //supraincarcarea operatorului ++ (cele 2 forme)
+    const Persoana& operator++();  //pre
+    const Persoana operator++(int); //post
+
+    //operator +
+    friend Persoana operator+(Persoana a, Produs p);
+    friend Persoana operator+(Produs p, Persoana a);
+
+    //operator -
+    friend Persoana operator-(Persoana a,int cheltuieli );
+    friend Persoana operator-(int cheltuieli, Persoana a);
+
+    //operatorul de indexare
+    char operator[](int index);
+
+    //destructor
+    ~Persoana();
+
+    //operator cast
+    explicit operator int()
+    {
+        return (int)this->nrCheltuieli;
+    }
+
+    //setters and getters pt a putea accesa atributele care sunt private
+    //setters
+    void setNume(string nume)
+    {
+        this->nume=nume;
+    }
+    void setPrenume(string prenume)
+    {
+        this->prenume=prenume;
+    }
+    void setVarsta(int varsta)
+    {
+        this->varsta=varsta;
+    }
+    void setCheltuialaInUltimaLuna(float* cheltuialaInUltimaLuna)
+    {
+        this->cheltuieliInUlimaLuna=cheltuialaInUltimaLuna;
+    }
+    void setListaProduse(Produs* listaProduse)
+    {
+        this->listaProduse=listaProduse;
+    }
+    void setLungimeLista(int lungimeLista)
+    {
+        this->lungimeLista;
+    }
+    void setAngajat(bool angajat)
+    {
+        this->angajat;
+    }
+    void setNrCheltuieli(int nrCheltuieli)
+    {
+        this->nrCheltuieli;
+    }
+
+    //getters
+    string getNume()
+    {
+        return this->nume;
+    }
+    string getPrenume()
+    {
+        return this->prenume;
+    }
+    int getVarsta()
+    {
+        return this->varsta;
+    }
+    float* getCheltuieliInUltimaLuna()
+    {
+        return this->cheltuieliInUlimaLuna;
+    }
+    Produs* getListaProduse()
+    {
+        return this->listaProduse;
+    }
+    int getLungimeLista()
+    {
+        return this->lungimeLista;
+    }
+    bool getAngajat()
+    {
+        return this->angajat;
+    }
+    bool getNrCheltuieli()
+    {
+        return this->nrCheltuieli;
+    }
+
+    //functie
+    void categoriePersoana();
+
+};
+
+int Persoana::contorId=0;
+
+//constructor cu toti parametrii
+Persoana::Persoana(string nume, string prenume, int varsta, float* cheltuieliInUlimaLuna, Produs* listaProduse, int lungimeLista, bool angajat, int nrCheltuieli):idPersoana(contorId++)
+{
+    this->nume=nume;
+    this->prenume=prenume;
+    this->varsta=varsta;
+    this->cheltuieliInUlimaLuna=cheltuieliInUlimaLuna;
+    this->listaProduse=listaProduse;
+    this->lungimeLista=lungimeLista;
+    this->angajat=angajat;
+    this->nrCheltuieli=nrCheltuieli;
+
+}
+
+//copy constructor
+Persoana::Persoana(const Persoana& a):idPersoana(contorId++)
+{
+    this->nume=a.nume;
+    this->prenume=a.prenume;
+    this->varsta=a.varsta;
+    this->cheltuieliInUlimaLuna=a.cheltuieliInUlimaLuna;
+    this->listaProduse=a.listaProduse;
+    this->lungimeLista=a.lungimeLista;
+    this->angajat=a.angajat;
+    this->nrCheltuieli=a.nrCheltuieli;
+}
+
+//constructor fara parametri
+Persoana::Persoana() :idPersoana(contorId++)
+{
+    this->nume="Bla";
+    this->prenume="LALA";
+    this->varsta=29;
+    this->lungimeLista=3;
+    this->angajat=true;
+    this->nrCheltuieli=0;
+}
+
+//constructor cu 3 parametrii
+Persoana::Persoana(string nume, string prenume, int varsta):idPersoana(contorId++)
+{
+    this->nume=nume;
+    this->prenume=prenume;
+    this->varsta=varsta;
+    this->lungimeLista=3;
+    this->angajat=true;
+    this->nrCheltuieli=0;
+}
+
+//constructor cu 4 parametrii
+Persoana::Persoana(string nume, string prenume, int varsta, bool angajat):idPersoana(contorId++)
+{
+    this->nume=nume;
+    this->prenume=prenume;
+    this->varsta=varsta;
+    this->angajat=angajat;
+    this->lungimeLista=3;
+    this->nrCheltuieli==0;
+}
+
+//supraincarcarea operatorului >>
+istream& operator >> (istream& in, Persoana& p)
+{
+
+    cout<<"Numele persoanei este: ";
+    getline(in>>ws,p.nume);
+    cout<<"Prenumele persoanei este: ";
+    getline(in>>ws,p.prenume);
+    cout<<"Varsta persoanei este: ";
+    in>>p.varsta;
+    cout<<"Nr cheltuieli: ";
+    in>>p.nrCheltuieli;
+    if (p.cheltuieliInUlimaLuna!=NULL)
+        delete [] p.cheltuieliInUlimaLuna;
+    p.cheltuieliInUlimaLuna=new float[p.nrCheltuieli];
+    for (int i=0; i<p.nrCheltuieli; i++)
+        in>>p.cheltuieliInUlimaLuna[i];
+    cout<<"Lungime lista: ";
+    in>>p.lungimeLista;
+    if (p.listaProduse!=NULL)
+        delete [] p.listaProduse;
+    p.listaProduse=new Produs[p.lungimeLista];
+    for (int i=0; i<p.lungimeLista; i++)
+        in>>p.listaProduse[i];
+    cout<<"Este angajat? ";
+    in>>p.angajat;
+
+
+    return in;
+}
+
+//supraincarcarea operatorului <<
+ostream& operator << (ostream& out, const Persoana& p)
+{
+    out<<"Numele persoanei este: "<<p.nume<<endl;
+    out<<"Prenumele persoanei este: "<<p.prenume<<endl;
+    out<<"Varsta persoanei este: "<<p.varsta<<endl;
+    out<<"Cheltuieli in ultima luna: "<<endl;
+    for (int i=0; i<p.nrCheltuieli; i++)
+        out<<p.cheltuieliInUlimaLuna[i]<<" ";
+    out<<endl;
+    out<<"Lista produse: "<<endl;
+    for (int i=0; i<p.lungimeLista; i++)
+        out<<p.listaProduse[i]<<" ";
+    out<<endl;
+    out<<"Este angajat? "<<p.angajat<<endl;
+
+    return out;
+}
+
+//supraincarcarea operatorului ==
+bool Persoana::operator == (const Persoana& a)
+{
+    if (!(this->nume==a.nume && this->prenume==a.prenume && this->varsta==a.varsta && this->lungimeLista==a.lungimeLista && this->angajat==a.angajat && this->nrCheltuieli==a.nrCheltuieli))
+        return false;
+    for (int i=0; i<this->nrCheltuieli; i++)
+        if (this->cheltuieliInUlimaLuna[i]!=a.cheltuieliInUlimaLuna[i])
+            return false;
+    for (int i=0; i<this->lungimeLista; i++)
+        if (this->listaProduse[i]!=a.listaProduse[i])
+            return false;
+    return true;
+}
+
+//supraincarcarea operatorului =
+Persoana& Persoana:: operator = (const Persoana& a)
+{
+    if (this!=&a)
+    {
+        this->nume=a.nume;
+        this->prenume=a.prenume;
+        this->varsta=a.varsta;
+        this->cheltuieliInUlimaLuna=a.cheltuieliInUlimaLuna;
+        this->listaProduse=a.listaProduse;
+        this->lungimeLista=a.lungimeLista;
+        this->angajat=a.angajat;
+        this->nrCheltuieli=a.nrCheltuieli;
+
+    }
+    return *this;
+}
+
+//supraincarcarea operatorului <=
+bool Persoana::operator<=(const Persoana& a)
+{
+    float totalCheltuieli1, totalCheltuieli2;
+    for (int i=0; i<this->nrCheltuieli; i++)
+        totalCheltuieli1+=this->cheltuieliInUlimaLuna[i];
+    for (int i=0; i<a.nrCheltuieli; i++)
+        totalCheltuieli2+=a.cheltuieliInUlimaLuna[i];
+    if (totalCheltuieli1<=totalCheltuieli2)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >
+bool Persoana::operator > (const Persoana& a)
+{
+    float totalCheltuieli1, totalCheltuieli2;
+    for (int i=0; i<this->nrCheltuieli; i++)
+        totalCheltuieli1+=this->cheltuieliInUlimaLuna[i];
+    for (int i=0; i<a.nrCheltuieli; i++)
+        totalCheltuieli2+=a.cheltuieliInUlimaLuna[i];
+    if (totalCheltuieli1>totalCheltuieli2)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului <
+bool Persoana::operator < (const Persoana& a)
+{
+    float totalCheltuieli1, totalCheltuieli2;
+    for (int i=0; i<this->nrCheltuieli; i++)
+        totalCheltuieli1+=this->cheltuieliInUlimaLuna[i];
+    for (int i=0; i<a.nrCheltuieli; i++)
+        totalCheltuieli2+=a.cheltuieliInUlimaLuna[i];
+    if (totalCheltuieli1<totalCheltuieli2)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >=
+bool Persoana::operator>=(const Persoana& a)
+{
+    float totalCheltuieli1, totalCheltuieli2;
+    for (int i=0; i<this->nrCheltuieli; i++)
+        totalCheltuieli1+=this->cheltuieliInUlimaLuna[i];
+    for (int i=0; i<a.nrCheltuieli; i++)
+        totalCheltuieli2+=a.cheltuieliInUlimaLuna[i];
+    if (totalCheltuieli1>=totalCheltuieli2)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului !=
+bool Persoana::operator != (const Persoana& persoana)
+{
+    if (this->nume!=persoana.nume || this->prenume!=persoana.prenume || this->varsta!=persoana.varsta || this->cheltuieliInUlimaLuna!=persoana.cheltuieliInUlimaLuna || this->listaProduse!=persoana.listaProduse || this->lungimeLista!=persoana.lungimeLista || this->angajat!=persoana.angajat ||this->nrCheltuieli!=persoana.nrCheltuieli)
+        return true;
+    return false;
+}
+
+//Supraincarcarea operatorului ++
+const Persoana& Persoana::operator++()
+{
+    this->varsta++;
+    return *this;
+}
+const Persoana Persoana::operator++(int)
+{
+    Persoana aux(*this);
+    this->varsta++;
+    return aux;
+}
+
+//operator +
+Persoana operator+(Persoana a, Produs p)
+{
+    //am declarat un nou vector in memorie
+    Produs* auxProduse=new Produs[a.lungimeLista];
+    for (int i=0; i<a.lungimeLista; i++)
+    {
+        //am copiat elem
+        auxProduse[i]=a.listaProduse[i];
+    }
+    //daca e diferit de null stergem zona de memorie, pt ca daca vrem sa adaugam un nou elem treb sa stergem pt a sterge zona de memorie si declaram din nou
+    //cu un elem in plus
+    if (a.listaProduse!=NULL)
+        delete [] a.listaProduse;
+    a.listaProduse=new Produs[a.lungimeLista+1];
+    for (int i=0; i<a.lungimeLista; i++)
+    {
+        //am copiat elem
+        a.listaProduse[i]=auxProduse[i];
+    }
+    //pt ultimul elem il adaugam
+    a.listaProduse[a.lungimeLista]=p;
+    a.lungimeLista++;
+    return a;
+}
+Persoana operator+(Produs p, Persoana a)
+{
+    //am declarat un nou vector in memorie
+    Produs* auxProduse=new Produs[a.lungimeLista];
+    for (int i=0; i<a.lungimeLista; i++)
+    {
+        //am copiat elem
+        auxProduse[i]=a.listaProduse[i];
+    }
+    //daca e diferit de null stergem zona de memorie, pt ca daca vrem sa adaugam un nou elem treb sa stergem pt a sterge zona de memorie si declaram din nou
+    //cu un elem in plus
+    if (a.listaProduse!=NULL)
+        delete [] a.listaProduse;
+    a.listaProduse=new Produs[a.lungimeLista+1];
+    for (int i=0; i<a.lungimeLista; i++)
+    {
+        //am copiat elem
+        a.listaProduse[i]=auxProduse[i];
+    }
+    //pt ultimul elem il adaugam
+    a.listaProduse[a.lungimeLista]=p;
+    a.lungimeLista++;
+    return a;
+}
+
+//operator -
+Persoana operator-(Persoana a, int cheltuieli)
+{
+    //am declarat un nou vector in memorie
+    float* auxCheltuieli=new float[a.nrCheltuieli-cheltuieli];
+    //am copiat elem in vectorul nou
+    for (int i=0; i<a.nrCheltuieli-cheltuieli; i++)
+        auxCheltuieli[i]=a.cheltuieliInUlimaLuna[i];
+    //verific daca a.cheltuieliInUlimaLuna este null, iar daca nu este stergem zona de memorie
+    if (a.cheltuieliInUlimaLuna!=NULL)
+        delete [] a.cheltuieliInUlimaLuna;
+    a.cheltuieliInUlimaLuna=auxCheltuieli;
+    a.nrCheltuieli-=cheltuieli;
+    return a;
+}
+Persoana operator-(int cheltuieli, Persoana a)
+{
+    //am declarat un nou vector in memorie
+    float* auxCheltuieli=new float[a.nrCheltuieli-cheltuieli];
+    //am copiat elem in vectorul nou
+    for (int i=0; i<a.nrCheltuieli-cheltuieli; i++)
+        auxCheltuieli[i]=a.cheltuieliInUlimaLuna[i];
+    //verific daca a.cheltuieliInUlimaLuna este null, iar daca nu este stergem zona de memorie
+    if (a.cheltuieliInUlimaLuna!=NULL)
+        delete [] a.cheltuieliInUlimaLuna;
+    a.cheltuieliInUlimaLuna=auxCheltuieli;
+    a.nrCheltuieli-=cheltuieli;
+    return a;
+}
+
+//operatorul de indexare
+char Persoana::operator[](int index)
+{
+    if (0 <= index && index < this->nrCheltuieli)
+        return this->cheltuieliInUlimaLuna[index];
+    cout << "Index introdus gresit"<<endl;
+}
+
+//destructor
+Persoana:: ~Persoana()
+{
+    this->nume="";
+    this->prenume="";
+    this->varsta=0;
+    this->cheltuieliInUlimaLuna=0;
+    this->angajat=NULL;
+    this->lungimeLista=0;
+    this->listaProduse=0;
+}
+//functie
+void Persoana::categoriePersoana()
+{
+    if (this->nrCheltuieli>=20)
+        cout<<"persoana bogata\n ";
+    else
+        cout<<"persoana modesta\n ";
+}
+
+class Livrare
+{
+private:
+    string numeCurier;
+    string firmaCurier;
+    string dataLivrarii;
+    double pret;
+public:
+    //constructor cu toti parametrii
+    Livrare(string numeCurier, string firmaCurier, string dataLivrarii, double pret);
+
+    //constructor cu 3 parametrii
+    Livrare(string numeCurier, string firmaCurier, double pret);
+
+    //constructor cu 2 parametrii
+    Livrare(string numeCurier, string firmaCurier);
+
+    //copy constructor
+    Livrare(const Livrare& livrare);
+
+    //constructor fara parametri
+    Livrare();
+
+    //supraincarcarea operatorului ==
+    bool operator==(const Livrare& a);
+
+    //supraincarcarea operatorului >>
+    friend istream& operator >> (istream& in, Livrare&);
+
+    //supraincarcarea operatorului <<
+    friend ostream& operator << (ostream& out, const Livrare&);
+
+    //supraincarcarea operatorului ++ (cele 2 forme)
+    const Livrare& operator++();  //pre
+    const Livrare operator++(int); //post
+
+    //supraincarcarea operstorului <
+    bool operator< (const Livrare& a);
+
+    //supraincarcarea operatorului >=
+    bool operator>=(const Livrare& a);
+
+    //supraincarcarea operatorului =
+    Livrare& operator = (const Livrare& a);
+
+    //supraincarcarea operatorului <=
+    bool operator<=(const Livrare& a);
+
+    //supraincarcarea operatorului >
+    bool operator > (const Livrare& a);
+
+    //supraincarcarea operatorului !=
+    bool operator != (const Livrare& a);
+
+    //operatorul de indexare
+    char operator[](int index);
+
+    //operator +
+    friend Livrare operator+(Livrare a, double pret);
+    friend Livrare operator+(double pret, Livrare a);
+
+    //operator -
+    friend Livrare operator-(Livrare a, double pret);
+    friend Livrare operator-(double pret, Livrare a);
+
+    //functionalitate
+    void preturifirma();
+
+    //operator cast
+    explicit operator int()
+    {
+        return (int)this->pret;
+    }
+
+    //destructor
+    ~Livrare();
+
+    //setters
+    void setNumeCurier(string numeCurier)
+    {
+        this->numeCurier=numeCurier;
+    }
+    void setFirmaCurier(string firmaCurier)
+    {
+        this->firmaCurier=firmaCurier;
+    }
+    void setDataLivrarii(string dataLivrarii)
+    {
+        this->dataLivrarii=dataLivrarii;
+    }
+    void setPret(double pret)
+    {
+        this->pret=pret;
+    }
+
+    //getters
+    string getNumeCurier()
+    {
+        return this->numeCurier;
+    }
+    string getFirmaCurier()
+    {
+        return this->firmaCurier;
+    }
+    string getDataLivrarii()
+    {
+        return this->dataLivrarii;
+    }
+    double getPret()
+    {
+        return this->pret;
+    }
+};
+
+//constructor cu toti parametrii
+Livrare::Livrare(string numeCurier, string firmaCurier, string dataLivrarii, double pret)
+{
+    this->numeCurier=numeCurier;
+    this->firmaCurier=firmaCurier;
+    this->dataLivrarii=dataLivrarii;
+    this->pret=pret;
+}
+//constructor cu 3 parametrii
+Livrare::Livrare(string numeCurier, string firmaCurier, double pret)
+{
+    this->numeCurier=numeCurier;
+    this->firmaCurier=firmaCurier;
+    this->pret=pret;
+    this->dataLivrarii="12/2020";
+}
+
+//constructor cu 2 parametrii
+Livrare::Livrare(string numeCurier, string firmaCurier)
+{
+    this->numeCurier=numeCurier;
+    this->firmaCurier=firmaCurier;
+    this->pret=15;
+    this->dataLivrarii="12/2020";
+}
+
+//copy-constructor
+Livrare::Livrare(const Livrare& livrare)
+{
+    this->numeCurier=livrare.numeCurier;
+    this->firmaCurier=livrare.firmaCurier;
+    this->dataLivrarii=livrare.dataLivrarii;
+    this->pret=livrare.pret;
+}
+
+//Constructor fara parametri
+Livrare::Livrare()
+{
+    this->numeCurier="Popescu";
+    this->firmaCurier="Fan Curier";
+    this->dataLivrarii="12/2020";
+    this->pret=15;
+}
+//supraincarcarea operatorului ==
+bool Livrare::operator == (const Livrare& a)
+{
+    if (this->numeCurier==a.numeCurier && this->firmaCurier==a.firmaCurier && this->dataLivrarii==a.dataLivrarii && this->pret==a.pret)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >>
+istream& operator>> (istream& in, Livrare& p)
+{
+    cout<<"Numele curierului este: ";
+    getline(in>>ws, p.numeCurier);
+    cout<<"Firma de curierat este: ";
+    getline(in>>ws, p.firmaCurier);
+    cout<<"Data livrarii este: ";
+    getline(in>>ws, p.dataLivrarii);
+    cout<<"Pretul este: ";
+    in>>p.pret;
+
+    return in;
+}
+
+//supraincarcarea operatorului <<
+ostream& operator << (ostream& out, const Livrare& p)
+{
+    out<<"Numele curierului este: "<<p.numeCurier<<endl;
+    out<<"Firma de curierat este: "<<p.firmaCurier<<endl;
+    out<<"Data livrarii este: "<<p.dataLivrarii<<endl;
+    out<<"Pretul este: "<<p.pret<<endl;
+
+    return out;
+}
+
+//Supraincarcarea operatorului ++
+const Livrare& Livrare::operator++()
+{
+    this->pret++;
+    return *this;
+}
+const Livrare Livrare::operator++(int)
+{
+    Livrare aux(*this);
+    this->pret++;
+    return aux;
+}
+
+//supraincarcarea operatorului <
+bool Livrare::operator< (const Livrare& a)
+{
+    if (this->pret<a.pret)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >=
+bool Livrare::operator>=(const Livrare& a)
+{
+    if (this->pret>=a.pret)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului =
+Livrare& Livrare::operator =(const Livrare& livrare)
+{
+    if (this!=&livrare)
+    {
+        this->numeCurier=livrare.numeCurier;
+        this->firmaCurier=livrare.firmaCurier;
+        this->dataLivrarii=livrare.dataLivrarii;
+        this->pret=livrare.pret;
+    }
+    return *this;
+}
+//supraincarcarea operatorului <=
+bool Livrare::operator<=(const Livrare& a)
+{
+    if (this->pret<=a.pret)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului >
+bool Livrare::operator > (const Livrare& a)
+{
+    if (this->pret>a.pret)
+        return true;
+    return false;
+}
+
+//supraincarcarea operatorului !=
+bool Livrare::operator != (const Livrare& a)
+{
+    if (this->numeCurier!=a.numeCurier || this->firmaCurier!=a.firmaCurier || this->dataLivrarii!=a.dataLivrarii || this->pret!=a.pret)
+        return true;
+    return false;
+}
+
+//operatorul de indexare
+char Livrare::operator[](int index)
+{
+    if (0 <= index && index < this->numeCurier.length())
+        return this->numeCurier[index];
+    cout << "Index introdus gresit"<<endl;
+}
+//operator +
+Livrare operator+(Livrare a, double pret)
+{
+    a.pret+=pret;
+    return a;
+}
+Livrare operator+(double pret, Livrare a)
+{
+    a.pret+=pret;
+    return a;
+}
+
+Livrare operator-(Livrare a, double pret)
+{
+    if (a.pret-pret>=0)
+        a.pret-=pret;
+    else
+        a.pret=0;
+    return a;
+}
+
+Livrare operator-(double pret, Livrare a)
+{
+    if (a.pret-pret>=0)
+        a.pret-=pret;
+    else
+        a.pret=0;
+    return a;
+}
+
+//functionalitate
+void Livrare::preturifirma()
+{
+    if (this->pret>=100)
+        cout<<"comanda mare\n";
+        else
+            cout<<"comanda mica\n";
+}
+
+//destructor
+Livrare::~Livrare()
+{
+    this->numeCurier="";
+    this->firmaCurier="";
+    this->dataLivrarii="";
+    this->pret=0;
+}
+
+
+int main()
+{
+    //citirea initiala pt fiecare clasa
+    //adaugam elem fiecarei cls intr un vector
+    int nrSupermarketuri;
+    cout<<"Cate supermarketuri doriti? ";
+    cin>>nrSupermarketuri;
+    //vector
+    Supermarket* supermarketuri=new Supermarket[nrSupermarketuri];
+    //citim fiecare supermarket cu prop specifice de mai sus
+    for (int i=0; i<nrSupermarketuri; i++)
+    {
+        cout<<"Supermarketul nr "<<i+1<<endl;
+        cin>>supermarketuri[i];
+    }
+    int nrProduse;
+    cout<<"Cate produse doriti? ";
+    cin>>nrProduse;
+    Produs* produse= new Produs[nrProduse];
+    for (int i=0; i<nrProduse; i++)
+    {
+        cout<<"Produsul nr "<<i+1<<endl;
+        cin>>produse[i];
+    }
+    int nrPersoane;
+    cout<<"Cate persoane sunt? ";
+    cin>>nrPersoane;
+    Persoana* persoane=new Persoana[nrPersoane];
+    for (int i=0; i<nrPersoane; i++)
+    {
+        cout<<"Persoana nr "<<i+1<<endl;
+        cin>>persoane[i];
+    }
+    int nrLivrari;
+    cout<<"Cate livrari sunt? ";
+    cin>>nrLivrari;
+    Livrare* livrari=new Livrare[nrLivrari];
+    for (int i=0; i<nrLivrari; i++)
+    {
+        cout<<"Livrare nr "<<i+1<<endl;
+        cin>>livrari[i];
+    }
+
+    while (true)
+    {
+        int input=0;
+        cout<<"alege operatiunea urmatoare pentru supermarket:\n0 pt a trece la urmatoarea clasa \n1 actualizare proprietar, \n2 stergere, \n3 adaugare, \n4 afisare, \n5 afiseaza categorie supermarket ";
+        cin>>input;
+        if(input==0)
+            break;
+        if(input==1)
+        {
+            int index;
+            cout<<"alege magazinul pe care vrei sa il actualizezi(index): ";
+            cin>>index;
+            cout<<"scrie numele noului proprietar: ";
+            string numeProprietarNou;
+            cin>>numeProprietarNou;
+            //vectorul de mai sus
+            supermarketuri[index].setNumeProprietar(numeProprietarNou);
+            cout<<numeProprietarNou<<" este la al "<<supermarketuri[index].getNrProprietariPanaAcum()<<"lea proprietar\n ";
+        }
+        if(input==2)
+        {
+            int index;
+            cout<<"alege magazinul pe care vrei sa il stergi(index): ";
+            cin>>index;
+            //stergem supermarketul de pe pozitia i
+            for (int i=0; i<nrSupermarketuri-1; i++)
+                supermarketuri[i]=supermarketuri[i+1];
+            nrSupermarketuri--;
+            cout<<"supermarketul a fost sters\n ";
+        }
+        if(input==3)
+        {
+            cout<<"citeste magazinul nou\n ";
+            Supermarket magazinNou;
+            cin>>magazinNou;
+            Supermarket* auxMagazine=new Supermarket[nrSupermarketuri];
+            for (int i=0; i<nrSupermarketuri; i++)
+                auxMagazine[i]=supermarketuri[i];
+            if (supermarketuri!=NULL)
+                delete [] supermarketuri;
+            supermarketuri=new Supermarket[nrSupermarketuri+1];
+            for (int i=0; i<nrSupermarketuri; i++)
+                supermarketuri[i]=auxMagazine[i];
+            supermarketuri[nrSupermarketuri]=magazinNou;
+            nrSupermarketuri++;
+            cout<<"Magazinul a fost adaugat\n ";
+        }
+        if (input==4)
+        {
+            int index;
+            cout<<"Alege magazinul pe care vrei sa il afisezi(index): ";
+            cin>>index;
+            if (index<nrSupermarketuri)
+                cout<<supermarketuri[index];
+            else
+                cout<<"nu exista magazinul respectiv\n";
+        }
+        if (input==5)
+        {
+            int index;
+            cout<<"Alege magazinul pe care vrei sa il afisezi(index): ";
+            cin>>index;
+            if (index<nrSupermarketuri)
+                supermarketuri[index].categorieSupermarket();
+            else
+                cout<<"nu exista magazinul respectiv\n";
+        }
+    }
+    while (true)
+    {
+        int input=0;
+        cout<<"alege operatiunea urmatoare pentru produs:\n0 pt a trece la urmatoarea clasa \n1 actualizare pret, \n2 stergere, \n3 adaugare, \n4 afisare, \n5 afiseaza categorie produs ";
+        cin>>input;
+        if (input==0)
+            break;
+        if (input==1)
+        {
+            int index;
+            cout<<"alege produsul la care vrei sa ii modifici pretul\n ";
+            cin>>index;
+            if (index<nrProduse)
+            {
+                cout<<"pretul pe care vrei sa il adaugi este\n ";
+                int pretNou;
+                cin>>pretNou;
+                produse[index]=produse[index]+pretNou;
+                cout<<"Pretul nou este "<<produse[index].getPretFurnizor();
+            }
+            else
+                cout<<"produsul nu exista\n ";
+        }
+        if (input==2)
+        {
+            int index;
+            cout<<"alege produsul pe care vrei sa il stergi(index): ";
+            cin>>index;
+            if (index<nrProduse)
+            {
+                for (int i=0; i<nrProduse-1; i++)
+                    produse[i]=produse[i+1];
+                nrProduse--;
+                cout<<"produsul a fost sters\n ";
+            }
+            else
+                cout<<"Produsul nu exista\n ";
+        }
+        if (input==3)
+        {
+            cout<<"citeste produsul nou\n ";
+            Produs produsNou;
+            cin>>produsNou;
+            Produs* auxProduse=new Produs[nrProduse];
+            for (int i=0; i<nrProduse; i++)
+                auxProduse[i]=produse[i];
+            if (produse!=NULL)
+                delete [] produse;
+            produse=new Produs[nrProduse+1];
+            for (int i=0; i<nrProduse; i++)
+                produse[i]=auxProduse[i];
+            produse[nrProduse]=produsNou;
+            nrProduse++;
+            cout<<"Produsul a fost adaugat\n ";
+        }
+        if (input==4)
+        {
+            int index;
+            cout<<"Alege produsul pe care vrei sa il afisezi(index): ";
+            cin>>index;
+            if (index<nrProduse)
+                cout<<produse[index];
+            else
+                cout<<"nu exista produsul respectiv\n";
+        }
+        if (input==5)
+        {
+            int index;
+            cout<<"Alege produsul pe care vrei sa il afisezi(index): ";
+            cin>>index;
+            if (index<nrProduse)
+                produse[index].categorieProdus();
+            else
+                cout<<"nu exista produsul respectiv\n";
+        }
+    }
+    while (true)
+    {
+        int input=0;
+        cout<<"alege operatiunea urmatoare pentru persoana:\n0 pt a trece la urmatoarea clasa \n1 actualizare produse , \n2 stergere, \n3 adaugare, \n4 afisare, \n5 afiseaza categorie persoana ";
+        cin>>input;
+        if (input==0)
+            break;
+        if (input==1)
+        {
+            int index;
+            cout<<"alege persoana careia vrei sa ii modifici lista de produse\n ";
+            cin>>index;
+            if (index<nrPersoane)
+            {
+                cout<<"produsul pe care vrei sa il adaugi este\n ";
+                Produs produsNou;
+                cin>>produsNou;
+                persoane[index]=persoane[index]+produsNou;
+                cout<<"Produsul a fost adaugat\n ";
+            }
+            else
+                cout<<"persoana nu exista\n ";
+        }
+        if (input==2)
+        {
+            int index;
+            cout<<"alege persoana pe care vrei sa o stergi din lista(index): ";
+            cin>>index;
+            if (index<nrPersoane)
+            {
+                for (int i=0; i<nrPersoane-1; i++)
+                    persoane[i]=persoane[i+1];
+                nrPersoane--;
+                cout<<"persoana a fost stearsa din lista\n ";
+            }
+            else
+                cout<<"Persoana nu exista\n ";
+        }
+        if (input==3)
+        {
+            cout<<"citeste persoana noua\n ";
+            Persoana persoanaNoua;
+            cin>>persoanaNoua;
+            Persoana* auxPersoane=new Persoana[nrPersoane];
+            for (int i=0; i<nrPersoane; i++)
+                auxPersoane[i]=persoane[i];
+            if (persoane!=NULL)
+                delete [] persoane;
+            persoane=new Persoana[nrPersoane+1];
+            for (int i=0; i<nrPersoane; i++)
+                persoane[i]=auxPersoane[i];
+            persoane[nrPersoane]=persoanaNoua;
+            nrPersoane++;
+            cout<<"Persoana a fost adaugata\n ";
+        }
+        if (input==4)
+        {
+            int index;
+            cout<<"Alege persoana pe care vrei sa o afisezi(index): ";
+            cin>>index;
+            if (index<nrPersoane)
+                cout<<persoane[index];
+            else
+                cout<<"nu exista persoana respectiva\n";
+        }
+        if (input==5)
+        {
+            int index;
+            cout<<"Alege persoana pe care vrei sa o afisezi(index): ";
+            cin>>index;
+            if (index<nrPersoane)
+                persoane[index].categoriePersoana();
+            else
+                cout<<"nu exista persoana respectiva\n";
+        }
+    }
+       while (true)
+    {
+        int input=0;
+        cout<<"alege operatiunea urmatoare pentru livrare:\n0 pt a incheia programul \n1 actualizare curier , \n2 stergere, \n3 adaugare, \n4 afisare, \n5 afiseaza tipul comenzii ";
+        cin>>input;
+        if (input==0)
+            break;
+        if (input==1)
+        {
+            int index;
+            cout<<"alege livrarea unde se schimba curierul\n ";
+            cin>>index;
+            if (index<nrLivrari)
+            {
+                cout<<"nume curierului nou este\n ";
+                string curierNou;
+                cin>>curierNou;
+                livrari[index].setNumeCurier(curierNou);
+                cout<<"Curierul a fost schimbat\n ";
+            }
+            else
+                cout<<"livrarea nu exista\n ";
+        }
+        if (input==2)
+        {
+            int index;
+            cout<<"alege livrarea pe care vrei sa o stergi din lista(index): ";
+            cin>>index;
+            if (index<nrLivrari)
+            {
+                for (int i=0; i<nrLivrari-1; i++)
+                    livrari[i]=livrari[i+1];
+                nrLivrari--;
+                cout<<"livrarea a fost stearsa din lista\n ";
+            }
+            else
+                cout<<"livrarea nu exista\n ";
+        }
+        if (input==3)
+        {
+            cout<<"citeste livrare noua\n ";
+            Livrare livrareNoua;
+            cin>>livrareNoua;
+            Livrare* auxLivrare=new Livrare[nrLivrari];
+            for (int i=0; i<nrLivrari; i++)
+                auxLivrare[i]=livrari[i];
+            if (livrari!=NULL)
+                delete [] livrari;
+            livrari=new Livrare[nrLivrari+1];
+            for (int i=0; i<nrLivrari; i++)
+                livrari[i]=auxLivrare[i];
+            livrari[nrLivrari]=livrareNoua;
+            nrLivrari++;
+            cout<<"Livrarea a fost adaugata\n ";
+        }
+        if (input==4)
+        {
+            int index;
+            cout<<"Alege livrarea pe care vrei sa o afisezi(index): ";
+            cin>>index;
+            if (index<nrLivrari)
+                cout<<livrari[index];
+            else
+                cout<<"nu exista livrarea respectiva\n";
+        }
+        if (input==5)
+        {
+            int index;
+            cout<<"Alege livrarea pe care vrei sa o afisezi(index): ";
+            cin>>index;
+            if (index<nrLivrari)
+                livrari[index].preturifirma();
+            else
+                cout<<"nu exista livrarea respectiva";
+        }
+    }
+    return 0;
+}
