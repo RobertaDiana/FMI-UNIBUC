@@ -1,0 +1,751 @@
+//Avem o florarie
+//Floraria are diverse flori si ornamente
+//pt fiecare floare se precizeaza numele, culoarea, pretul
+//Trandafiri ce are ziua in care au fost livrati, fabrica
+//Trandafiri criogenati ce are durata
+//Lalele ce au miros si cantitate
+//Bujori ce are tipul de bujori
+//Buchet ce contine si trandafiri si lalele si are pret, dar si zi speciala
+//Ornamente ce contine genul
+//Ornament de zi de nastere ce are felicitare, dar si un vector care contine ce trebuie scris pe ea
+//Ornament pt stralucire flori ce are marca si termenul de expirare
+
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+class IOInterface
+{
+public:
+    virtual istream& citire (istream& in)=0;
+    virtual ostream& afisare (ostream& out) const=0;
+};
+class Florarie:public IOInterface
+{
+protected:
+    vector <string> flori;
+    vector <string> ornamente;
+public:
+    Florarie(vector <string> flori, vector <string> ornamente);
+    Florarie();
+    Florarie(const Florarie& p);
+    Florarie& operator = (const Florarie& p);
+    ~Florarie();
+    virtual istream& citire(istream& in)
+    {
+        int nr;
+        cout<<"Nr de flori este: ";
+        in>>nr;
+        in.get();
+        for (int i=0;i<nr;i++)
+        {
+            cout<<"Florile sunt: ";
+            string flo;
+            getline(in>>ws, flo);
+            flori.push_back(flo);
+        }
+        int nr1;
+        cout<<"Nr de ornamente este: ";
+        in>>nr1;
+        in.get();
+        for (int i=0;i<nr1;i++)
+        {
+            cout<<"Ornamentele sunt: ";
+            string orn;
+            getline(in>>ws, orn);
+            ornamente.push_back(orn);
+        }
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        for (int i=0;i<this->flori.size();i++)
+            out<<this->flori[i]<<endl;
+        for (int i=0;i<ornamente.size();i++)
+            out<<this->ornamente[i]<<endl;
+        return out;
+    }
+    friend istream& operator >> (istream& in, Florarie& p);
+    friend ostream& operator << (ostream& out, const Florarie& p);
+
+    void setFlori(vector <string> flori)
+    {
+        this->flori=flori;
+    }
+    const vector <string> getFlori()
+    {
+        return this->flori;
+    }
+    void setOrnamente(vector <string> ornamente)
+    {
+        this->ornamente=ornamente;
+    }
+    const vector <string> getOrnamente()
+    {
+        return this->ornamente;
+    }
+};
+Florarie::Florarie(vector <string> flori, vector <string> ornamente)
+{
+    this->flori=flori;
+    this->ornamente=ornamente;
+}
+Florarie::Florarie()
+{
+    this->flori={};
+    this->ornamente={};
+}
+Florarie::    Florarie(const Florarie& p)
+{
+    this->flori=p.flori;
+    this->ornamente=p.ornamente;
+}
+Florarie& Florarie::operator = (const Florarie& p)
+{
+    if (this!=&p)
+    {
+       this->flori=p.flori;
+    this->ornamente=p.ornamente;
+    }
+    return *this;
+}
+Florarie::~Florarie()
+{
+    flori.clear();
+    ornamente.clear();
+}
+istream& operator >> (istream& in, Florarie& p)
+{
+    return p.citire(in);
+}
+ostream& operator << (ostream& out, const Florarie& p)
+{
+    return p.afisare(out);
+}
+
+class Floare:public IOInterface
+{
+protected:
+    string nume;
+    string culoare;
+    float pret;
+public:
+    Floare(string nume, string culoare, float pret);
+    Floare();
+    Floare(const Floare& p);
+    Floare& operator = (const Floare& p);
+    ~Floare();
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Numele este: ";
+       getline(in>>ws, nume);
+        cout<<"Culoarea este: ";
+        getline(in>>ws, culoare);
+        cout<<"Pretul este: ";
+        in>>this->pret;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        out<<"Numele este: "<<this->nume<<endl;
+        out<<"Culoarea este: "<<this->culoare<<endl;
+        out<<"Pretul este: "<<this->pret<<endl;
+        return out;
+    }
+    friend istream& operator >> (istream& in, Floare& p);
+    friend ostream& operator << (ostream& out, const Floare& p);
+
+    void setNume(string nume)
+    {
+        this->nume=nume;
+    }
+    const string getNume()
+    {
+        return this->nume;
+    }
+    void setCuloare(string culoare)
+    {
+        this->culoare=culoare;
+    }
+    const string getCuloare()
+    {
+        return this->culoare;
+    }
+    void setPret(float pret)
+    {
+        this->pret=pret;
+    }
+    const float getPret()
+    {
+        return this->pret;
+    }
+
+};
+
+Floare::Floare(string nume, string culoare, float pret)
+{
+    this->nume=nume;
+    this->culoare=culoare;
+    this->pret=pret;
+}
+Floare::Floare()
+{
+    this->nume="bla";
+    this->culoare="lal";
+    this->pret=14;
+}
+Floare::Floare(const Floare& p)
+{
+    this->nume=p.nume;
+    this->culoare=p.culoare;
+    this->pret=p.pret;
+}
+Floare& Floare::operator = (const Floare& p)
+{
+    if (this!=&p)
+    {
+         this->nume=p.nume;
+    this->culoare=p.culoare;
+    this->pret=p.pret;
+    }
+    return *this;
+}
+Floare::~Floare()
+{ this->nume="NULL";
+    this->culoare="NULL";
+    this->pret=0;
+
+}
+istream& operator >> (istream& in, Floare& p)
+{
+    return p.citire(in);
+}
+ostream& operator << (ostream& out, const Floare& p)
+{
+    return p.afisare(out);
+}
+
+class Trandafiri:public virtual Floare
+{
+protected:
+    int zi;
+    string fabrica;
+public:
+    Trandafiri(string nume, string culoare, float pret, int zi, string fabrica);
+    Trandafiri();
+    Trandafiri(const Trandafiri& p);
+    Trandafiri& operator = (const Trandafiri& p);
+    ~Trandafiri();
+    virtual istream& citire(istream& in)
+    {
+        Floare::citire(in);
+        cout<<"Ziua este: ";
+        in>>this->zi;
+        cout<<"Fabrica este: ";
+        getline(in>>ws, fabrica);
+        return in;
+
+    }
+    virtual ostream& afisare (ostream& out) const
+    {
+        Floare::afisare(out);
+        out<<"Ziua este: "<<this->zi<<endl;
+        out<<"Fabrica este: "<<this->fabrica<<endl;
+        return out;
+    }
+    void setZi(int zi)
+    {
+        this->zi=zi;
+    }
+    const int getZi()
+    {
+        return this->zi;
+    }
+    void setFabrica(string fabrica)
+    {
+        this->fabrica=fabrica;
+    }
+    const string getFabrica()
+    {
+        return this->fabrica;
+    }
+
+};
+Trandafiri::Trandafiri(string nume, string culoare, float pret, int zi, string fabrica):Floare(nume, culoare, pret)
+{
+    this->zi=zi;
+    this->fabrica=fabrica;
+}
+Trandafiri::Trandafiri():Floare()
+{
+     this->zi=12;
+    this->fabrica="LALA";
+}
+Trandafiri::Trandafiri(const Trandafiri& p):Floare(p)
+{
+     this->zi=p.zi;
+    this->fabrica=p.fabrica;
+}
+Trandafiri& Trandafiri::operator = (const Trandafiri& p)
+{
+    if (this!=&p)
+    {
+        Floare::operator =(p);
+        this->zi=p.zi;
+    this->fabrica=p.fabrica;
+    }
+    return *this;
+}
+Trandafiri::~Trandafiri()
+{
+    this->zi=0;
+    this->fabrica="null";
+}
+
+class Criogenati:public Trandafiri
+{
+private:
+    string durata;
+public:
+    Criogenati(string nume, string culoare, float pret, int zi, string fabrica, string durata);
+    Criogenati();
+    Criogenati(const Criogenati& p);
+    Criogenati& operator = (const Criogenati& p);
+    ~Criogenati();
+    virtual istream& citire(istream& in)
+    {
+        Trandafiri::citire(in);
+        cout<<"Durata este: ";
+        getline(in>>ws, durata);
+        return in;
+
+    }
+    virtual ostream& afisare (ostream& out) const
+    {
+        Trandafiri::afisare(out);
+        out<<"Durata este: "<<this->durata<<endl;
+        return out;
+    }
+     void setDurata(string durata)
+     {
+         this->durata=durata;
+     }
+     const string getDurata()
+     {
+         return this->durata;
+     }
+};
+Criogenati::Criogenati(string nume, string culoare, float pret, int zi, string fabrica, string durata):Trandafiri(nume, culoare, pret, zi, fabrica)
+    {
+        this->durata=durata;
+
+    }
+Criogenati::Criogenati():Trandafiri()
+{
+     this->durata="un an";
+}
+Criogenati::Criogenati(const Criogenati& p):Trandafiri(p)
+{
+     this->durata=p.durata;
+}
+Criogenati& Criogenati::operator = (const Criogenati& p)
+{
+    if (this!=&p)
+    {
+        Trandafiri::operator = (p);
+         this->durata=p.durata;
+    }
+    return *this;
+}
+Criogenati::~Criogenati()
+{
+     this->durata="null";
+}
+class Lalele:public virtual Floare
+{
+protected:
+    string miros;
+    int cantitate;
+public:
+    Lalele(string nume, string culoare, float pret, string miros, int cantitate);
+    Lalele();
+    Lalele(const Lalele& p);
+    Lalele& operator = (const Lalele& p);
+    ~Lalele();
+    virtual istream& citire(istream& in)
+    {
+        Floare::citire(in);
+        cout<<"Mirosul este: ";
+        in>>this->miros;
+        cout<<"Cantitatea este: ";
+        in>>this->cantitate;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Floare::afisare(out);
+         out<<"Mirosul este: "<<this->miros<<endl;
+        out<<"Cantitatea este: "<<this->cantitate<<endl;
+        return out;
+    }
+};
+Lalele::Lalele(string nume, string culoare, float pret, string miros, int cantitate):Floare(nume, culoare, pret)
+{
+    this->miros=miros;
+    this->cantitate=cantitate;
+}
+Lalele::Lalele()
+{
+    this->miros="bun";
+    this->cantitate=30;
+}
+Lalele::Lalele(const Lalele& p):Floare(p)
+{
+    this->miros=p.miros;
+    this->cantitate=p.cantitate;
+}
+Lalele& Lalele::operator = (const Lalele& p)
+{
+    if (this!=&p)
+    {
+        Floare::operator =(p);
+        this->miros=p.miros;
+    this->cantitate=p.cantitate;
+    }
+    return *this;
+}
+Lalele::~Lalele()
+{
+     this->miros="null";
+    this->cantitate=0;
+}
+
+class Bujori:public Floare
+{
+   private:
+       string tip;
+   public:
+    Bujori(string nume, string culoare, float pret, string tip);
+    Bujori();
+    Bujori(const Bujori& p);
+    Bujori& operator = (const Bujori& p);
+    ~Bujori();
+    virtual istream& citire(istream& in)
+    {
+        Floare::citire(in);
+        cout<<"Tipul este: ";
+        getline(in>>ws, tip);
+        return in;
+    }
+    virtual ostream& afisare (ostream& out )const
+    {
+        Floare::afisare(out);
+       out<<"Tipul este: "<<this->tip<<endl;
+        return out;
+    }
+};
+Bujori::Bujori(string nume, string culoare, float pret, string tip):Floare(nume, culoare, pret)
+{
+    this->tip=tip;
+}
+Bujori:: Bujori():Floare()
+{
+    this->tip="jdh";
+}
+Bujori::Bujori(const Bujori& p):Floare(p)
+{
+    this->tip=p.tip;
+}
+Bujori& Bujori::operator = (const Bujori& p)
+{
+    if (this!=&p)
+    {
+        Floare::operator = (p);
+         this->tip=p.tip;
+    }
+    return *this;
+}
+Bujori::~Bujori()
+{
+    this->tip="null";
+}
+class Buchet:public virtual Trandafiri, public virtual Lalele
+{
+private:
+    string speciala;
+public:
+    Buchet(string nume, string culoare, float pret, int zi, string fabrica, string miros, int cantitate, string speciala);
+    Buchet();
+    Buchet(const Buchet& p);
+    Buchet& operator =(const Buchet& p);
+    ~Buchet();
+    virtual istream& citire(istream& in)
+    {
+        Trandafiri::citire(in);
+        cout<<"Mirosul este: ";
+        in>>this->miros;
+        cout<<"Cantitatea este: ";
+        in>>this->cantitate;
+        cout<<"Ziua speciala este ";
+        getline(in>>ws, speciala);
+        return in;
+    }
+    virtual ostream& afisare (ostream& out) const\
+    {
+       Trandafiri::afisare(out);
+        out<<"Mirosul este: "<<this->miros<<endl;
+        out<<"Cantitatea este: "<<this->cantitate<<endl;
+        out<<"Ziua speciala este "<<this->speciala<<endl;
+        return out;
+    }
+};
+Buchet::Buchet(string nume, string culoare, float pret, int zi, string fabrica, string miros, int cantitate, string speciala):Floare(nume, culoare, pret), Trandafiri(nume, culoare, pret, zi, fabrica), Lalele(nume, culoare, pret, miros, cantitate)
+{
+    this->speciala=speciala;
+}
+Buchet::Buchet():Floare(), Trandafiri(), Lalele()
+{
+     this->speciala="8 marte";
+}
+Buchet::Buchet(const Buchet& p):Floare(p), Trandafiri(p), Lalele(p)
+{
+     this->speciala=p.speciala;
+}
+    Buchet& Buchet::operator =(const Buchet& p)
+    {
+        if (this!=&p)
+        {
+            Trandafiri::operator = (p);
+            this->miros=p.miros;
+    this->cantitate=p.cantitate;
+     this->speciala=p.speciala;
+        }
+        return *this;
+    }
+    Buchet::~Buchet()
+    {
+        this->speciala="null";
+    }
+
+class Ornamente:public IOInterface
+{
+protected:
+    string gen;
+public:
+    Ornamente(string gen);
+    Ornamente();
+    Ornamente(const Ornamente& p);
+    Ornamente& operator =(const Ornamente& p);
+    ~Ornamente();
+    virtual istream& citire(istream& in)
+    {
+        cout<<"Genul este: ";
+        in>>this->gen;
+        return in;
+    }
+    virtual ostream& afisare (ostream& out) const
+    {
+        out<<"Genul este: "<<this->gen<<endl;
+        return out;
+    }
+    friend istream& operator >> (istream& in, Ornamente& p);
+    friend ostream& operator << (ostream& out, const Ornamente& p);
+
+     void setGen(string gen)
+     {
+         this->gen=gen;
+     }
+     const string getGen()
+     {
+         return this->gen;
+     }
+};
+Ornamente::Ornamente(string gen)
+{
+    this->gen=gen;
+}
+Ornamente:: Ornamente(const Ornamente& p)
+{
+     this->gen=p.gen;
+}
+Ornamente::Ornamente()
+{
+      this->gen="laal";
+}
+Ornamente& Ornamente::operator = (const Ornamente& p)
+{
+    if (this!=&p)
+    {
+        this->gen=p.gen;
+    }
+    return *this;
+}
+Ornamente::~Ornamente()
+{
+    this->gen="null";
+}
+istream& operator >> (istream& in, Ornamente& p)
+{
+    return p.citire(in);
+}
+ostream& operator << (ostream& out, const Ornamente& p)
+{
+    return p.afisare(out);
+}
+
+class Nastere:public Ornamente
+{
+private:
+    vector <string> felicitare;
+
+public:
+    Nastere(string gen, vector <string> felicitare);
+    Nastere();
+    Nastere(const Nastere& p);
+    Nastere& operator =(const Nastere& p);
+    ~Nastere();
+    virtual istream& citire(istream& in)
+    {
+        Ornamente::citire(in);
+        int nr;
+        cout<<"Cate cuv are: ";
+        in>>nr;
+        in.get();
+        for (int i=0;i<nr;i++)
+        {
+            cout<<"Ce ati dori sa scriem pe felicitare: ";
+            string fel;
+            getline(in>>ws, fel);
+            felicitare.push_back(fel);
+        }
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) const
+    {
+        Ornamente::afisare(out);
+        for (int i=0;i<this->felicitare.size();i++)
+            out<<this->felicitare[i]<<endl;
+        return out;
+    }
+    void setFelicitare(vector <string> felicitare)
+    {
+        this->felicitare=felicitare;
+    }
+    const vector <string> getFelicitare ()
+    {
+        return this->felicitare;
+    }
+};
+Nastere::Nastere(string gen, vector <string> felicitare):Ornamente(gen)
+{
+    this->felicitare=felicitare;
+}
+Nastere::  Nastere():Ornamente()
+{
+     this->felicitare={};
+}
+Nastere:: Nastere(const Nastere& p):Ornamente(p)
+{
+       this->felicitare=p.felicitare;
+}
+Nastere& Nastere::operator =(const Nastere& p)
+{
+    if (this!=&p)
+    {
+      this->felicitare=p.felicitare;
+    }
+    return *this;
+}
+Nastere::~Nastere()
+{
+   felicitare.clear();
+}
+int main()
+{
+
+vector <Florarie*> listaFlorarii;
+vector <Floare*> listaFlori;
+vector <Ornamente*> listaOrnamente;
+int valoare;
+while (true)
+{
+    cout<<"Apasa 0 pt a adauga o florarie \n";
+    cout<<"Apasa 1 pt a adauga o floare \n";
+    cout<<"Apasa 2 pt a adauga un trandafir \n";
+    cout<<"Apasa 3 pt a adauga o lalea \n";
+    cout<<"Apasa 4 pt a adauga un bujor \n";
+    cout<<"Apasa 5 pt a adauga un buchet\n";
+    cout<<"Apasa 6 pt a adauga un ornamnet \n";
+    cout<<"Apasa 7 pt a adauga un ornament de zi speciala \n";
+    cout<<"Apasa 8 pt a afisa \n";
+    cin>>valoare;
+    if (valoare==0)
+    {
+        Florarie* p=new Florarie();
+        cin>>*p;
+        listaFlorarii.push_back(new Florarie(*p));
+    }
+     else if (valoare==1)
+    {
+        Floare* p=new Floare();
+        cin>>*p;
+        listaFlori.push_back(new Floare(*p));
+    }
+    else if (valoare==2)
+    {
+        Floare* p=new Trandafiri();
+        cin>>*p;
+        listaFlori.push_back(new Floare(*p));
+    }
+     else if (valoare==3)
+    {
+        Floare* p=new Lalele();
+        cin>>*p;
+        listaFlori.push_back(new Floare(*p));
+    }
+     else if (valoare==4)
+    {
+        Floare* p=new Bujori();
+        cin>>*p;
+        listaFlori.push_back(new Floare(*p));
+    }
+     else if (valoare==5)
+    {
+        Floare* p=new Buchet();
+        cin>>*p;
+        listaFlori.push_back(new Floare(*p));
+    }
+    else if (valoare==6)
+    {
+        Ornamente* p=new Ornamente();
+        cin>>*p;
+        listaOrnamente.push_back(new Ornamente(*p));
+    }
+     else if (valoare==7)
+    {
+        Ornamente* p=new Nastere();
+        cin>>*p;
+        listaOrnamente.push_back(new Ornamente(*p));
+    }
+    else if (valoare==8)
+    {
+        for (int i=0;i<listaFlorarii.size();i++)
+            cout<<*listaFlorarii[i]<<endl;
+        for (int i=0;i<listaFlori.size();i++)
+            cout<<*listaFlori[i]<<endl;
+        for (int i=0;i<listaOrnamente.size();i++)
+            cout<<*listaOrnamente[i]<<endl;
+    }
+    else break;
+
+}
+    return 0;
+}
