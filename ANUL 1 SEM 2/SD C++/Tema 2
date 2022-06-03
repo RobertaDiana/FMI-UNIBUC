@@ -1,0 +1,208 @@
+1)
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int v[100],x[100];
+
+void interclasare(int inf,int sup)
+{
+    //se imparte vectorul in 2 si pp ca sunt deja sortate
+    int med=(inf+sup)/2,i=inf,j=med+1,k=inf;
+    while(i<=med && j<=sup)
+        if(v[i]<v[j])
+            x[k++]=v[i++];
+        else
+            x[k++]=v[j++];
+    while(i<=med)
+        x[k++]=v[i++];
+    while(j<=sup)
+        x[k++]=v[j++];
+    for(i=inf; i<=sup; i++)
+        v[i]=x[i];
+}
+
+void merge_sort(int inf,int sup)
+{
+    if(inf<sup)
+    {
+        int med=(inf+sup)/2;
+        merge_sort(inf,med);
+        merge_sort(med+1,sup);
+        interclasare(inf,sup);
+    }
+}
+
+int main()
+{
+    int n,i;
+    cin>>n;
+    for(i=1; i<=n; i++)
+        cin>>v[i];
+    merge_sort(1,n);
+    for(i=1; i<=n; i++)
+        cout<<v[i]<<" ";
+    return 0;
+}
+
+
+2)
+//QuickSort
+//Prin aceasta metoda:primul element(pivot) este deplasat pe pozitia lui daca vectorul
+//ar fi ordonat. Elem mai mici decat pivotul sunt deplasate in stanga (pt cresc),
+//iar cele mai mari in dreapta(pt desc)
+#include <iostream>
+#include <fstream>
+using namespace std;
+int v[51]={5,6,8,1,20,59,57,14,2,36},n=10;
+void qs(int p, int u)
+{
+    //p indexul de inceput
+    //u indexul de final
+    if(p<u)
+    {
+        int i,j,pi,pj,m;
+        i=p;
+        j=u;
+        //pivotindex
+        pi=0;
+        pj=1;
+        while(i<j)
+        {
+            if(v[i]<v[j])
+                swap(pi,pj), swap(v[i],v[j]);
+            //incrementam index
+            i=pi+i;
+            j=j-pj;
+        }
+        m=i;
+        qs(p,m-1);
+        qs(m+1,u);
+    }
+}
+int main()
+{
+    //afisare
+    qs(0,n-1);
+    for(int i=0;i<n;i++)
+        cout<<v[i]<<" ";
+    return 0;
+}
+
+
+3)
+
+//Heap-sort
+//Min-heap
+//Cazul sortarii descrescatoare
+//Prima comp trebuie sa retina cea mai mica valoare, deci pt ca vectorul
+//sa fie sortat desc se face min-heap ul apoi se schimba componentele 1 si n,
+//deoarece ultima comp are val cea mai mare
+#include <iostream>
+using namespace std;
+int lung, v[100];
+
+void combinare(int varf,int lung)
+{
+
+    int a=2*varf, b=v[varf], sw=0;
+    while(a<=lung && sw==0)
+    {
+        if (a<lung && v[a]>v[a+1])
+            a++;
+        if (b>v[a])
+        {
+            v[varf]=v[a];
+            varf=a;
+            a=2*a;
+        }
+        else
+            sw=1;
+    }
+    v[varf]=b;
+}
+
+void heap()
+{
+    //aici se face min-heap
+    for(int i=lung/2;i>=1;i--)
+        combinare(i,lung);
+}
+
+4)
+#include <iostream>
+//interclasare
+//2 vectori strict desc sau cresc
+using namespace std;
+int x[100], v[100]={3,7,10,12} ;
+void interclasare( int inf,int sup)
+{
+    //se imparte vectorul in 2 si pp ca sunt deja sortate
+    int med=(inf+sup)/2,i=inf,j=med+1,k=inf;
+    while(i<=med && j<=sup)
+        if(v[i]<v[j])
+            x[k++]=v[i++];
+        else
+            x[k++]=v[j++];
+    while(i<=med)
+        x[k++]=v[i++];
+    while(j<=sup)
+        x[k++]=v[j++];
+    for(i=inf; i<=sup; i++)
+        v[i]=x[i];
+}
+
+void merge_sort(int inf,int sup)
+{
+     for (int i=inf; i<sup; i++)
+        cout<<v[i]<<" ";
+        cout<<endl;
+    if(inf<sup)
+    {
+        int med=(inf+sup)/2;
+        merge_sort(inf,med);
+        merge_sort(med+1,sup);
+        interclasare(inf,sup);
+    }
+}
+
+int main()
+{
+    int i,j,k,b[100]= {2,5,8,9},n=4,m=4;
+    i=0;
+    j=0;
+    k=0;
+    //cat timp se afla elem in ambii vectori
+    while (j<m)
+        //comparam elem ai cu bj
+        //if (a[i]<b[j])
+        {
+            v[n+k]=b[j];
+            j++;
+            k++;
+        }
+       /* else
+        {
+            //sau j daca b[j] a fost mai mic
+            a[n+k]=b[j];
+            j++;
+            k++;
+        }*/
+    //verificam daca au mai ramas elem
+    /*if (i<n)
+        for (j=n; j>=i; j--)
+            a[n+m]=a[j];
+
+    else
+        for (i=m; i>=j; i--)
+            a[n+m]=b[i];
+            */
+       for (i=0; i<n+k; i++)
+        cout<<v[i]<<" ";
+        cout<<endl;
+    merge_sort(0,n+m-1);
+      for (i=0; i<n+k; i++)
+        cout<<v[i]<<" ";
+    return 0;
+}
