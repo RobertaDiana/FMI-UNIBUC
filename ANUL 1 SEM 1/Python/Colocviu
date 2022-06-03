@@ -1,1 +1,137 @@
+# Subiectul 1
+# Fișierul text numere.in conține, pe mai multe linii, numere naturale despărțite prin
+# spații. Să se scrie în fișierul text numere.out numerele respective grupate în funcție de
+# numărul biților nenuli din reprezentările lor binare, conform modelului din exemplul de mai
+# jos. Grupele de numere vor fi scrise în ordinea descrescătoare a numărului de numere pe care
+# le conțin, iar în caz de egalitate se vor scrie descrescător după numărul de biți nenuli
+# corespunzători grupelor. În cadrul fiecărei grupe numerele vor fi ordonate crescător. Fiecare
+# număr va fi scris o singură dată în fișierul de ieșire.
 
+from os import execv
+
+
+def  nr_biti_nenuli(n):
+    count = 0
+    while (n):
+        count += n & 1
+        n >>= 1
+    return count
+
+fisier = open('numere.in', 'r').read().split()
+
+numere = [int(x) for x in fisier]
+try:
+  fisier_output = open('numere.out', 'w')
+except:
+  fisier_output = open('numere.out', 'x')
+
+rez = {}
+for nr in numere:
+  nr_biti = nr_biti_nenuli(nr)
+  try:
+    rez[nr_biti].append(nr)
+  except:
+    rez[nr_biti] = [nr]
+
+for item in rez:
+  rez[item] = list(set(rez[item]))
+
+for item in rez:
+  rez[item].sort()
+
+rezultat = {k: value for k, value in sorted(rez.items(), key=lambda item: (len(item[1]), item[0]),reverse=True )}
+
+for item in rezultat:
+  x = [str(n) for n in rezultat[item]]
+  s = ','.join(x)
+  fisier_output.write(f'{item} biti nenuli: {s}\n')
+  
+  
+ # Subiectul 2
+# Se dă fișierul "matrice.in" cu următoarea structură: pe linia 𝑖 se află separate prin câte un spațiu
+# 𝑛 numere naturale reprezentând elementele de pe linia 𝑖 a unei matrice, ca în exemplul de mai
+# jos. Este cunoscut faptul că în fișier se află 𝑛 ∗ 𝑛 elemente numere naturale, unde 𝑛 este un
+# număr natural impar > 2.
+
+# a) [0,25p] Să se scrie o funcție citire_matrice care citește datele din fișierul "matrice.in" și
+# returnează o matrice de dimensiune 𝑛 × 𝑛 formată din aceste numere.
+
+
+def citire_matrice():
+    f = open("matrice.in", "r")
+    matrice=f.read()
+    matrice=matrice.split("\n")
+    n=[]
+    for elem in matrice:
+        lista=[int(x) for x in elem.split()]
+        n.append(lista)
+    f.close()
+    return n
+
+# b)[1,5p] Să se scrie o funcție care primește ca parametru matricea și returnează matricea bordată
+# după următoarele reguli:
+# ● se va adăuga o coloană nouă la final (pe poziția 𝑛) care va avea pe poziția 𝑘 suma
+# valorilor de pe linia 𝑘
+# ● se va adăuga o linie nouă la final (poziția 𝑛) care va avea pe poziția 𝑘 suma valorilor
+# de pe coloana 𝑘
+
+
+def matrice(matricea):
+    lung=len(matricea)
+    for elem in matricea:
+      suma=sum(elem)
+      elem.append(suma)
+    a=[0 for i in range(lung+1)]
+    lung=lung+1
+    for i in range(lung-1):
+        for j in range(lung):
+          if i==0:
+              a[j]=matricea[i][j]
+          else:
+              a[j]+=matricea[i][j]
+    matricea.append(a)
+    return matricea
+
+print(matrice(citire_matrice()))
+
+#c)[1,25p] Se consideră matricea citită la punctul a), peste care se aplică funcția de la punctul b).
+# Să se parcurgă matricea mai întâi pe diagonala principală, apoi pe diagonala secundară și, în final,
+# restul elementelor care nu aparțin diagonalelor (parcurgerea se face pe linii de sus în jos și de la
+# stânga la dreapta) și se afișează elementele în fișierul ”matrice.out”.
+
+matricea=citire_matrice()
+fct=matrice(matricea)
+g=open("matrice.out", "w")
+lung=len(matricea)
+for i in range(lung):
+    b=matricea[i][i]
+    c=''
+    while b!=0:
+        nr=b%10
+        numere=nr+ord('0')
+        c=c+chr(numere)
+        b=b//10
+    g.write(c)
+    g.write(" ")
+for i in range(lung):
+    b=matricea[i][lung-i-1]
+    c=''
+    while b!=0:
+        nr=b%10
+        numere=nr+ord('0')
+        c=c+chr(numere)
+        b=b//10
+    g.write(c)
+    g.write(" ")
+for i in range(lung):
+    for j in range(lung):
+        if i!=j and j!=lung-i-1:
+            b = matricea[i][j]
+            c = ''
+            while b != 0:
+                nr = b % 10
+                numere = nr + ord('0')
+                c = c + chr(numere)
+                b = b // 10
+            g.write(c)
+            g.write(" ")
