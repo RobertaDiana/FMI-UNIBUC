@@ -1,0 +1,18 @@
+--lab6
+--1
+--a)
+
+select last_name, salary, department_id
+from employees e
+where salary > (select avg(salary) from employees where department_id= e.department_id);
+
+
+
+select job_id,
+case
+when substr(lower(job_id), 1, 1) = 's' then sum(salary)
+when max(salary) = (select max(salary) from employees)
+then avg(salary)
+else min(salary) end "Minim"
+from employees
+group by job_id;
