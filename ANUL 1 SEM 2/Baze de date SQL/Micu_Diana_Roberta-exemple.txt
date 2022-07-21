@@ -1,0 +1,473 @@
+--11. Formula?i în limbaj natural ?i implementa?i 5 cereri SQL complexe ce vor utiliza, în 
+--ansamblul lor, următoarele elemente: 
+--• opera?ie join pe cel pu?in 4 tabele
+--• filtrare la nivel de linii
+--• subcereri sincronizate în care intervin cel pu?in 3 tabele
+--• subcereri nesincronizate în care intervin cel pu?in 3 tabele
+--• grupări de date, func?ii grup, filtrare la nivel de grupuri
+--• ordonări
+--• utilizarea a cel pu?in 2 func?ii pe ?iruri de caractere, 2 func?ii pe date calendaristice, a 
+--func?iilor NVL ?i DECODE, a cel pu?in unei expresii CASE
+--• utilizarea a cel pu?in 1 bloc de cerere (clauza WITH)
+
+----join pe 4 tabele + filtrare la nivel de linii
+--Sa se afiseze tipul de utilizator din utilizatori, numele producatorilor din 
+--producatori, prenumele abonatilor din abonati si tipul de plata din abonamente 
+--de abonati.
+select u.tip_utilizator, p.nume, a.prenume, n.denumire
+from utilizatori u join producatori p using (utilizatori_id)
+                join netflix n using (netflix_id)
+                join abonati a using (utilizatori_id);
+
+----subcereri 
+--Sa se afiseze numele de la cel care este producator si 
+--are tipul de abonament lunar, ordonate alfabetic
+select producatori_id, nume, prenume from producatori
+where producatori_id in (select producatori_id from ABONAMENTE_PRODUCATORI where tip_abonament like 'lunar')
+order by prenume;
+
+
+----clauza with+case
+--Suma varstelor din profil abonati, daca suma varstelor e mai mare decat 100 afisezi 
+--un mesaj. 
+with sume as(select sum(varsta) total from abonatiprofil)
+select total,
+case
+when total >= 100 then 'Suma varstelor este mai mare decat 100'
+else 'Suma este mai mica decat 100'
+end as "Informatii varsta"
+from sume;
+
+
+----grupari de date, functii grup, filtrare la nivel de grupuri 
+--Sa se afiseze tipul de film si anul minim de aparitie si ultima aparitie.
+ select film_tip, min(an_aparitie), max(an_aparitie)
+ from PRODUCATORI_PROFIL
+ group by film_tip;
+
+
+----2 fct pe siruri de caractere
+--Sa se afiseze numele producatorilor celor care incep cu o litera si care se termina cu
+--o anumita litera.
+select nume from producatori where upper(nume) like ('S%');
+
+select prenume from producatori where upper (prenume) like ('%A');
+
+
+
+--12. Implementarea a 3 opera?ii de actualizare sau suprimare a datelor utilizând subcereri.
+
+--1
+--Sa se modifice tipul de plata al abonatului a carui prenume este 'daria'.
+ 
+
+UPDATE ABONAMENTE_ABONATI
+SET TIP_PLATA='ANUAL'
+WHERE ABONATI_ID=(SELECT ABONATI_ID FROM ABONATI 
+WHERE PRENUME='daria');
+
+SELECT * FROM ABONAMENTE_ABONATI;
+
+ROLLBACK;
+
+SELECT * FROM ABONAMENTE_ABONATI;
+
+
+--2
+--delete
+--Sa se stearga emailul abonatilor.
+delete from CONT
+where cont_id in (select cont_id from CONT where email = 'micuroberta@gmail.com');
+
+select * from CONT;
+ROLLBACK;
+select * from CONT;
+
+
+--3
+--Sa se modifice numele producatorului a carui tip abonament este lunar.
+UPDATE PRODUCATORI
+SET NUME='VASILESCU'
+WHERE producatori_id in ( select producatori_id from ABONAMENTE_PRODUCATORI where tip_abonament='lunar');
+
+select * from producatori;
+ROLLBACK;
+select * from producatori;
+
+
+
+--13. Crearea unei secven?e ce va fi utilizată în inserarea înregistrărilor în tabele (punctul 10).
+
+--PRIMUL TABEL
+
+SELECT * FROM NETFLIX;
+
+CREATE SEQUENCE SEQ_NETFLIX
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO NETFLIX
+VALUES (SEQ_NETFLIX.NEXTVAL, 'CHILL');
+
+INSERT INTO NETFLIX
+VALUES (SEQ_NETFLIX.NEXTVAL, 'RELAX');
+
+INSERT INTO NETFLIX
+VALUES (SEQ_NETFLIX.NEXTVAL, 'FUNNY');
+
+INSERT INTO NETFLIX
+VALUES (SEQ_NETFLIX.NEXTVAL, 'SAD');
+
+COMMIT;
+
+
+
+--AL 2 LEA TABEL
+
+CREATE SEQUENCE SEQ_UTILIZATORI
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO UTILIZATORI
+VALUES (SEQ_UTILIZATORI.NEXTVAL, 'PRODUCATOR', 10);
+
+INSERT INTO UTILIZATORI
+VALUES (SEQ_UTILIZATORI.NEXTVAL, 'ABONAT', 20);
+
+INSERT INTO UTILIZATORI
+VALUES (SEQ_UTILIZATORI.NEXTVAL, 'PRODUCATOR', 30);
+
+INSERT INTO UTILIZATORI
+VALUES (SEQ_UTILIZATORI.NEXTVAL, 'PRODUCATOR', 40);
+
+
+COMMIT;
+
+
+
+--AL 3 LEA TABEL
+
+
+CREATE SEQUENCE SEQ_CATEGORIE
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO CATEGORIE
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'FILM');
+
+INSERT INTO CATEGORIE
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'SERIAL');
+
+INSERT INTO CATEGORIE
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'FILM');
+
+INSERT INTO CATEGORIE
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'SERIAL');
+
+COMMIT;
+
+
+--AL 4 LEA TABEL
+
+CREATE SEQUENCE SEQ_REZUMAT
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO REZUMAT
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'UN FILM LA CARE MERITA SA TE UITI');
+
+INSERT INTO REZUMAT
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'UN FILM LA CARE AM PLANS');
+
+INSERT INTO REZUMAT
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'UN FILM LA CARE AM RAS');
+
+INSERT INTO REZUMAT
+VALUES (SEQ_CATEGORIE.NEXTVAL, 'TREBUIE VAZUT CU FAMILIA');
+
+COMMIT;
+
+
+--AL 5 LEA TABEL
+
+CREATE SEQUENCE SEQ_ABONATI
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO ABONATI
+VALUES (SEQ_ABONATI.NEXTVAL, 'POPA', 'VASILE', 10);
+
+INSERT INTO ABONATI
+VALUES (SEQ_ABONATI.NEXTVAL, 'MINCU', 'MIRCEA', 20);
+
+INSERT INTO ABONATI
+VALUES (SEQ_ABONATI.NEXTVAL, 'TOCU', 'ALEXANDRU', 30);
+
+INSERT INTO ABONATI
+VALUES (SEQ_ABONATI.NEXTVAL, 'RUSU', 'ANDREI', 40);
+
+COMMIT;
+
+
+--AL 6 LEA TABEL
+
+CREATE SEQUENCE SEQ_CONT
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO CONT
+VALUES (SEQ_CONT.NEXTVAL, '73322', 'popavasile@gmail.com');
+
+INSERT INTO CONT
+VALUES (SEQ_CONT.NEXTVAL, '212', 'mincumircea@gmail.com');
+
+INSERT INTO CONT
+VALUES (SEQ_CONT.NEXTVAL, '928', 'tocualexandru@gmail.com');
+
+INSERT INTO CONT
+VALUES (SEQ_CONT.NEXTVAL, '9819', 'rusuandrei@gmail.com');
+
+COMMIT;
+
+
+--AL 7 TABEL
+
+
+CREATE SEQUENCE SEQ_ABOABONATI
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO ABONAMENTE_ABONATI
+VALUES (SEQ_ABOABONATI.NEXTVAL, 'LUNAR', 10);
+
+INSERT INTO ABONAMENTE_ABONATI
+VALUES (SEQ_ABOABONATI.NEXTVAL, 'LUNAR', 20);
+
+INSERT INTO ABONAMENTE_ABONATI
+VALUES (SEQ_ABOABONATI.NEXTVAL, 'ANUAL', 30);
+
+INSERT INTO ABONAMENTE_ABONATI
+VALUES (SEQ_ABOABONATI.NEXTVAL, 'LUNAR', 40);
+
+COMMIT;
+
+
+
+--AL 8 LEA TABEL
+
+CREATE SEQUENCE SEQ_ABONATIPROFIL
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO ABONATIPROFIL
+VALUES (SEQ_ABONATIPROFIL.NEXTVAL, 'copil',15,  'F', 10);
+
+INSERT INTO ABONATIPROFIL
+VALUES (SEQ_ABONATIPROFIL.NEXTVAL, 'adult', 36,  'F', 20);
+
+INSERT INTO ABONATIPROFIL
+VALUES (SEQ_ABONATIPROFIL.NEXTVAL, 'copil', 13,  'M', 30);
+
+COMMIT;
+
+
+--AL 9 LEA TABEL
+
+CREATE SEQUENCE SEQ_PRODUCATORI
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO PRODUCATORI
+VALUES (SEQ_PRODUCATORI.NEXTVAL, 'BARDAS', 'DENIS', 10);
+
+INSERT INTO PRODUCATORI
+VALUES (SEQ_PRODUCATORI.NEXTVAL, 'BARDAS', 'RAZVAN', 20);
+
+INSERT INTO PRODUCATORI
+VALUES (SEQ_PRODUCATORI.NEXTVAL, 'RADU', 'MARIA', 30);
+
+INSERT INTO PRODUCATORI
+VALUES (SEQ_PRODUCATORI.NEXTVAL, 'RADU', 'ELENA', 40);
+
+COMMIT;
+
+
+--AL 10 LEA TABEL
+
+CREATE SEQUENCE SEQ_ABONAMENTEPRODUCATORI
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO ABONAMENTE_PRODUCATORI
+VALUES (SEQ_ABONAMENTEPRODUCATORI.NEXTVAL, 'lunar', 10);
+
+INSERT INTO ABONAMENTE_PRODUCATORI
+VALUES (SEQ_ABONAMENTEPRODUCATORI.NEXTVAL, 'lunar', 20);
+
+INSERT INTO ABONAMENTE_PRODUCATORI
+VALUES (SEQ_ABONAMENTEPRODUCATORI.NEXTVAL, 'anual', 30);
+
+INSERT INTO ABONAMENTE_PRODUCATORI
+VALUES (SEQ_ABONAMENTEPRODUCATORI.NEXTVAL, 'lunar', 40);
+
+COMMIT;
+
+
+--AL 11 LEA TABEL
+
+CREATE SEQUENCE SEQ_PRODUCATORIPROFIL
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO PRODUCATORI_PROFIL
+VALUES (SEQ_PRODUCATORIPROFIL.NEXTVAL, 'actiune', 2020, 20);
+
+INSERT INTO PRODUCATORI_PROFIL
+VALUES (SEQ_PRODUCATORIPROFIL.NEXTVAL, 'psihologic', 2019, 22);
+
+INSERT INTO PRODUCATORI_PROFIL
+VALUES (SEQ_PRODUCATORIPROFIL.NEXTVAL, 'crima', 2008, 17);
+
+INSERT INTO PRODUCATORI_PROFIL
+VALUES (SEQ_PRODUCATORIPROFIL.NEXTVAL, 'actiune', 2020, 29);
+
+COMMIT;
+
+
+--AL 12 LEA TABEL
+
+CREATE SEQUENCE SEQ_VIZIONARI
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+
+INSERT INTO VIZIONARI
+VALUES (SEQ_VIZIONARI.NEXTVAL, 10,73327);
+
+INSERT INTO VIZIONARI
+VALUES (SEQ_VIZIONARI.NEXTVAL,10, 73321227);
+
+INSERT INTO VIZIONARI
+VALUES (SEQ_VIZIONARI.NEXTVAL,20, 7883327);
+
+INSERT INTO VIZIONARI
+VALUES (SEQ_VIZIONARI.NEXTVAL,30, 873327);
+
+
+COMMIT;
+
+
+--AL 13 LEA TABEL
+
+CREATE SEQUENCE SEQ_FILM
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO FILM
+VALUES (SEQ_FILM.NEXTVAL, 22, 10);
+
+INSERT INTO FILM
+VALUES (SEQ_FILM.NEXTVAL, 122, 10);
+
+INSERT INTO FILM
+VALUES (SEQ_FILM.NEXTVAL, 272, 20);
+
+COMMIT;
+
+
+--AL 14 LEA TABEL
+
+CREATE SEQUENCE SEQ_REUSESTE
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+INSERT INTO REUSESTE
+VALUES (SEQ_REUSESTE.NEXTVAL, 2, 10);
+
+INSERT INTO REUSESTE
+VALUES (SEQ_REUSESTE.NEXTVAL, 4, 20);
+
+COMMIT;
+
+
+--AL 15 LEA TABEL
+
+CREATE SEQUENCE SEQ_REDUCERE1
+INCREMENT BY 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+
+INSERT INTO REDUCERE1
+VALUES (SEQ_REDUCERE1.NEXTVAL, 2);
+
+INSERT INTO REDUCERE1
+VALUES (SEQ_REDUCERE1.NEXTVAL, 8);
+
+INSERT INTO REDUCERE1
+VALUES (SEQ_REDUCERE1.NEXTVAL, 19);
+
+INSERT INTO REDUCERE1
+VALUES (SEQ_REDUCERE1.NEXTVAL, 10);
+
+INSERT INTO REDUCERE1
+VALUES (SEQ_REDUCERE1.NEXTVAL, 22);
+
+INSERT INTO REDUCERE1
+VALUES (SEQ_REDUCERE1.NEXTVAL, 24);
+
+
+COMMIT;
+
+
+
+--14. Crearea unei vizualizări compuse. Dati un exemplu de operatie LMD permisă 
+--pe vizualizarea respectivă si un exemplu de operatie LMD nepermisă.
+
+CREATE VIEW FILMESERIALE AS
+SELECT p.nume, a.tip_utilizator from PRODUCATORI P join UTILIZATORI A using (utilizatori_id);
+
+UPDATE FILMESERIALE 
+SET nume='visinescu' where tip_utilizator='producator';
+
+select * from FILMESERIALE;
+ROLLBACK;
+select * from FILMESERIALE;
+
+
+UPDATE FILMESERIALE
+SET nume='visinescu', varsta='30' where tip_utilizator = 'producator';
+--ACEASTA NU MERGE DEOARECE NU PUTEM AVEA 2 TIPURI DE SET
+
+--15. Crearea unui index care să optimizeze o cerere de tip căutare cu 2 criterii. Specificați 
+--cererea.
+create unique index numele_prenumele on Abonati (nume, prenume);
