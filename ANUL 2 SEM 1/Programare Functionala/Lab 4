@@ -1,0 +1,82 @@
+
+
+--1  Folosind numai metoda prin selectie definiti o functie
+--astfel încât factori n întoarce lista divizorilor pozitivi ai lui n.
+
+factori  :: Int -> [Int]
+factori x = [y | y <- [1..x], x `rem` y == 0]
+
+--2 Folosind functia factori, definiti predicatul prim n care întoarce True dacă si numai dacă n este număr prim.
+prim :: Int -> Bool
+prim n = length (factori n) ==2
+
+--3  Folosind numai metoda prin selectie si functiile definite anterior, definiti functia
+--astfel încât numerePrime n întoarce lista numerelor prime din intervalul [2..n].
+numerePrime :: Int -> [Int]
+numerePrime y = [n| n<-[2..y], prim n]
+
+--4  Definiti functia myzip3 care se comportă asemenea lui zip dar are trei argumente:
+
+myzip3 :: [a] -> [a] -> [a] -> [(a,a,a)]
+myzip3 x y z = [(a,b,c) | (a, (b,c)) <-zip x (zip y z)]
+
+--5 Scrieti o functie generică firstEl care are ca argument o listă de perechi de tip (a,b) si 
+-- întoarce lista primelor elementelor din fiecare pereche:
+
+firstEl :: [(a,b)] -> [a]
+firstEl  = map fst 
+
+--6  Scrieti functia sumList care are ca argument o listă de liste de valori Int
+--si întoarce lista sumelor elementelor din fiecare listă (suma elementelor unei liste de întregi se calculează cu functia sum):
+
+sumList :: [[Int]] -> [Int]
+sumList = map sum  
+
+--7  Scrieti o functie prel2 care are ca argument o listă de Int si întoarce o listă în care elementele pare 
+--sunt înjumătătite, iar cele impare sunt dublate:
+
+functie :: Int -> Int
+functie x 
+     | odd x = x*2
+     |otherwise = div x 2
+
+pre12 :: [Int]-> [Int]
+pre12 = map functie  
+
+-- pre12 ls = map (\x -> if `mod` 2 ==0 then x `div` 2 else x*2) ls
+
+--8  Scrieti o functie care primeste ca argument un caracter si o listă de siruri, rezultatul fiind 
+--lista sirurilor care contin caracterul respectiv (folositi functia elem).
+
+elemente :: Char -> [String] -> [String]
+elemente n = filter (elem n) 
+
+--9  Scrieti o functie care primeste ca argument o listă de întregi si întoarce
+--lista pătratelor numerelor impare.
+
+nrImpare :: [Int] -> [Int]
+nrImpare = map (^2) . filter odd
+
+--10 Scrieti o functie care primeste ca argument o listă de întregi si întoarce
+--lista pătratelor numerelor din pozitii impare. Pentru a avea acces la pozitia elementelor folositi zip.
+
+pozImpare :: [Int] -> [Int]
+pozImpare l = map (\(a,b) ->a^2) (filter (\(a,b) -> odd b) (zip l [1..]))
+
+--11 Scrieti o functie care primeste ca argument o listă de siruri de caractere
+--si întoarce lista obtinută prin eliminarea consoanelor din fiecare sir.
+
+numaiVocale :: [String] -> [String]
+numaiVocale = map (filter (`elem` "aeiouAEIOU"))
+
+--12  Definiti recursiv functiile mymap si myfilter cu aceeasi functionalitate ca si functiile predefinite
+
+mymap :: (a -> b) -> [a] -> [b]
+mymap f [] = []
+mymap f (x : xs) = f x : mymap f xs
+
+myfilter :: (a -> Bool) -> [a] -> [a]
+myfilter p [] = []
+myfilter p ( x : xs ) 
+  | p x = x : myfilter p xs
+  | otherwise = myfilter p xs
