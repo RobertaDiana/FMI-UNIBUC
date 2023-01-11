@@ -1,0 +1,134 @@
+import Data.List
+
+
+
+-- Prelude> 2+3
+-- 5
+-- Prelude> False || True
+-- True
+-- Prelude> x
+-- <interactive>:10:1: error: Variable not in scope: x
+-- Prelude> x=3
+-- Prelude> x
+-- 3
+-- Prelude> y=x+1
+-- Prelude> y
+-- 4
+-- Prelude> head [1,2,3]
+-- 1
+-- Prelude> head "abcd"
+-- 'a'
+-- Prelude> tail "abcd"
+-- 'bcd'
+
+
+
+-- x=1
+-- z= let x=3 in x
+
+-- x = let z = 5; g u = z + u in let z = 7 in g 0
+
+
+-- myInt = 55555555555555555555555555555555555555555555555555555555555
+-- double :: Integer -> Integer
+-- double x = x+x
+
+
+-- double :: Integer -> Integer
+-- double x = x+x
+
+-- triple :: Integer -> Integer 
+-- triple a = a+a+a
+
+-- maxim :: Integer -> Integer -> Integer
+-- maxim x y = if (x > y) then x else y
+
+-- maxim :: Integer -> Integer -> Integer
+-- maxim x y =
+--    if (x > y)
+--       then x
+--       else y
+
+
+-- maxim3 :: Integer -> Integer -> Integer -> Integer
+-- maxim3 x y z = maxim x ( maxim y z)
+
+-- maxim3 :: Integer -> Integer -> Integer -> Integer
+-- maxim3 x y z =
+--     if (x>y && x>z)
+--         then x
+--         else 
+--             if (y>z)
+--                 then y
+--                 else z
+
+-- maxim3 :: Integer -> Integer -> Integer -> Integer
+-- maxim3 x y z =
+--     let 
+--         u= maxim x y
+--     in 
+--         maxim u z               
+
+-- maxim4 :: Integer -> Integer -> Integer -> Integer -> Integer
+-- maxim4 x y z t = maxim x (maxim3 y z t)
+
+-- maxim4 :: Integer -> Integer -> Integer -> Integer -> Integer
+-- maxim4 x y z t =
+--     let 
+--         u = maxim3 x y z
+--     in 
+--         maxim u t
+
+-- verif1 :: Integer -> Integer -> Integer -> Integer -> Bool
+-- verif1 x y z t =
+--     (maxim4 x y z t) >= x && (maxim4 x y z t) >= y && (maxim4 x y z t) >= z && (maxim4 x y z t) >=t
+
+-- Exercitiul 6 
+
+--   Să se scrie următoarele functii:
+-- a) functie cu 2 parametri care calculeaza suma pătratelor celor două numere;
+-- b) functie cu un parametru ce întoarce mesajul “par” dacă parametrul este par s, i “impar” altfel;
+-- c) functie care calculează factorialul unui număr;
+-- d) functie care verifică dacă un primul parametru este mai mare decât dublul celui de-al doilea
+-- parametru.
+
+
+-- a)
+
+suma :: Integer-> Integer -> Integer
+suma x y = x^2 + y^2
+
+-- b)
+
+paritate :: Integer -> String
+paritate x = 
+    if mod x 2==0 
+        then "par"
+    else
+        "impar"
+
+-- c)
+--mai multe variante 
+factorial :: Integer -> Integer
+factorial 0 = 1
+factorial n = n * factorial(n-1)
+
+fact :: Int -> Int
+fact n = if n==0 then 1 else n* fact (n-1)
+
+factorialul :: Int-> Int
+factorialul n 
+ |n==0 =1
+ |otherwise = n* fact(n-1)
+
+-- d)
+parametru :: Integer -> Integer -> Bool
+parametru a b =
+    if a > 2*b 
+        then True
+        else False
+
+
+-- Exemplu preluat din cursul 2
+dist :: (Int,Int) -> Int
+dist (elem1, elem2) = abs (elem1-elem2)
