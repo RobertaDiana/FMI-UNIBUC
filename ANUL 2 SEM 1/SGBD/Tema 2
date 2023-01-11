@@ -1,0 +1,83 @@
+--2
+
+
+DECLARE
+   v_nr  DATE :='1-OCT-22';
+   maxim NUMBER(3) :=extract(DAY from LAST_DAY(sysdate));
+BEGIN 
+  FOR contor in 1..maxim LOOP
+      insert into octombrie_mdr values ( contor , v_nr);
+      v_nr := v_nr+1;
+  END LOOP;
+END;
+/
+
+
+--3
+
+DECLARE
+   v_nr NUMBER(3);
+   v_nume VARCHAR(255) := '&nume';
+BEGIN
+   select COUNT(r.title_id) into v_nr 
+   from rental r join member m on m.member_id=r.member_id
+   where UPPER(m.last_name) LIKE UPPER( v_nume);
+   EXCEPTION
+       WHEN NO_DATA_FOUND THEN 
+         DBMS_OUTPUT.PUT_LINE ('NICIO LINIE');
+       WHEN TOO_MANY_ROWS THEN
+         DBMS_OUTPUT.PUT_LINE('MAI MULTE LINII');
+END;
+/
+
+
+--4
+DECLARE
+   v_nr NUMBER(3);
+   v_nume VARCHAR(255) := '&nume';
+   v_tot NUMBER(6);
+BEGIN
+   select COUNT(r.title_id) into v_nr 
+   from rental r join member m on m.member_id=r.member_id
+   where UPPER(m.last_name) LIKE UPPER( v_nume);
+   
+   SELECT COUNT(title_id)
+   into v_tot from title;
+   
+   if v_nr >=0.75 * v_tot
+   then DBMS_OUTPUT.PUT_LINE ('CATEGORIA 1');
+   ELSIF v_nr between 0.5 * v_tot and 0.75 * v_tot 
+   then DBMS_OUTPUT.PUT_LINE ('CATEGORIA 2');
+   ELSIF v_nr BETWEEN 0.25* v_tot and 0.5 * v_tot
+   then DBMS_OUTPUT.PUT_LINE ('CATEGORIA 3');
+   ELSE DBMS_OUTPUT.PUT_LINE('CATEGORIA 4');
+   END IF;
+END;
+/
+
+
+--5
+
+DECLARE
+   v_nr NUMBER(3);
+   membru member_mdr.member_id%TYPE := &id;
+   v_tot NUMBER(6);
+BEGIN
+   select COUNT(r.title_id) into v_nr 
+   from rental r join member_mdr m on m.member_id=r.member_id
+   where m.member_id= membru;   
+   
+   SELECT COUNT(title_id)
+   into v_tot from title;
+   
+   UPDATE member_mdr
+   SET discount =
+     CASE
+     WHEN v_nr >= 0.75 * v_tot then 0.1
+     WHEN v_nr BETWEEN 0.5* v_tot and 0.75 * v_tot THEN 0.05
+     WHEN v_nr between 0.25* v_tot and 0.5 * v_tot then 0.03
+     else 0
+     end 
+     where member_id=membru;
+END;
+/
