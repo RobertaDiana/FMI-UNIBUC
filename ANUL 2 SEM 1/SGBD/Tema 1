@@ -1,0 +1,115 @@
+--6). Afi?a?i următoarele informa?ii: 
+--titlul filmului, numărul exemplarului, statusul setat ?i statusul corect
+select t.title, c.copy_id,status status_setat,
+CASE
+WHEN (t.title_id, c.copy_id) IN 
+(select r.title_id, r.copy_id from rental r
+where r.act_ret_date is NULL)
+    THEN 'RENTED'
+    ELSE 'AVAILABLE'
+END AS STATUS_corect
+from title_copy c, title t
+where c.title_id = t.title_id;
+
+--7
+create table TITLE_COPY_MDR as select * from TITLE_COPY;
+SELECT * FROM TITLE_COPY_MDR;
+--a. Câte exemplare au statusul eronat? 
+
+--daca act_ret_date este null inseamna ca filmul nu a fost inca returnat 
+--deci statusul sau trebuie sa fie "imprumutat", in caz contrar- valabil
+select t.title, tc.copy_id, status, CASE
+WHEN (t.title_id, tc.copy_id) in (select r.title_id, r.copy_id from rental r
+where r.act_ret_date is null) then 'imprumutat'
+WHEN (t.title_id, tc.copy_id) not in (select r.title_id, r.copy_id from rental r
+where r.act_ret_date is null) then 'valabil'
+end as status_bun
+from title_copy tc join title t on (tc.title_id=t.title_id);
+--b. Setati statusul corect pentru toate exemplarele care au statusul eronat. Salvati actualizările 
+--realizate.
+--Obs. Pentru rezolvare crea?i tabela title_copy_***, preluând structura si datele din tabela
+--title_copy
+update title_copy_mdr 
+set status = (case when (title_id, copy_id) not in (select title_id, copy_id from rental 
+       where act_ret_date is null)  
+    then 'valabil'  
+  else 'imprumutat' end);
+select * from title_copy_mdr;
+rollback;
+
+--8 Toate filmele rezervate au fost împrumutate la data rezervării? Afi?a?i textul “Da” sau ”Nu” în 
+--func?ie de situa?ie
+select * from rental;
+select * from reservation;
+select 
+  CASE when 
+    (select count(*) from  rental 
+      join reservation  using (member_id) 
+       where book_date != res_date ) >0
+       then 'nu'
+      else 'da'
+      end "Raspuns" 
+from dual;
+
+
+--9 De câte ori a împrumutat un membru (nume ?i prenume) fiecare film (titlu)?
+select * from rental;
+select * from member;
+ 
+select m.first_name ||' '|| m.last_name "Nume", r.title_id "titlu", count(title_id) as "imprumuturi"
+from member m join rental r using (member_id)
+group by member_id, m.first_name, m.last_name, r.title_id;
+
+
+--10 De câte ori a împrumutat un membru 
+--(nume ?i prenume) fiecare exemplar (cod) al unui film (titlu)?
+
+--cautam in tabelul rental pt a vedea ce imprumuturi au fost facute
+--numaram intrarile din tabelul rental pt a afla cate inchirieri au fost 
+--facute de o pers pt un exemplar
+select * from rental;
+select * from member;
+
+select m.first_name ||' '|| m.last_name "Nume",r.copy_id "cod",  
+r.title_id "titlu", count(*) as "imprumuturi"
+from member m join rental r using (member_id)
+group by m.last_name, m.first_name, r.copy_id, r.title_id;
+
+
+--11 . Obtineti statusul celui mai des împrumutat exemplar al fiecărui film (titlu)
+
+select * from title;
+select * from title_copy;
+select * from rental;
+
+
+select title_id, status, copy_id from title_copy 
+join title using (title_id)
+where copy_id in 
+(select copy_id from (select copy_id from rental 
+join title using (title_id) 
+group by title_id, copy_id order by count(copy_id)desc));
+
+
+
+--12. Pentru anumite zile specificate din luna curentă, ob?ine?i numărul de împrumuturi efectuate.
+--a. Se iau în considerare doar primele 2 zile din lună.
+
+--am luat luna curenta din sysdate si ziua am luat pt 12 sau 13 pentru ca pentru 
+--primele 2 zile nu aveam carti de imprumutat si m-am folosit de tabelul rental
+--deoarece aici se gasesc informatiile
+select book_date, count(*) as "imprumuturi"
+from rental
+where extract (month from book_date) = extract(month from sysdate) 
+and (extract(day from book_date)=12 or extract(day from book_date) = 13)
+group by book_date;
+
+select * from rental;
+
+--b. Se iau în considerare doar zilele din lună în care au fost efectuate împrumuturi.
+
+--am luat luna curenta si am numarat imprumuturile din ziua in care s a efectuat 
+--act_ret_date
+select act_ret_date, count(act_ret_date) as "imprumuturi" from rental 
+where extract(month from book_date)=extract(month from sysdate) 
+group by act_ret_date;
