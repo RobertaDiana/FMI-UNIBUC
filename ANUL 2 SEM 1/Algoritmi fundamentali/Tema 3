@@ -1,0 +1,532 @@
+from collections import Counter, defaultdict
+from typing import List
+
+
+# #                        TEMA OBLIGATORIE
+# #                                                            EXERCITIUL 1
+#
+#
+# from collections import deque
+#
+#
+# def bf(s, n, la, lin, f, cost, tata, viz):
+#     for i in range(n + 1):
+#         viz[i] = tata[i] = 0
+#
+#     c = deque()
+#
+#     c.append(s)
+#     viz[s] = 1
+#     while (len(c) > 0):
+#         x = c.popleft()
+#         for y in la[x]:
+#
+#             if viz[y] == 0 and f[x][y] < cost[x][y]:
+#                 tata[y] = x
+#                 if y == n:
+#                     return 1
+#                 c.append(y)
+#                 viz[y] = 1
+#
+#         for y in lin[x]:
+#             if viz[y] == 0 and f[y][x] > 0:
+#                 tata[y] = -x
+#                 if y == n:
+#                     return 1
+#                 c.append(y)
+#                 viz[y] = 1
+#
+#     return 0
+#
+#
+# fin = open("maxflow.in")
+# fout = open("maxflow.out", "w")
+#
+# c_max = 0
+#
+# n, m = [int(x) for x in fin.readline().split()]
+# tata = [0] * (n + 1)
+# viz = [0] * (n + 1)
+#
+# f = [[0 for i in range(n + 1)] for j in range(n + 1)]
+# cost = [[0 for i in range(n + 1)] for j in range(n + 1)]
+#
+# la = [[] for i in range(n + 1)]
+# lin = [[] for i in range(n + 1)]
+# for i in range(m):
+#     x, y, c = [int(x) for x in fin.readline().split()]
+#
+#     la[x].append(y)
+#     lin[y].append(x)
+#     cost[x][y] = c
+#     f[x][y] = 0
+#
+#     if c > c_max:
+#         c_max = c
+#
+# fin.close()
+# fmax = 0
+# s = 1  # sursa
+# t = n  # destinatia
+#
+# while bf(s, n, la, lin, f, cost, tata, viz):
+#     # calculam i(P) = capacitatea reziduala minima pe un arc de pe drumul de la s la t determinat cu bf
+#     iP = c_max  # i(P)
+#     t = n
+#     fout.write("lantul (afisat invers -tema de modificat): ")
+#     while t != s:
+#         fout.write(f"{t} ")
+#         if tata[t] >= 0:  # arc direct - capacitate c(e)-f(e)
+#             if cost[tata[t]][t] - f[tata[t]][t] < iP:
+#                 iP = cost[tata[t]][t] - f[tata[t]][t]
+#             t = tata[t]
+#
+#         else:  # arc invers - capacitate f(e)
+#             if f[t][-tata[t]] < iP:
+#                 iP = f[t][-tata[t]]
+#             t = -tata[t]
+#
+#     fout.write(f"{s} ")
+#     fout.write(f" capacitate {iP}\n")
+#      # revizuim fluxul de-a lungul lantului determinat
+#     t = n;
+#     while t != s:
+#       if tata[t] >= 0:  # arc direct - creste fluxul cu iP
+#         f[tata[t]][t] += iP
+#         t = tata[t]
+#       else:  # arc invers - scade fluxul cu iP
+#         f[t][-tata[t]] -= iP
+#         t = -tata[t]
+#
+#     fmax += iP  # creste valoarea fluxului cu iP
+# fout.write("-----------------------------------------\n")
+# fout.write(f"valoarea fluxului maxim = {fmax} \n")
+# fout.write("un flux maxim: \n")
+#
+# for u in range(1, n + 1):
+#     for v in la[u]:
+#         fout.write(f"arcul {u} {v} flux {f[u][v]}\n")
+#
+# fout.close()
+
+#                                                               EXERCITIUL 2
+
+# from collections import deque
+# # TEMA OBLIGATORIE
+# # EXERCITIUL 2
+# 
+# 
+# # Reducem problema determinării unui cuplaj maxim
+# # într-un cuplaj bipartit G la determinarea unui flux
+# # maxim într-o rețea de transport asociată lui G
+# # adaugam un nod de start si unul de final
+# # determinam fluxul maxim
+# 
+# def bf(s, n, la, lin, f, cost, tata, viz):
+#     for i in range(n + 1):
+#         viz[i] = tata[i] = 0
+# 
+#     c = deque()
+# 
+#     c.append(s)
+#     viz[s] = 1
+#     while (len(c) > 0):
+#         x = c.popleft()
+#         for y in la[x]:
+# 
+#             if viz[y] == 0 and f[x][y] < cost[x][y]:
+#                 tata[y] = x
+#                 if y == n:
+#                     return 1
+#                 c.append(y)
+#                 viz[y] = 1
+# 
+#         for y in lin[x]:
+#             if viz[y] == 0 and f[y][x] > 0:
+#                 tata[y] = -x
+#                 if y == n:
+#                     return 1
+#                 c.append(y)
+#                 viz[y] = 1
+# 
+#     return 0
+# 
+# 
+# def gaseste_taietura(s, n, la, lin, f, cost, tata, viz):
+#     for i in range(n + 1):
+#         viz[i] = tata[i] = 0
+# 
+#     c = deque()
+#     taietura = []
+#     c.append(s)
+#     viz[s] = 1
+#     while (len(c) > 0):
+#         x = c.popleft()
+#         for y in la[x]:
+# 
+#             if viz[y] == 0:
+#                 if f[x][y] < cost[x][y]:
+#                     c.append(y)
+#                     viz[y] = 1
+#                 else:
+#                     taietura.append((x,y))
+# 
+#         for y in lin[x]:
+#             if viz[y] == 0 and f[y][x] > 0:
+#                 c.append(y)
+#                 viz[y] = 1
+# 
+#     return taietura
+# 
+# 
+# fin=open("cuplaj.in", "r")
+# 
+# c_max = 1
+# c= 1
+# 
+# prima_mult, doua_mult, e = [int(x) for x in fin.readline().split()]
+# n=prima_mult+doua_mult+1
+# tata = [0] * (n + 1)
+# viz = [0] * (n + 1)
+# 
+# f = [[0 for i in range(n + 1)] for j in range(n + 1)]
+# cost = [[0 for i in range(n + 1)] for j in range(n + 1)]
+# 
+# la = [[] for i in range(n + 1)]
+# lin = [[] for i in range(n + 1)]
+# 
+# for i in range(e):
+#     x, y = [int(x) for x in fin.readline().split()]
+# 
+#     la[x].append(y+prima_mult)
+#     lin[y+prima_mult].append(x)
+#     cost[x][y+prima_mult] = 1
+#     f[x][y+prima_mult] = 0
+# 
+# fin.close()
+# fmax = 0
+# s = 0  # sursa
+# t = n  # destinatia
+# for i in range(1, prima_mult+1):
+#     la[0].append(i)
+#     cost[0][i]=1
+#     f[0][i]=0
+#     lin[i].append(0)
+# for i in range(prima_mult+1, n):
+#     la[i].append(n)
+#     cost[i][n]=1
+#     f[i][n]=0
+#     lin[n].append(i)
+# 
+# while bf(s, n, la, lin, f, cost, tata, viz):
+#     # calculam i(P) = capacitatea reziduala minima pe un arc de pe drumul de la s la t determinat cu bf
+#     iP = c_max  # i(P)
+#     t = n
+#     # fout.write("lantul (afisat invers -tema de modificat): ")
+#     while t != s:
+#         # fout.write(f"{t} ")
+#         if tata[t] >= 0:  # arc direct - capacitate c(e)-f(e)
+#             if cost[tata[t]][t] - f[tata[t]][t] < iP:
+#                 iP = cost[tata[t]][t] - f[tata[t]][t]
+#             t = tata[t]
+# 
+#         else:  # arc invers - capacitate f(e)
+#             if f[t][-tata[t]] < iP:
+#                 iP = f[t][-tata[t]]
+#             t = -tata[t]
+# 
+#     # fout.write(f"{s} ")
+#     # fout.write(f" capacitate {iP}\n")
+#     # revizuim fluxul de-a lungul lantului determinat
+#     t = n;
+#     while t != s:
+#         if tata[t] >= 0:  # arc direct - creste fluxul cu iP
+#             f[tata[t]][t] += iP
+#             t = tata[t]
+#         else:  # arc invers - scade fluxul cu iP
+#             f[t][-tata[t]] -= iP
+#             t = -tata[t]
+# 
+#     fmax += iP  # creste valoarea fluxului cu iP
+# print(f"valoare {fmax} \n")
+# for i in range(1, prima_mult+1):
+#     for j in range(prima_mult+1,n):
+#         if f[i][j]==1:
+#             print(i,j-prima_mult)
+# 
+# 
+# # print(gaseste_taietura(s, n, la, lin, f, cost, tata, viz))
+
+#                                                                 EXERCITIUL 3
+
+# from collections import deque
+# 
+# 
+# # TEMA OBLIGATORIE
+# # EXERCITIUL 3
+# 
+# 
+# def bf(s, n, la, lin, f, cost, tata, viz):
+#     for i in range(n + 1):
+#         viz[i] = tata[i] = 0
+# 
+#     c = deque()
+# 
+#     c.append(s)
+#     viz[s] = 1
+#     while (len(c) > 0):
+#         x = c.popleft()
+#         for y in la[x]:
+# 
+#             if viz[y] == 0 and f[x][y] < cost[x][y]:
+#                 tata[y] = x
+#                 if y == n:
+#                     return 1
+#                 c.append(y)
+#                 viz[y] = 1
+# 
+#         for y in lin[x]:
+#             if viz[y] == 0 and f[y][x] > 0:
+#                 tata[y] = -x
+#                 if y == n:
+#                     return 1
+#                 c.append(y)
+#                 viz[y] = 1
+# 
+#     return 0
+# 
+# 
+# def gaseste_taietura(s, n, la, lin, f, cost, tata, viz):
+#     for i in range(n + 1):
+#         viz[i] = tata[i] = 0
+# 
+#     c = deque()
+#     taietura = []
+#     c.append(s)
+#     viz[s] = 1
+#     while (len(c) > 0):
+#         x = c.popleft()
+#         for y in la[x]:
+# 
+#             if viz[y] == 0:
+#                 if f[x][y] < cost[x][y]:
+#                     c.append(y)
+#                     viz[y] = 1
+#                 else:
+#                     taietura.append((x, y))
+# 
+#         for y in lin[x]:
+#             if viz[y] == 0 and f[y][x] > 0:
+#                 c.append(y)
+#                 viz[y] = 1
+# 
+#     return taietura
+# 
+# 
+# fin = open("harta.in", "r")
+# 
+# c_max = 1
+# c = 1
+# 
+# prima_mult = [int(x) for x in fin.readline().split()][0]
+# doua_mult=prima_mult
+# n = prima_mult + doua_mult + 1
+# # print(n)
+# tata = [0] * (n + 1)
+# viz = [0] * (n + 1)
+# 
+# f = [[0 for i in range(n + 1)] for j in range(n + 1)]
+# cost = [[0 for i in range(n + 1)] for j in range(n + 1)]
+# lista=[]
+# la = [[] for i in range(n + 1)]
+# lin = [[] for i in range(n + 1)]
+# 
+# for i in range(prima_mult):
+#     x, y = [int(x) for x in fin.readline().split()]
+#     lista.append((x,y))
+# 
+# fin.close()
+# fmax = 0
+# s = 0  # sursa
+# t = n  # destinatia
+# for i in range(1, prima_mult + 1):
+#     la[0].append(i)
+#     cost[0][i] = lista[i-1][0]
+#     f[0][i] = 0
+#     lin[i].append(0)
+# 
+# for i in range(prima_mult + 1, n):
+#     la[i].append(n)
+#     cost[i][n] = lista[i-prima_mult-1][1]
+#     f[i][n] = 0
+#     lin[n].append(i)
+#  # ca sa unim elemetele trebuie sa ne plimbam prin prima multime(1,prima+1) si prin cele din a doua(prima+1,n)
+#  # si mai punem conditia ca sa nu avem de exemplu arc de la 1 la 1
+# for i in range(1,prima_mult+1):
+#     for j in range(prima_mult+1,n):
+#         if i!=j-prima_mult:
+#             cost[i][j]=1
+#             la[i].append(j)
+#             lin[j].append(i)
+# while bf(s, n, la, lin, f, cost, tata, viz):
+#     # calculam i(P) = capacitatea reziduala minima pe un arc de pe drumul de la s la t determinat cu bf
+#     iP = c_max  # i(P)
+#     t = n
+#     # fout.write("lantul (afisat invers -tema de modificat): ")
+#     while t != s:
+#         # fout.write(f"{t} ")
+#         if tata[t] >= 0:  # arc direct - capacitate c(e)-f(e)
+#             if cost[tata[t]][t] - f[tata[t]][t] < iP:
+#                 iP = cost[tata[t]][t] - f[tata[t]][t]
+#             t = tata[t]
+# 
+#         else:  # arc invers - capacitate f(e)
+#             if f[t][-tata[t]] < iP:
+#                 iP = f[t][-tata[t]]
+#             t = -tata[t]
+# 
+#     # fout.write(f"{s} ")
+#     # fout.write(f" capacitate {iP}\n")
+#     # revizuim fluxul de-a lungul lantului determinat
+#     t = n;
+#     while t != s:
+#         if tata[t] >= 0:  # arc direct - creste fluxul cu iP
+#             f[tata[t]][t] += iP
+#             t = tata[t]
+#         else:  # arc invers - scade fluxul cu iP
+#             f[t][-tata[t]] -= iP
+#             t = -tata[t]
+# 
+#     fmax += iP  # creste valoarea fluxului cu iP
+# 
+# print(f"valoare {fmax} \n")
+# for i in range(1, prima_mult + 1):
+#     for j in range(prima_mult + 1, n):
+#         if f[i][j] == 1:
+#             print(i, j - prima_mult)
+
+
+# #                                                                  EXERCITIUL 4
+
+
+# class Solution:
+#     def validArrangement(self, pairs: List[List[int]]) -> List[List[int]]:
+#         ls = defaultdict(list)
+#         din, dout = Counter(), Counter()
+#         for u, v in pairs:
+#             ls[u].append(v)
+#             # grad
+#             dout[u] += 1
+#             din[v] += 1
+#
+#         start =pairs[0][1]
+#         for p in dout:
+#             if dout[p] - din[p] == 1:
+#                 start = p
+#                 break
+#
+#         stiva =[]
+#         c=[]
+#         stiva.append(start)
+#
+#         while len(stiva)>0:
+#             v= stiva[ -1]
+#             if len(ls[v]) !=0:
+#                 w=ls[v][- 1 ]
+#                 ls[v].pop()
+#                 stiva.append(w)
+#             else:
+#                 c.append(v)
+#                 stiva.pop()
+#         return [[c[i], c[i+1]] for i in range(len(c)-1)]
+
+#                                                           EXERCITIUL 5
+
+# class Solution:
+#     def shortestPathLength(self, graph):
+#         memo, final, q = set(), (1 << len(graph)) - 1, [(0, i, 1 << i) for i in range(len(graph))]
+#         while q:
+#             steps, node, state = heapq.heappop(q)
+#             if state == final: return steps
+#             for v in graph[node]:
+#                 if (state | 1 << v, v) not in memo:
+#                     heapq.heappush(q, (steps + 1, v, state | 1 << v))
+#                     memo.add((state | 1 << v, v))
+
+#                                                                  EXERCITIUL 6
+
+# class Solution:
+#     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+#         # avem nevoie de inca o coloana pentru a pune 0 pentru fiecare valoare
+#         # avem o dimensiune de n+1 si m+1
+#         dp = [[0 for j in range(len(text2)+1)] for i in range(len(text1)+1)]
+#         # mergem in fiecare coloana
+#         for i in range(len(text1)-1, -1, -1):
+#             for j in range(len(text2)-1,-1,-1):
+#                 # daca sunt la fel ->facem ceva, daca nu sunt la fel vom face altceva
+#                 if text1[i] == text2[j]:
+#                     # mergem pe diagonala si adaugam un 1 la subsir
+#                     dp[i][j] = 1+dp[i+1][j+1]
+#                 #     daca nu sunt egale
+#                 else:
+#                     # gasim maximul dintre 2 valori
+#                     # de la coloana de mai jos pe aceeasi linie,
+#                     # sau aceeasi linie dar pe coloane diferite
+#                     dp[i][j]=max(dp[i][j+1], dp[i+1][j])
+#         # rezultatul este pe prima pozitie
+#         return dp[0][0]
+
+
+#                                                                 EXERCITIUL 7
+
+# class Solution:
+#     def shortestCommonSupersequence(self, str1: str, str2: str) -> str:
+#         m=len(str1)
+#         n=len(str2)
+#         dp = [[0 for j in range(n+1)] for i in range(m+1)]
+#         # de la cap la coada
+#         for i in range(0,m + 1):
+#             for j in range(0,n + 1):
+#                 if not i:
+#                     dp[i][j] = j
+#                 elif not j:
+#                     dp[i][j] = i
+#                 elif str1[i-1] == str2[j-1]:
+#                     dp[i][j] = 1 + dp[i - 1][j - 1]
+#                 else:
+#                     dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1])
+#
+#         index=dp[m][n]
+#         str3=[""] * index
+#         i=m
+#         j=n
+#         while ( i>0 and j > 0):
+#             # daca sunt egale ultimele caractere ale sirurilor care se termina in i, repectiv j
+#             if (str1[i-1] == str2[j-1]):
+#                 # adaugam caracterul la rezultat si scadem indecsii ca sa ne intoarcem in matrice
+#                 str3[index-1]=str1 [ i- 1 ]
+#                 i-=1
+#                 j-=1
+#                 index-=1
+#                 # parcurgem matricea in spate
+#             elif (dp[i - 1][j] < dp[i][j - 1]):
+#                 str3[index - 1] = str1[i - 1]
+#                 i -= 1
+#                 index -= 1
+#
+#             else:
+#                 str3[index - 1] = str2[j - 1]
+#                 j -= 1
+#                 index -= 1
+#
+#             # cand ajungem la 0, copiem caracterele fie din primul sir, fie din al doilea
+#         while (i > 0):
+#             str3[index - 1] = str1[i - 1]
+#             i -= 1
+#             index -= 1
+#         while (j > 0):
+#             str3[index - 1] = str2[j - 1]
+#             j -= 1
+#             index -= 1
+#
+#         return ("".join(str3))
