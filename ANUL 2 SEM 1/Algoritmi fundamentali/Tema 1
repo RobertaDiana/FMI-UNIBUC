@@ -1,0 +1,538 @@
+import collections
+from itertools import permutations
+
+# # # TEMA 1
+# #
+
+ #                                                       EXERCITIUL 1
+#                                                          a)
+
+# f=open("input.txt", 'r')
+# n,m=f.readline().split()
+# n=int(n)
+# m=int(m)
+# # lista de lista
+# cream lista de adiacenta
+# ls=[[] for i in range(n+1)]
+# for i in range(m):
+#     u,v = [int(x) for x in f.readline().split()]
+#     ls[u].append(v)
+#     ls[v].append(u)
+# def parcurgere_latime(s):
+#     # adaugat primul nod
+#     a = [0 for i in range(n + 1)]
+#     # vector de culori
+#     cul=[0 for i in range(n+1)]
+#     cul[s]=1
+#     am luat coada
+#     q=collections.deque()
+#     # adaugat nodul si marcat ca si vizitat
+#     q.append(s)
+#     a[s]=1
+#     while q:
+#         u=q.popleft()
+#         for v in ls[u]:
+#             if a[v]==0:
+#                 a[v] = 1
+#                 q.append(v)
+#                 # daca e aceeasi culoare o schimba
+#                 if cul[u]==1:
+#                     cul[v]=2
+#                 else:
+#                     cul[v]=1
+#             # nu e bipartit
+#             elif (cul[u]==cul[v]):
+#                  print(False)
+#                  return []
+#     print(True)
+#
+# parcurgere_latime(1)
+
+
+#                                                            b)
+
+
+# f=open("input.txt", 'r')
+# n,m=f.readline().split()
+# n=int(n)
+# m=int(m)
+# # lista de lista
+# ls=[[] for i in range(n+1)]
+# for i in range(m):
+#     u,v = [int(x) for x in f.readline().split()]
+#     ls[u].append(v)
+#     ls[v].append(u)
+# def parcurgere_latime(s):
+#     # adaugat primul nod
+#     a = [0 for i in range(n + 1)]
+#     cul=[0 for i in range(n+1)]
+#     cul[s]=1
+#     q=collections.deque()
+#     # adaugat nodul si marcat ca si vizitat
+#     q.append(s)
+#     a[s]=1
+#     while q:
+#         u=q.popleft()
+#         for v in ls[u]:
+#             if a[v]==0:
+#                 a[v] = 1
+#                 q.append(v)
+#                 if cul[u]==1:
+#                     cul[v]=2
+#                 else:
+#                     cul[v]=1
+#             elif (cul[u]==cul[v]):
+#                  return []
+#
+#     return cul
+#
+# # Luam 2 liste si o spargem in 2
+# l=parcurgere_latime(1)
+# l1=[]
+# l2=[]
+# for i in range(1,n+1):
+#     if l[i]==1:
+#         l1.append(i)
+#     else:
+#         l2.append(i)
+# print(l1,l2)
+
+
+# COMPLEXITATE O(|E|+|V|)
+
+
+
+#                                                        EXERCITIUL 2
+
+
+# # citire input, nodurile, muchiile si permutarea
+# n,m=[int(x) for x in input().split()]
+# permutare=[int(x) for x in input().split()]
+# # lista de lista
+# # creare lista de adiacenta
+# ls=[[] for i in range(n+1)]
+# for i in range(m):
+#     u,v = [int(x) for x in input().split()]
+#     # graf neorientat
+#     ls[u].append(v)
+#     ls[v].append(u)
+# # vectorul de vizitat
+# a=[0 for i in range(n+1)]
+# a[1]=1
+# luam o stiva in care adaugam primul nod, apoi vedem
+# daca exista muchie cu nodul urmator, daca exista,
+# adaugam nodul in stiva, daca nu exista eliminam din stiva
+# inseamna ca nu e conex
+# luam o stiva si adaugam primul nod
+# stiva=[]
+# stiva.append(1)
+# ok=1
+# i=1
+# while i<n and ok==1:
+#     daca se gaseste in vecinii
+#     if stiva[-1] in ls[permutare[i]]:
+#         stiva.append(permutare[i])
+#         a[permutare[i]]=1
+#         i+=1
+#     else:
+#         for j in ls[stiva[-1]]:
+#           if a[j]==0 :
+#              ok=0
+#              break
+#         stiva.remove(stiva[-1])
+#         # nu e conex
+#         if len(stiva)==0:
+#             ok = 0
+#             break
+# print(ok)
+# Complexitate O(|E|+|V|)
+
+
+
+
+#                                                     EXERCITIUL 3
+
+#                                                              a)
+# SORTARE TOPOLOGICA
+# Memoram varfurile intr-o stiva pe masura finalizarii lor: ordinea in care sunt scoase dinn stiva
+# =sortare topologica
+# def Solution(numCourses, prerequisites):
+#     n=numCourses
+#     ls=[[] for i in range(n+1)]
+#     for x in prerequisites:
+#         u=x[0]
+#         v=x[1]
+#         ls[u].append(v)
+#     stiva=[]
+#     viz=[0 for i in range(n+1)]
+#     tata=[0 for i in range(n+1)]
+#     fin=[0 for i in range(n+1)]
+#     global sw
+#     sw=0
+#     def DFS(s):
+#         global sw
+#         # primul nod il marcam ca si vizitat
+#         viz[s]=1
+#         # parcurgem in lista de adiacenta nodurile
+#         if sw==0:
+#             for j in ls[s]:
+#                 if viz[j]==0:
+#                     tata[j]=s
+#                     # parcurgem recursiv nodurile nevizitate
+#                     DFS(j)
+#                     if sw == 1:
+#                         return
+#                 elif fin[j] ==0:
+#                     while v != j:
+#                        print(v, end=" ")
+#                        v=tata[v]
+#                     sw=1
+#             fin[s]=1
+#                 # am terminat de explorat s- este finalizat
+#             stiva.append(s)
+#     for i in range (0,n):
+#         if viz[i]==0:
+#             DFS(i)
+#     if(sw==0):
+#         return stiva
+#     return[]
+# print(Solution(2,[[1,0]]))
+
+
+#                                                                       b)
+
+# def Solution2(numCourses, prerequisites):
+#     n=numCourses
+#     ls=[[] for i in range(n+1)]
+#     for x in prerequisites:
+#         u=x[0]
+#         v=x[1]
+#         # graf orientat
+#         ls[u].append(v)
+#     stiva=[]
+#     viz=[0 for i in range(n+1)]
+#     tata=[0 for i in range(n+1)]
+#     fin=[0 for i in range(n+1)]
+#     global ciclu
+#     ciclu=[]
+#     global sw
+#     sw=0
+#     def DFS(s):
+#         global sw
+#         # primul nod il marcam ca si vizitat
+#         viz[s]=1
+#         # parcurgem in lista de adiacenta nodurile
+#         if sw==0:
+#             for j in ls[s]:
+#                 if viz[j]==0:
+#                     tata[j]=s
+#                     # parcurgem recursiv nodurile nevizitate
+#                     DFS(j)
+#                     if sw == 1:
+#                         return
+#                 elif fin[j] ==0:
+#                     v=s
+#                     global ciclu
+#                     while v != j:
+#                        ciclu = ciclu + [v]
+#                        v=tata[v]
+#                     ciclu=ciclu+[j]
+#                     ciclu=ciclu+[s]
+#
+#                     sw=1
+#             fin[s]=1
+#                 # am terminat de explorat s- este finalizat
+#             stiva.append(s)
+#     for i in range (0,n):
+#         if viz[i]==0:
+#             DFS(i)
+#
+#     if(sw==1):
+#         return ciclu
+#     return[]
+#
+# print(Solution2(2,[[1,0], [0,1]]))
+
+# COMPLEXITATE O(|E|+|V|)
+
+
+
+#                                                     EXERCITIUL 4
+
+# f=open("ctc.in", 'r')
+# g=open("ctc.out", 'w')
+# n,m=f.readline().split()
+# n=int(n)
+# m=int(m)
+#
+# # lista de lista
+# # creare lista de adiacenta
+# ls=[[] for i in range(n+1)]
+# ls_transpus=[[] for i in range(n+1)]
+# for i in range(m):
+#     u,v = [int(x) for x in f.readline().split()]
+#     # graf orientat
+#     ls[u].append(v)
+#     ls_transpus[v].append(u)
+# viz=[0 for i in range(n+1)]
+# # stiva vida
+# stiva=[]
+# a=[0 for i in range(n+1)]
+# def DFS(i):
+#     a[i]=1
+#     for j in ls[i]:
+#         if a[j]==0:
+#             # parcurgem recursiv nodurile nevizitate
+#             DFS(j)
+#         # am terminat de explorat s- este finalizat
+#         stiva.append(i)
+# for i in range (1,n+1):
+#     if a[i]==0:
+#         DFS(i)
+# # facem un g transpus
+# def DFS2(i,nr):
+#     viz[i]=nr
+#     for j in ls_transpus[i]:
+#         if viz[j]==0:
+#             # parcurgem recursiv nodurile nevizitate
+#             DFS2(j,nr)
+# nr=1
+# # cat timp stiva e nevida iau elem din varful stivei
+# while len(stiva)>0:
+#     # adaugam u in sortare
+#     u=stiva.pop()
+#  # daca acesta este nevizitat pornesc din ele un dfs si nodurile atinse in acest dfs vor forma o ctc
+#     if viz[u]==0:
+#         DFS2(u,nr)
+#         nr+=1
+# g.write(str(nr-1)+ " ")
+# g.write('\n')
+# # scriem in fisier
+# for i in range(1,nr):
+#     for j in range(1,n+1):
+#         if viz[j]==i:
+#             g.write(str(j)+" ")
+#     g.write('\n')
+#
+# # Complexitate O(|E|+|V|)
+
+
+
+
+#                                                     EXERCITIUL 5
+
+# # CREEAZA LISTA DE ADIACENTA
+#
+# f= open('graf.in', 'r')
+# g= open('graf.out', 'w')
+# # citeste nr de noduri si nr de muchii
+# n,m=f.readline().split()
+# # converteste in int
+# n=int(n)
+# m=int(m)
+# # lista de lista
+# ls=[[] for i in range(n+1)]
+# for i in range(m):
+#     u,v = [int(x) for x in f.readline().split()]
+#     ls[u].append(v)
+#     ls[v].append(u)
+# # citeste pct de control
+# p=[int(p) for p in f.readline().split()]
+# # IMI AFISEAZA LISTA DE ADIACENTA + pct de control
+# # print(ls, p)
+#
+# # PARCURGEREA IN LATIME
+#
+# def parcurgere_latime(s):
+#     # vectorul de tati
+#     a = [0 for i in range(n + 1)]
+#     # vectorul de distanta
+#     d = [0 for j in range(n + 1)]
+#     # coada
+#     q=collections.deque()
+#     # adaugat nodul si marcat ca si vizitat
+#     q.append(s)
+#     a[s]=1
+#     while q:
+#         u=q.popleft()
+#         # afiseaza ordinea nodurilor
+#         # print(u,end=" ")
+#         for v in ls[u]:
+#             if a[v]==0:
+#                 a[v]=1
+#                 q.append(v)
+#                 # adaugam la vectorul de distanta
+#                 d[v]=1+d[u]
+#
+#     return d
+#
+# # luam 2 liste cu 2 parcurgeri
+# dmin=[float("inf") for i in range(n+1)]
+# for i in p:
+#     l1=parcurgere_latime(i)
+#     for j in range(1,n+1):
+#         if dmin[j]>l1[j]:
+#             dmin[j]=l1[j]
+# # pt a crea fisierul graf.out, am luat minimul dintre parcurgeri
+# for i in range(1,n+1):
+#     g.write(str((dmin[i]))+" ")
+
+#  Complexitate O(|E|+|V|)-lista de adiacenta+parcurgere BFS
+
+
+
+
+
+#                                                               TEMA SUPLIMENTARA
+
+
+
+
+#                                                          EXERCITIUL 1
+
+# class Solution:
+# 	def criticalConnections(self, n: int, connections: List[List[int]]) -> List[List[int]]:
+#             ls=[[] for i in range(n+1)]
+#             for i in connections:
+#                 u,v = [int(x) for x in i]
+#                 ls[u].append(v)
+#                 ls[v].append(u)
+#             lvl=[0 for i in range(n+1)]
+#             upper=[0 for i in range(n+1)]
+#             tata=[0 for i in range(n+1)]
+#             critical=[]
+#             nrc=0
+#             def DFS(c, level):
+#                 lvl[c]=level
+#                 upper[c]=level
+#                 nrc=0
+#                 for x in ls[c]:
+#                     if lvl[x]==0:
+#                         tata[x]=c
+#                         nrc+=1
+#                         DFS(x, level+1)
+#                         upper[c]=min(upper[c], upper[x])
+#                         if (upper[x]>lvl[c]):
+#                             critical.append((c,x))
+#                     else:
+#                         if lvl[x]>0 and tata[c]!=x:
+#                             upper[c]=min(lvl[x],upper[c])
+#                 return nrc;
+#             DFS(0, 1)
+#             return critical
+
+# COMPLEXITATE ( O(|E|+|V|))
+
+
+
+#                                                          EXERCITIUL 3
+
+
+# # citirea
+# f=open("egale.txt", 'r')
+# n,m, x, y=f.readline().split()
+# n=int(n)
+# m=int(m)
+# x=int(x)
+# y=int(y)
+#
+# ls=[[] for i in range(n+1)]
+# for i in range(m):
+#     u,v = [int(x) for x in f.readline().split()]
+#     ls[u].append(v)
+#     ls[v].append(u)
+#
+# parcurg=[]
+# # initializam 2 vectori
+# # cu dx calculam distanta de la x la fiecare nod din graf
+# dx=[1<<32 for i in range(n+1)]
+# # cu dy calculez distanta de la y la fiecare nod din graf
+# dy=[1<<32 for i in range (n+1)]
+# is_in_chain= [0 for i in range(n+1)]
+# is_distance_unique =[0 for i in range(n+1)]
+# nr=0
+# def parcurgere_latime(s,dist_array):
+#     q=collections.deque()
+#     q.append(s)
+#     dist_array[s]=0
+#     while q:
+#         u=q.popleft()
+#         parcurg.append(u)
+#         for v in ls[u]:
+#             if dist_array[v]>dist_array[u]+1:
+#                 dist_array[v]=1+dist_array[u]
+#                 q.append(v)
+#
+# parcurgere_latime(x,dx)
+# parcurgere_latime(y,dy)
+#
+# # nodul t apartine lantului de lungime minima dintre x si y daca
+# # distanta de la x la t + distanta de la t la y = distanta de la x la y
+# for i in range(1,n+1):
+#     if dx[i] + dy[i]==dx[y]:
+#         is_in_chain[i]=1
+#     else:
+#         is_in_chain[i]=0
+#
+# for i in range(1, n + 1):
+#     # verificam care noduri apartin lanturilor de lungime minima
+#     # si pentru fiecare nod care apartine oricarui lant de lungime minima dintre x si y
+#     # daca este singurul nod din multime cu distanta egala atunci este nodul pe care il cautam
+#     if is_in_chain[i]:
+#         if is_distance_unique[dx[i]] == 0:
+#             is_distance_unique[dx[i]] = i
+#             nr+=1
+#         elif is_distance_unique[dx[i]] > 0:
+#             is_distance_unique[dx[i]] = -1
+#             nr-=1
+#
+# print(nr)
+# for x in range(0,n+1):
+#     if is_distance_unique[x]>0:
+#         print(is_distance_unique[x], end=" ")
+
+
+
+
+
+
+#                                                               EXERCITIUL 5
+
+
+# class Solution(object):
+#
+#     def maxAreaOfIsland(self, grid):
+#         global nr
+#         # luam un nr ca sa numaram patratele
+#         nr = 0
+#         maxim = 0
+#
+#         def parcurgere(i, j):
+#             # parcurgere matrice
+#             grid[i][j] = 0
+#             if i + 1 < len(grid) and grid[i + 1][j] == 1:
+#                 parcurgere(i + 1, j)
+#             if j + 1 < len(grid[0]) and grid[i][j + 1] == 1:
+#                 parcurgere(i, j + 1)
+#             if i - 1 >= 0 and grid[i - 1][j] == 1:
+#                 parcurgere(i - 1, j)
+#             if j - 1 >= 0 and grid[i][j - 1] == 1:
+#                 parcurgere(i, j - 1)
+#             # numaram patratele
+#             global nr
+#             nr += 1
+#
+#         for i in range(len(grid)):
+#             for j in range(len(grid[0])):
+#                 if grid[i][j] == 1:
+#                     # o facem 0 pentru ca e o noua insula
+#                     nr = 0
+#                     # iar parcurgem
+#                     parcurgere(i, j)
+#                 # luam un maxim ca sa retinem nr maxim
+#                 if nr > maxim:
+#                     maxim = nr
+#         return maxim
+
+# COMPLEXITATE (O(n*m))
+
