@@ -1,0 +1,69 @@
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+-- foldr op i [] = i
+-- foldr op i (x:xs) = x `op` (foldr op i xs)
+
+-- foldl :: ( b -> a -> b ) -> b -> [a] -> b
+-- foldl op i [] = i
+-- foldl op i (x:xs) = foldl op ( i `op` x ) xs
+
+-- 1. Calculati suma pătratelor elementelor impare dintr-o listă dată ca parametru.
+
+sumImpare :: [Int] -> Int
+sumImpare l = foldr (+) 0  ( filter (odd) l)
+
+-- 2. Scrieti o functie care verifică faptul că toate elementele dintr-o 
+-- listă sunt True, folosind foldr.
+
+verif :: [Bool] -> Bool
+verif l = foldr (&&) True l
+
+--3 Scrieti o functie care verifică dacă toate elementele dintr-o listă de numere
+--întregi satisfac o proprietate dată ca parametru.
+
+allVerifies :: (Int -> Bool) -> [Int] -> Bool
+allVerifies p l = foldr (\x acc -> p x && acc ) True l
+
+--4. Scrieti o functie care verifică dacă există elemente într-o listă de numere
+--întregi care satisfac o proprietate dată ca parametru. 
+
+anyVerifies :: (Int -> Bool ) -> [Int] -> Bool
+anyVerifies f l = foldr (||) False ((map f l)) 
+
+--5 Redefiniti functiile map si filter folosind foldr. Le puteti numi 
+--mapFoldr si filterFoldr.
+
+mapFoldr :: ( a -> b) -> [a] -> [b]
+mapFoldr f [] = []
+mapFoldr f (x:xs) = foldr (\x xs -> (f x):xs) [] xs
+
+filterFoldr             :: (a -> Bool) -> [a] -> [a]
+filterFoldr p []        = []
+filterFoldr p (x:xs)    = foldr (\x xs -> if p x then x:xs else xs ) [] xs
+
+--6. Folosind functia foldl, definiti functia listToInt care transformă o lista de
+--cifre (un număr foarte mare stocat sub formă de listă) în numărul intreg
+--asociat. Se presupune ca lista de intrare este dată corect.
+-- listToInt [2,3,4,5] = 2345
+
+listToInt :: [Integer] -> Integer
+listToInt l = foldl ( \acc x -> acc*10 +x) 0 l
+
+--7.
+--a) Scrieti o functie care elimină un caracter din sir de caractere
+
+rmChar :: Char -> String -> String
+rmChar c l = filter (/=c ) l 
+
+--b) Scrieti o functie recursivă care elimină toate caracterele din al doilea
+--argument care se găsesc în primul argument, folosind rmChar.
+
+rmCharsRec :: String -> String -> String
+rmCharsRec "" s2 = s2
+rmCharsRec ( c : s1) s2 = rmCharsRec s1 ( rmChar c s2) 
+
+--c) Scrieti o functie echivalentă cu cea de la (b) care foloseste foldr în locul
+--recursiei si rmChar.
+
+rmCharsFold :: String -> String -> String
+rmCharsFold xs zs = foldr rmChar zs xs
+
