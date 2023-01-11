@@ -1,0 +1,77 @@
+create table dept_mdr as select * from departments;
+select * from dept_mdr;
+
+-- Exercitiul 1
+create or replace trigger ex1_mdr 
+before delete on dept_mdr
+begin if user != upper('SCOTT')
+then raise_application_error(-200001, 'nu se permite stergerea info');
+end if;
+end;
+/
+drop trigger ex1_mdr;
+
+--Exercitiul 2
+create or replace trigger ex2_mdr before update of commission_pct on 
+emp_mdr for each row 
+begin 
+if :NEW.commission_pct > 0.5 then 
+raise_application_error(-20002, 'nu se permite marirea comisionului');
+end if;
+end;
+/
+drop trigger ex2_mdr;
+
+--Exercitiul 3
+create table info_dep_mdr as select * from departments;
+select * from info_dep_mdr;
+alter table info_dep_mdr add numar number(4);
+update info_dep_mdr i set numar = ( select count(*) from employees e where
+e.department_id=i.department_id);
+drop table info_dep_mdr;
+
+--b)
+create or replace trigger ex3_mdr 
+after delete or insert or update of department_id
+on emp_mdr
+for each row 
+begin
+ if deleting then 
+     update info_dept_mdr
+     set numar = numar - 1
+     where department_id = :old.department_id;
+     
+ elsif inserting then
+     update info_dept_mdr
+     set numar = numar +1 1
+     where department_id = :old.department_id;
+ 
+ else
+      update info_dept_lgd
+      set numar = numar - 1
+      where department_id = :old.department_id;
+      
+      update info_dept_lgd
+      set numar = numar + 1 
+      where department_id = :old.department_id;
+ end if;
+end;
+/
+drop trigger ex3_mdr;
+
+--Exercitiul 4
+CREATE OR REPLACE TRIGGER ex4_mdr
+before insert or update of department_id on emp_mdr
+for each row 
+declare 
+ nr_ang number;
+begin 
+ select count(*) into nr_ang from emp_mdr
+ where department_id = :new.department_id;
+ if nr_ang>45 then 
+  raise_application_error(-20000, 'nu pot lucra mai mult de 45 de pers');
+ end if;
+end;
+/
+
+drop trigger ex4_mdr;
