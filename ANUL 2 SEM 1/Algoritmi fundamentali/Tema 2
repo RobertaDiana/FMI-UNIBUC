@@ -1,0 +1,475 @@
+import heapq
+import math
+
+#                                                             TEMA 2
+
+
+#                                                         TEMA OBLIGATORIE
+
+#                                                        EXERCITIUL 1
+
+#
+# # # damia s-a hotarat sa-si deschida N centrale electrice. Avem M blocuri care trebuie sa primeasca curent
+# # # un bloc primeste curent electric daca este conectat la alt bloc care primeste curent electric SAU
+# # # daca este conectat la o centrala electrica
+# #
+# # # pentru a conecta 2 dintre aceste puncte (N sau M) trebuie platit
+# # # un cost egal cu distanta euclidiana dintre ele
+# #
+# # # ne cere sa afisam costul minim pentru a transmite curent electric catre toate blocurile
+# #
+# #Kruskal necesita o sortare a muchiilor. Aici nu prea ai destula memorie pentru a retine (dist euclid => graf dens)
+# # toate muchiile  ceea ce face imposibila folosirea acestui algoritm.
+# nu trebuie neaparat sa fie o comp conexa
+#
+# # graf complet si de asta folosim algoritmul lui prim
+# f=open("retea2.in", "r")
+# # n este pentru centrale, m este pentru blocuri
+# n,m=[int(x) for x in f.readline().split()]
+#
+# blocuri = []
+# centrale = []
+#
+# for i in range(n):
+#     x,y=[int(x) for x in f.readline().split()]
+#     centrale.append((x,y))
+#
+# for j in range(m):
+#     x,y=[int(x) for x in f.readline().split()]
+#     blocuri.append((x,y))
+#
+# # print(centrale, blocuri)
+#
+# def dist_euclidiana(e1, e2):
+#     x1 = e1[0]
+#     y1 = e1[1]
+#     x2 = e2[0]
+#     y2 = e2[1]
+#     dist = math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+#     return dist
+#
+#
+# # dist[u] = costul minim al unei muchii de la u la un vârf selectat deja în arbore
+# # tata[u]= acest vârf din arbore pentru care se realizează minimul
+# nr=n+m
+# dist=[float ("inf")]*(n+m)
+# tata=[0 for i in range(n+m)]
+# vizitat=[0 for i in range(n+m)]
+# ls=[[] for i in range(n+m)]
+# Q=[]
+#
+# # adaugam fiecare nod in coada de cost 0
+# for i in range(n):
+#     heapq.heappush(Q, (0,i))
+# cost=0
+#
+# # parcurgem pentru fiecare centrala la bloc
+# # si fiecare bloc la bloc
+# # si calculam distanta dintre ele
+# # la final vom avea un graf cu n+m noduri
+#
+# # conectam 2 dintre aceste puncte
+#
+# for i in range(n):    #centrale
+#    for j in range(m):     #blocuri
+#       d=dist_euclidiana(centrale[i], blocuri[j])
+#       ls[i].append((n+j,d))
+#       ls[n+j].append((i,d))
+#
+# for i in range(m-1):
+#     for j in range(i+1, m):
+#         d=dist_euclidiana(blocuri[i], blocuri[j])
+#         ls[n+i].append((n+j,d))
+#         ls[n+j].append((n+i,d))
+#
+# # am adaugat primul nod cu costul 0
+# # ->INITIAL : SE PORNESTE DE LA UN VARF DE START
+# # ->SE ADAUGA PE RAND CATE UN VARF LA ARBORELE DEJA CONSTRUIT, FOLOSIND MUCHII DE
+# # COST MINIM
+# # ->ESTE SELECTATA O MUCHIE DE COST MINIM CARE UNESTE UN VARF DIN ARBORE CU UNUL
+# # CARE NU ESTE IN ARBORE ( NESELECTAT)
+# heapq.heappush(Q,(0,1))
+# while len(Q)>0:
+#     first = heapq.heappop(Q)
+#     # cost
+#     c = first[0]
+#     # nod
+#     u=first[1]
+#     vizitat[u]+=1
+#     if vizitat[u]==1:
+#         cost+=c
+#         for (v, c) in ls[u]:
+#             if vizitat[v]==0:
+#                 # se actualizează etichetele vârfurilor v nu apartine V(T) vecine cu u
+#                 if dist[v]>c:
+#                     tata[v]=u
+#                     dist[v]=c
+#                     heapq.heappush(Q, (dist[v],v))
+# print(cost)
+
+
+
+#                                                         EXERCITIUL 2
+
+#
+# COMPLEXITATEA UNEI OPERATII DE TIP REPREZ SAU REUNESTE ESTE O(log(n))
+# COMPLEXITATEA SIRULUI DE OPERATII ESTE O( m log(n))
+
+
+# f=open("disjoint.in",'r')
+# n,m=f.readline().split()
+# n=int(n)
+# m=int(m)
+# tata=[0 for i in range(n+1)]
+# h=[0 for i in range(n+1)]
+# print(n)
+# nr=n
+# # memoram varfurile fiecarei multimi ca un arbore ( memorat cu tata)
+# # avand ca reprezentant radacina
+# def find(u):
+#
+#     # compresie de cala-varianta mai optima
+#     if tata[u] ==0:
+#         return u
+#     # tatal varfurilor de pe lantul de la u la radacina se va seta
+#     # ca fiind radacina
+#     tata[u]=find(tata[u])
+#     return tata[u]
+#
+# # arborele cu inaltimea mai mica devine subarbore al
+# # radacinii celuilalt arbore
+# def union(x,y):
+#     r1=find(x)
+#     r2=find(y)
+#     if h[r1]>h[r2]:
+#         tata[r2]=r1
+#         h[r1]+=1
+#     else:
+#         tata[r1]=r2
+#         h[r2]+=1
+#
+# for i in range(m):
+#     cod,x,y=[int(x) for x in f.readline().split()]
+#     if cod==1:
+#         # unim capetele comp conexe
+#         union(find(x),find(y))
+#         nr-=1
+#         print(nr)
+#     else:
+#         # find(x) == find(y) => x si y
+#         # fac parte din aceeasi componenta conexa
+#         if find(x)==find(y):
+#             print("Da")
+#         else:
+#             print("Nu")
+
+
+#                                                         EXERCITIUL 3
+
+# # Initial fiecare obiect (cuvant) formeaza o clasa
+# # La un pas determinam cele mai asemanatoare (apropiate)
+# # 2 obiecte aflate in clase diferite (cu distanta cea mai mica intre ele)
+# # si unim clasele lor
+# # repetam pana obtinem k clase -> n-k pasi
+# # algoritmul lui kruskal
+#
+# f=open("cuvinte.in", 'r')
+# k=int(input())
+# cuvinte=[cuv for cuv in f.readline().split()]
+# n=len(cuvinte)
+# tata=[0 for i in range(n+1)]
+# h=[0 for i in range(n+1)]
+# nrmuchii=0
+# cost=0
+# nr minim de operatii (inserari, stergeri, modificari) prin care ajungem de la un cuv la altul
+# def Levenshtein(word1, word2):
+#     if len(word2) == 0:
+#         return len(word1)
+#     # trebuie sa adaug
+#     elif len(word1) == 0:
+#         return len(word2)
+#     # apa si aca -> a la fel dupa face pentru pa si ca
+#     elif word1[0] == word2[0]:
+#         return Levenshtein(word1[1:], word2[1:])
+#     else:
+#         return 1 + min(Levenshtein(word1, word2[1:]), Levenshtein(word1[1:], word2), Levenshtein(word1[1:], word2[1:]))
+#
+# muchii = []
+# for i in range(len(cuvinte)):
+#     for j in range(i + 1, len(cuvinte)):
+#         dist = Levenshtein(cuvinte[i], cuvinte[j])
+#         muchii.append((i, j, dist))
+# #sortam muchiile
+# muchii.sort(key= lambda x:x[2])
+# def find(u):
+#
+#     # compresie de cala-varianta mai optima
+#     if tata[u] ==0:
+#         return u
+#     # tatal varfurilor de pe lantul de la u la radacina se va seta
+#     # ca fiind radacina
+#     tata[u]=find(tata[u])
+#     return tata[u]
+#
+# # arborele cu inaltimea mai mica devine subarbore al
+# # radacinii celuilalt arbore
+# def union(x,y):
+#     r1=find(x)
+#     r2=find(y)
+#     if h[r1]>h[r2]:
+#         tata[r2]=r1
+#         h[r1]+=1
+#     else:
+#         tata[r1]=r2
+#         h[r2]+=1
+#
+# print(n)
+# print(muchii)
+#
+# # la fiecare pas calculeaza distanta minima dintre cuv
+# for m in range (len(muchii)):
+#    # daca nu fac parte din ac componenta (adica nu avem ciclu)
+#    if find(muchii[m][0]) != find(muchii[m][1]):
+#         #printez muchiile
+#         print(muchii[m][0], muchii[m][1])
+#         # alegem 2 obiecte din clase diferite cu dist min
+#         # si apoi reunim prima clasa cu cea de a doua
+#         union(muchii[m][0], muchii[m][1])
+#         cost=cost+muchii[m][2]
+#         nrmuchii=nrmuchii+1
+#         # ca sa formam k clase se fac n-k pasi
+#         if nrmuchii == n-k:
+#             if k!=1:
+#                 dist=muchii[m+1][2]
+#             break
+# print(dist)
+# print(tata)
+# for i in range(n):
+#     if tata[i] == 0:
+#         for j in range(n) :
+#             if find(j) == i:
+#                 print(cuvinte[j], end=" ")
+#         print()
+
+
+
+#                                                          EXERCITIUL 4
+
+
+
+# class Solution:
+#
+#     def maxProbability(self, n: int, edges: List[List[int]], succProb: List[float], start: int, end: int) -> float:
+#
+#         import math
+#         m = len(edges)
+#         ls = [[] for i in range(n + 1)]
+#         for i in range(m):
+#             u, v = [int(x) for x in edges[i]]
+#             c = succProb[i]
+#             # transformam prob in logaritmi pt a le aduna nu a le inmulti
+#             # algoritmul nu functioneaza pt valori negative asa ca inmultim cu un -1
+#             c = (-1) * math.log(c, 10)
+#             ls[u].append((v, c))
+#             ls[v].append((u, c))
+#         # vector d de distante cu semnificatia d[x]=distanta de la s la varful x
+#         d = [float("inf")] * (n + 1)
+#
+#         def prim(start):
+#             # de fapt e djkastra
+#             # vectorul tata reprezentand un arbore al distantelor fata de s
+#             # din care se poate determina cate un drum minim de la s la fiecare varf x
+#             tata = [0 for i in range(n + 1)]
+#             viz = [0 for i in range(n + 1)]
+#             # fiecare varf u are asociata o eticheta de distanta d[u]=costul minim
+#             # al unui drum de la s la u descoperit pana la acel pas
+#             d[start] = 0
+#             # heap-ul
+#             Q = []
+#             # adauga in heap distanta, nodul de start
+#             # in heap se face comparatia dupa prima valoare ( distanta)
+#             heapq.heappush(Q, (d[start], start))
+#             while len(Q) > 0:
+#                 # extrage un varf cu eticheta d minima din Q
+#                 u = heapq.heappop(Q)[1]
+#                 # il face vizitat
+#                 viz[u] += 1
+#                 # daca este prima extragere din Q a lui u relaxam arcele
+#                 if viz[u] == 1:
+#                     for (v, c) in ls[u]:
+#                         if viz[v] == 0:
+#                             if d[u] + c < d[v]:
+#                                 d[v] = d[u] + c
+#                                 tata[v] = u
+#                                 heapq.heappush(Q, (d[v], v))
+#
+#         prim(start)
+#         return 10 ** (-d[end])
+
+
+
+#                                                               EXERCITIUL 5
+
+
+# f=open("catun.in", "r")
+# n,m,k = [int(x) for x in f.readline().split()]
+# fortarete=[int(x) for x in f.readline().split()]
+# # print(n,m,k)
+# # print(fortarete)
+# ls=[[] for i in range(n+1)]
+# for i in range(m):
+#     u,v, c= [int(x) for x in f.readline().split()]
+#     ls[u].append((v,c))
+#     ls[v].append((u,c))
+#     # print(u,v,c)
+# def prim():
+# de fapt e djkastra
+#     global n, m , ls
+#     d=  [float ("inf")] * (n+1)
+#     tata=[0 for i in range(n+1)]
+#     viz= [0 for i in range(n+1)]
+#     Q= []
+#     for i in fortarete:
+#         # distanta de la o fortareata la alta este 0
+#         d[i]=0
+#         heapq.heappush(Q, (d[i], i))
+#     while len(Q) > 0:
+#         # varful nevizitat cu d minim
+#         u= heapq.heappop(Q) [1]
+#         viz[u]+=1
+#         # daca este prima extragere din Q a lui u relaxam arcele
+#         if viz[u] == 1:
+#             for (v, c) in ls[u]:
+#                 if viz[v] == 0:
+#                     if d[u] + c < d[v]:
+#                         d[v] = d[u]+c
+#                         tata[v] = u
+#                         heapq.heappush(Q, (d[v], v))
+#
+#     return tata
+#
+# tata=prim()
+# # print(tata)
+#
+# def find(u):
+#
+#     if tata[u]==0:
+#         return u
+#     return find(tata[u])
+#
+#
+# for i in range(1,n+1):
+#     # e cetate, ori nu poate ajunge din nodul respectiv la nicio cetate
+#     if tata[i]==0:
+#         print(0, end=" ")
+#     else:
+#         print(find(i), end=" ")
+
+
+
+#                                                            EXERCITIUL 6
+
+
+# f=open("easygraph.in", 'r')
+# teste=[int(x) for x in f.readline().split()][0]
+# n,m=[int(x) for x in f.readline().split()]
+# # print(teste,n,m)
+# ls=[[] for i in range(n+1)]
+# v=[0]
+# v.extend([int(x) for x in f.readline().split()])
+# # print(v)
+# d = [float("-inf")] * (n + 1)
+# a=[0 for i in range(n+1)]
+# for i in range(m):
+#     u,v1 = [int(x) for x in f.readline().split()]
+#     # graf orientat
+#     ls[u].append(v1)
+#
+# # print(ls)
+# # sortare topologica
+# # algoritm pentru dag
+# graf fara circuite -> pot exista si costuri negative
+# consideram varfurile in ordinea data de sortarea topologica
+# # determina suma maxima intr-un subsir
+# def sortare_topologica(s):
+#
+#         def DFS(s):
+#             # primul nod il marcam ca si vizitat
+#             a[s]=1
+#             # calculam cel mai lung subdrum
+#             d[s]=max(d[s], v[s])
+#             # print(s, d[s], v[s])
+#             # parcurgem in lista de adiacenta nodurile
+#             for j in ls[s]:
+#                 if a[j]==0:
+#                     # parcurgem recursiv nodurile nevizitate
+#                     DFS(j)
+#                 # ori e cel mai lung drum pana la y ori e drumul pana la x plus val nodului y
+#                 #  y -> start, x-> vecin
+#                 d[s]=max(d[s], d[j]+v[s])
+#         suma=float('-inf')
+#
+#         for i in range (1,n+1):
+#             if a[i]==0:
+#                 DFS(i)
+#             if d[i]>suma:
+#                 suma=d[i]
+#         # print(d)
+#         return suma
+#
+# print(sortare_topologica(1))
+
+
+#                                                           TEMA SUPLIMENTARA
+
+
+#                                                                1
+
+# class Solution:
+#     def minCostConnectPoints(self, points: List[List[int]]) -> int:
+#
+#         blocuri = points
+#         n = 0
+#         m = len(points)
+#
+#         # distanta minima care este egala cu |x1-x2| + | y1-y2|
+#         def dist_eucl(e1, e2):
+#             x1 = e1[0]
+#             y1 = e1[1]
+#             x2 = e2[0]
+#             y2 = e2[1]
+#             distanta = abs(x1 - x2) + abs(y1 - y2)
+#             return distanta
+#
+#         tata = [0 for i in range(m + 1)]
+#         vizitat = [0 for i in range(m + 1)]
+#         ls = [[] for i in range(m + 1)]
+#         dist = [float("inf")] * (m + 1)
+#         Q = []
+#
+#         cost = 0
+#
+#         # am adaugat primul nod cu costul 0 primul avand indicele 0
+#         # ne-am folosit de algoritmul lui prim
+#         heapq.heappush(Q, (0, 0))
+#         while len(Q) > 0:
+#             first = heapq.heappop(Q)
+#             # nodul
+#             c = first[0]
+#             u = first[1]
+#             vizitat[u] += 1
+#
+#             # inseamna ca a fost vizitat doar o data
+#             if vizitat[u] == 1:
+#                 cost += c
+#                 # practic v poate sa fie vecin cu toti
+#                 for v in range(m):
+#                     # daca e nevizitat
+#                     if vizitat[v] == 0:
+#                         w = dist_eucl(points[v], points[u])
+#                         if dist[v] > w:
+#                             tata[v] = u
+#                             dist[v] = w
+#                             heapq.heappush(Q, (dist[v], v))
+#         return cost
+
