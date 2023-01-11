@@ -1,0 +1,96 @@
+--1
+newtype Identity a = Identity a
+    deriving Show 
+instance Functor Identity where
+    fmap f (Identity x) = Identity (f x)
+
+--2
+data Pair a = Pair a a
+    deriving Show
+instance Functor Pair where 
+    fmap f (Pair x1 x2) = Pair (f x1) ( f x2)
+
+--3
+data Constant a b = Constant b
+    deriving Show
+instance Functor (Constant b) where 
+    fmap f (Constant x2) = Constant (f x2)
+
+--4
+data Two a b = Two a b 
+   deriving Show
+instance Functor (Two a) where
+    fmap f (Two a x) = Two a ( f x )
+
+--5
+data  Three a b c = Three a b c 
+    deriving Show 
+instance Functor (Three a b) where 
+    fmap f ( Three a b c) = Three a b ( f c)
+
+--6 
+data Three2 a b = Three2 a b b
+    deriving Show
+instance Functor ( Three2 a) where
+    fmap f ( Three2 a b c ) = Three2 a ( f b ) ( f c)
+
+--7
+data Four a b c d = Four a b c d 
+    deriving Show
+instance Functor ( Four a b c) where 
+    fmap f ( Four a b c d) =  Four a b c ( f d )
+
+--8
+data Four' a b = Four' a a a b
+   deriving Show 
+instance Functor ( Four' a  ) where 
+    fmap f (Four' a b c d ) = Four' a b c ( f d)
+
+--9 
+data Quant a b =Finance | Desk a | Bloor b 
+   deriving Show 
+instance Functor ( Quant a) where 
+    fmap f  Finance  = Finance 
+    fmap f ( Desk a ) = Desk a
+    fmap f ( Bloor b) = Bloor (f b)  
+
+--PARTEA 2 
+
+--10
+data LiftInOut f a = LiftInOut (f a)
+   deriving Show
+instance Functor f => Functor ( LiftInOut f) where 
+   fmap g (LiftInOut fa) = LiftInOut ( fmap g (fa))
+
+--11
+data Parappa f g a = DaWrappa (f a) (g a)
+    deriving Show
+instance (Functor f, Functor g) => Functor (Parappa f g) where
+    fmap c (DaWrappa fa ga) = DaWrappa ( fmap c (fa)) (fmap c (ga)) 
+
+--12
+data IgnoreOne f g a b = IgnoringSomething ( f a) (g b)
+    deriving Show
+instance (Functor f, Functor g) => Functor (IgnoreOne f g a) where 
+    fmap c (IgnoringSomething fa ga) = IgnoringSomething fa (fmap c (ga))
+
+--13
+data Notorious g o a t = Notorious (g o) (g a) (g t)
+   deriving Show 
+instance (Functor g) => Functor (Notorious g o a) where
+   fmap f (Notorious go ga gt) = Notorious go ga  (fmap f (gt))
+
+--14
+data GoatLord a = NoGoat | OneGoat a | MoreGoats (GoatLord a) (GoatLord a) (GoatLord a)
+   deriving Show 
+instance Functor GoatLord where 
+    fmap f NoGoat = NoGoat
+    fmap f (OneGoat a) = OneGoat (f a)
+    fmap f (MoreGoats a b c) = MoreGoats (fmap f a) (fmap f b) (fmap f c)
+
+--15
+data TalkToMe a = Halt | Print String a | Read (String -> a)
+instance Functor TalkToMe where 
+    fmap f Halt = Halt
+    fmap f (Print s a)= Print s (f a)
+    fmap f (Read g) = Read ( f.g )
