@@ -1,0 +1,113 @@
+--Exercitiul 1
+CREATE TABLE info_mdr (
+utilizator varchar(100),
+data date,
+comanda varchar(100),
+nr_linii NUMBER,
+eroare varchar(100)
+);
+select * from info_mdr;
+
+--Exercitiul 2
+--Functia
+CREATE OR REPLACE FUNCTION ex2_mdr 
+ (v_nume employees.last_name%TYPE DEFAULT 'Bell') return NUMBER IS 
+ salariu employees.salary%type; 
+
+  BEGIN
+   SELECT salary INTO salariu FROM employees WHERE last_name = v_nume;
+   insert into info_mdr values (user, sysdate, 'ex2_mdr', 1, 'Exista un singur angajat cu numele specificat');
+   return salariu;
+ EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+  insert into info_mdr values (user, sysdate, 'ex2_mdr', 0, 'Nu exista angajati cu numele specificat');
+  RAISE_APPLICATION_ERROR(-20000, 'Nu exista angajati cu numele specificat');
+  WHEN TOO_MANY_ROWS THEN
+  insert into info_mdr values (user, sysdate, 'ex2_mdr', 2, 'Exista mai multi angajati cu numele specificat');
+  RAISE_APPLICATION_ERROR(-20001, 'Exista mai multi angajati cu numele specificat');
+  WHEN OTHERS THEN
+  insert into info_mdr values (user, sysdate, 'ex2_mdr', 3, 'Alta eroare');
+  RAISE_APPLICATION_ERROR(-20002,'Alta eroare');
+ END ex2_mdr;
+/
+
+
+--Procedura
+CREATE OR REPLACE PROCEDURE ex2p_mdr(v_nume employees.last_name%TYPE ) 
+  IS
+  salariu employees.salary%type; 
+ BEGIN
+   SELECT salary INTO salariu FROM employees WHERE last_name = v_nume;
+   insert into info_mdr values (user, sysdate, 'ex2p_mdr', 1, 'Exista un singur angajat cu numele specificat');
+ EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+  insert into info_mdr values (user, sysdate, 'ex2_mdr', 0, 'Nu exista angajati cu numele specificat');
+  RAISE_APPLICATION_ERROR(-20000, 'Nu exista angajati cu numele specificat');
+  WHEN TOO_MANY_ROWS THEN
+  insert into info_mdr values (user, sysdate, 'ex2_mdr', 2, 'Exista mai multi angajati cu numele specificat');
+  RAISE_APPLICATION_ERROR(-20001,'Exista mai multi angajati cu numele specificat');
+  WHEN OTHERS THEN
+  insert into info_mdr values (user, sysdate, 'ex2_mdr', 3, 'Alta eroare');
+  RAISE_APPLICATION_ERROR(-20002,'Alta eroare');
+ END ex2p_mdr;
+/
+
+
+--Exercitiul 3
+CREATE OR REPLACE FUNCTION ex3_mdr
+ (oras locations.city%TYPE) RETURN NUMBER IS 
+ v_utilizator info_mdr.utilizator%TYPE;
+    nr_orase NUMBER;
+BEGIN
+    SELECT user INTO v_utilizator from dual;
+    IF oras IS NULL THEN
+        INSERT INTO info_mdr VALUES(v_utilizator, sysdate, 'ex4', 0, 'eroare');
+    END IF;
+    SELECT COUNT(*) INTO nr_orase
+    FROM employees e JOIN departments d using (department_id)
+                     JOIN locations l using (location_id)
+    WHERE (SELECT COUNT(*) FROM job_history WHERE employee_id = e.employee_id) >= 1;
+     INSERT INTO info_mdr VALUES(v_utilizator, sysdate, 'ex4', 1, 'informatii');   
+    RETURN nr_orase;
+END;
+/
+
+--Exercitiul 4
+CREATE OR REPLACE PROCEDURE ex4_mdr (manager_id employees.employee_id%TYPE)
+IS
+    v_utilizator info_mdr.utilizator%TYPE;
+    nr_linii NUMBER;
+BEGIN
+    SELECT user INTO v_utilizator from dual;
+    UPDATE employees SET salary = salary*1.10 WHERE employee_id = manager_id; 
+    nr_linii := SQL%ROWCOUNT;
+    IF nr_linii = 0 THEN
+        INSERT INTO info_mdr VALUES(v_utilizator, sysdate, 'ex4', 0, 'eroare');
+    END IF;
+    INSERT INTO info_mdr VALUES(v_utilizator, sysdate, 'ex4', 1, 'informatii');
+    FOR i IN (SELECT employee_id FROM employees WHERE manager_id = manager_id) 
+    LOOP ex4(i.employee_id);
+    END LOOP;
+END;
+/
+
+--Exercitiul 5
+CREATE OR REPLACE PROCEDURE ex5_mdr
+IS
+    v_utilizator info_mdr.utilizator%TYPE;
+    nr_linii NUMBER;
+    v_ziua NUMBER;
+BEGIN
+    SELECT user INTO v_utilizator from dual;
+    FOR d IN (SELECT * FROM departments) LOOP
+        DBMS_OUTPUT.PUT_LINE(d.department_name);
+        SELECT COUNT(*) INTO nr_linii FROM employees WHERE department_id = d.department_id;   
+        SELECT ziua INTO v_ziua
+        FROM (SELECT EXTRACT (DAY FROM hire_date) ziua, COUNT(*) FROM employees e WHERE e.department_id = d.department_id
+            GROUP BY EXTRACT(DAY FROM hire_date) ORDER BY COUNT(*) DESC)WHERE rownum = 1;
+        FOR e IN (SELECT * FROM employees WHERE department_id = d.department_id) LOOP
+            DBMS_OUTPUT.PUT_LINE('Numele angajatului este : ' || e.first_name || 'si are salariu: ' || e.salary);
+        END LOOP;
+    END LOOP;
+END;
+/
