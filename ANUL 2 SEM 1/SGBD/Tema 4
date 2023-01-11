@@ -1,0 +1,255 @@
+--Exercitiul 1
+--a) cursoare clasice
+DECLARE
+ nume_job jobs.job_title%TYPE;
+ nume_angajat employees.last_name%type;
+ salariu employees.salary%type;
+ id1 jobs.job_id%type;
+ id2 employees.job_id%type;
+ const  number;
+ 
+ CURSOR c1 is select job_id , job_title  , count (employee_id) from employees join jobs using (job_id)
+    group by job_id, job_title;
+ CURSOR c2 is select last_name , salary , job_id from employees ;
+  
+BEGIN
+ open c1;
+ LOOP 
+    FETCH c1 INTO id1, nume_job, const;
+    EXIT WHEN c1%notfound;
+    if const=0 then DBMS_OUTPUT.PUT_LINE ('Nu exista niciun angajat');
+    else
+        open c2;
+        LOOP
+            FETCH c2 INTO nume_angajat, salariu, id2;
+            EXIT WHEN c2%notfound;
+            if id1=id2 then 
+            DBMS_OUTPUT.PUT_LINE (nume_angajat||'angajatul are salariul :' || salariu);
+            end if;
+        end loop;
+        close c2;
+    end if;
+ END LOOP;
+ close c1;
+END;
+/
+
+--b) ciclu cursoare 
+DECLARE
+ CURSOR c1 is select job_id id1, job_title nume_job , count (employee_id) const from employees join jobs using (job_id)
+    group by job_id, job_title;
+ CURSOR c2 is select last_name nume_angajat, salary salariu, job_id id2 from employees ;
+ 
+BEGIN
+ for j in c1 loop  
+    if j.const=0 then DBMS_OUTPUT.PUT_LINE ('Nu exista niciun angajat');
+    else
+        for e in c2 loop
+            if j.id1=e.id2 then
+            DBMS_OUTPUT.PUT_LINE (e.nume_angajat||'angajatul are salariul :' || e.salariu);
+            end if;
+        end loop;
+    end if;
+ END LOOP;
+END;
+/
+
+
+--c) ciclu cursoare cu subcereri
+BEGIN
+ for i in (select job_id, job_title, count (employee_id) const from employees join jobs using (job_id)
+                group by job_id, job_title) 
+ loop
+        if i.const=0 then DBMS_OUTPUT.PUT_LINE ('Nu exista niciun angajat');
+        else
+            for j in (select last_name, salary from employees where job_id = i.job_id) 
+            loop
+                DBMS_OUTPUT.PUT_LINE (j.last_name ||' angajatul are salariul :' || j.salary);
+            end loop;
+        end if; 
+ end loop;
+END;
+/
+
+--d) expresii cursor
+DECLARE  
+  TYPE refcursor IS REF CURSOR;  
+  CURSOR c1 is select j.job_title,  
+      CURSOR (select e.last_name, e.salary from employees e where e.job_id = j.job_id)  
+    from jobs j;
+
+  nume_job jobs.job_title%TYPE;
+  v_cursor refcursor;  
+  nume_angajat employees.last_name%TYPE;
+  salariu employees.salary%TYPE;
+
+BEGIN  
+  OPEN c1;  
+  loop  
+    fetch c1 into nume_job, v_cursor;  
+    exit when c1%NOTFOUND;  
+    loop  
+      fetch v_cursor into nume_angajat, salariu;  
+      exit when v_cursor%NOTFOUND;  
+      DBMS_OUTPUT.PUT_LINE (nume_angajat || ' angajatul are salariul ' || salariu);  
+    end loop;
+  end loop;  
+  CLOSE c1;  
+END;  
+/
+
+--Exercitiul 2
+DECLARE  
+   TYPE refcursor IS REF CURSOR;  
+  CURSOR c1 is select j.job_title,  
+      CURSOR (select e.last_name, e.salary from employees e where e.job_id = j.job_id)  
+    from jobs j;
+
+  nume_job jobs.job_title%TYPE;
+  v_cursor refcursor;  
+  nr number;
+  nr_ang number;
+  suma_salariu number;
+  medie_salariu number;
+  nume_angajat employees.last_name%TYPE;
+  salariu employees.salary%TYPE;
+
+BEGIN  
+  OPEN c1; 
+  
+  select count(*), sum(salary), round(avg(salary)) into nr_ang, suma_salariu, medie_salariu
+  from employees;
+  
+  DBMS_OUTPUT.PUT_LINE('Numarul total de angajati' || nr_ang);
+  DBMS_OUTPUT.PUT_LINE('Valoarea lunara a veniturilor angajatilor' || suma_salariu);
+  DBMS_OUTPUT.PUT_LINE('Valoarea medie a veniturilor angajatilor' || medie_salariu );
+  loop  
+    FETCH c1 INTO nume_job, v_cursor;  
+    EXIT WHEN c1%NOTFOUND;  
+    nr_ang :=0;
+    suma_salariu :=0;
+    loop  
+      FETCH v_cursor INTO nume_angajat, salariu;  
+      EXIT WHEN v_cursor%NOTFOUND;  
+      nr_ang := nr_ang +1;
+      suma_salariu := suma_salariu + salariu;
+      DBMS_OUTPUT.PUT_LINE (nume_angajat || ' cu numarul de ordine ' || nr ||' are salariul ' || salariu);  
+    end loop;  
+    if nr_ang > 0 then
+       medie_salariu := suma_salariu / nr_ang;
+    else
+       medie_salariu :=0;
+    end if;
+    DBMS_OUTPUT.PUT_LINE('Numarul total de angajati' || nr_ang);
+    DBMS_OUTPUT.PUT_LINE('Valoarea lunara a veniturilor angajatilor' || suma_salariu);
+    DBMS_OUTPUT.PUT_LINE('Valoarea medie a veniturilor angajatilor' || medie_salariu );
+  end loop;  
+  CLOSE c1;  
+END;  
+/
+
+--Exercitiul 3
+DECLARE  
+   TYPE refcursor IS REF CURSOR;  
+  CURSOR c1 is select j.job_title,  
+      CURSOR (select e.last_name, e.salary, nvl(e.commission_pct, 0) from employees e where e.job_id = j.job_id)  
+    from jobs j;
+
+  nume_job jobs.job_title%TYPE;
+  v_cursor refcursor;  
+  suma_salariu number;
+  nume_angajat employees.last_name%TYPE;
+  salariu employees.salary%TYPE;
+  procent number;
+  comision employees.commission_pct%TYPE;
+
+BEGIN  
+  OPEN c1; 
+  select sum(salary+nvl(commission_pct,0)) into suma_salariu from employees;  
+  loop  
+    FETCH c1 INTO nume_job, v_cursor;  
+    EXIT WHEN c1%NOTFOUND;  
+  
+    loop  
+      FETCH v_cursor INTO nume_angajat, salariu, comision;  
+      EXIT WHEN v_cursor%NOTFOUND;  
+      suma_salariu := suma_salariu + salariu;
+      DBMS_OUTPUT.PUT_LINE(nume_angajat || 'are salariul ' || salariu);
+      procent:= (salariu+comision*salariu)*100/suma_salariu;
+      DBMS_OUTPUT.PUT_LINE ('' || ' si castiga ' || round(procent,3) ||' din salariul total');  
+    end loop;  
+  end loop;  
+  CLOSE c1;  
+END;  
+/
+
+--Exercitiul 4
+DECLARE  
+
+  TYPE refcursor IS REF CURSOR;  
+  CURSOR c1 is select j.job_id,j.job_title,  
+      CURSOR (select e.last_name, e.salary from employees e where e.job_id = j.job_id order by salary desc)  
+    from jobs j;
+    
+  nume_job jobs.job_title%TYPE;
+  v_cursor refcursor;  
+  id_job jobs.job_id%TYPE;
+  nume_angajat employees.last_name%TYPE;
+  salariu employees.salary%TYPE;
+  nr number;
+  
+BEGIN  
+  OPEN c1; 
+  loop 
+    FETCH c1 INTO id_job, nume_job, v_cursor;  
+    EXIT WHEN c1%NOTFOUND;
+    select count(*) into nr from employees where job_id=id_job;
+    if nr<5 then 
+      DBMS_OUTPUT.PUT_LINE('Lucreaza mai putin de 5 angajati');
+    else
+      DBMS_OUTPUT.PUT_LINE(nume_angajat || 'are salariu' || salariu);
+    end if;
+    nr :=5;
+    loop  
+      FETCH v_cursor INTO nume_angajat, salariu;  
+      EXIT WHEN v_cursor%NOTFOUND;  
+      nr := nr-1;  
+    end loop;  
+  end loop;  
+  CLOSE c1;  
+END;  
+/
+
+--Exercitiul 5
+DECLARE    
+  TYPE refcursor IS REF CURSOR;  
+  CURSOR c1 is select j.job_title,  
+      CURSOR (select e.last_name, e.salary from employees e where e.job_id = j.job_id order by salary desc)  
+    from jobs j;
+
+  nume_job jobs.job_title%TYPE;
+  v_cursor refcursor;  
+  nume_angajat employees.last_name%TYPE;
+  salariu employees.salary%TYPE;
+  nr number;
+  const number;
+BEGIN  
+  OPEN c1;  
+  loop 
+    FETCH c1 INTO nume_job, v_cursor;  
+    EXIT WHEN c1%NOTFOUND;
+    nr := 0;
+    const := 0;
+    loop 
+      FETCH v_cursor INTO nume_angajat, salariu;  
+      EXIT WHEN v_cursor%NOTFOUND;  
+      nr := nr + 1;
+      IF nr <= 5 THEN
+        const := salariu;
+      DBMS_OUTPUT.PUT_LINE (nume_angajat || ' are salariul ' || const);
+      end if;
+    end loop;  
+  end loop;  
+  CLOSE c1;  
+END;  
+/
