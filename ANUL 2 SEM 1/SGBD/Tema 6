@@ -1,0 +1,270 @@
+--Exercitiul 1
+CREATE OR REPLACE PACKAGE pachet_mdr AS
+    CURSOR angajati_job(id_job employees.job_id%TYPE) RETURN employees%ROWTYPE;--subpunctul f
+    CURSOR toate_joburile RETURN jobs%ROWTYPE;--subpunctul g
+    FUNCTION gaseste_dep(v_nume_dep departments.department_name%TYPE) return number;
+    FUNCTION gaseste_job(v_nume_job jobs.job_title%TYPE) return jobs.job_id%TYPE;
+    FUNCTION gaseste_manager_id(v_prenume_manager employees.first_name%TYPE,
+                             v_nume_manager employees.last_name%TYPE) return number;
+    FUNCTION gaseste_salariu(v_dep_id employees.department_id%TYPE) return number;
+    FUNCTION gaseste_comision(v_dep_id employees.department_id%TYPE,
+                             v_job_id employees.job_id%TYPE) return number;
+    PROCEDURE adauga_angajat(v_prenume employees.first_name%TYPE,
+                           v_nume employees.last_name%TYPE,
+                           v_phone employees.phone_number%TYPE,
+                           v_email employees.email%TYPE,
+                           v_prenume_manager employees.first_name%TYPE,
+                           v_nume_manager employees.last_name%TYPE,
+                           v_nume_dep departments.department_name%TYPE,
+                           v_nume_job jobs.job_title%TYPE);--subpunctul a
+    PROCEDURE muta_angajat(v_prenume employees.first_name%TYPE,
+                           v_nume employees.last_name%TYPE,
+                           v_nume_dep departments.department_name%TYPE,
+                           v_nume_job jobs.job_title%TYPE,
+                           v_prenume_manager employees.first_name%TYPE,
+                           v_nume_manager employees.last_name%TYPE);--subpunctul b
+    FUNCTION nr_subalterni(v_prenume employees.first_name%TYPE,
+                           v_nume employees.last_name%TYPE) return number;--subpunctul c
+    PROCEDURE actualizeaza_salariu(v_prenume employees.first_name%TYPE,
+                            v_nume employees.last_name%TYPE,
+                            v_salariu employees.salary%TYPE);--subpunctul e
+    PROCEDURE angajati_si_joburi;--subpunctul h
+END pachet_mdr;
+/
+
+CREATE OR REPLACE PACKAGE BODY pachet_mdr AS
+    CURSOR angajati_job(id_job employees.job_id%TYPE)
+    RETURN employees%ROWTYPE IS
+        SELECT *
+        FROM employees e
+        WHERE e.job_id = job_id;
+    CURSOR toate_joburile RETURN jobs%ROWTYPE IS
+        SELECT *
+        FROM jobs;
+    FUNCTION gaseste_dep(v_nume_dep departments.department_name%TYPE) RETURN number is
+        dep_id departments.department_id%TYPE;
+        begin
+            SELECT department_id into dep_id
+            from departments
+            where department_name = v_nume_dep;
+            return dep_id;
+        exception
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Nu exista departament cu numele dat.');
+        WHEN TOO_MANY_ROWS THEN
+            DBMS_OUTPUT.PUT_LINE('Exista mai multe departamente cu numele dat.');
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Alta eroare.');
+    END gaseste_dep;
+    FUNCTION gaseste_job(v_nume_job jobs.job_title%TYPE) return jobs.job_id%TYPE is
+        job_id jobs.job_id%TYPE;
+        begin
+            SELECT job_id into job_id
+            from jobs
+            where job_title = v_nume_job;
+            return job_id;
+        exception
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Nu exista job cu numele dat.');
+        WHEN TOO_MANY_ROWS THEN
+            DBMS_OUTPUT.PUT_LINE('Exista mai multe joburi cu numele dat.');
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Alta eroare.');
+    END gaseste_job;
+    FUNCTION gaseste_manager_id(v_prenume_manager employees.first_name%TYPE,
+                        v_nume_manager employees.last_name%TYPE)
+                        return number is
+        v_manager_id employees.employee_id%TYPE;
+        begin
+            SELECT employee_id into v_manager_id
+            from employees
+            where first_name = v_prenume_manager and last_name = v_nume_manager;
+            return v_manager_id;
+        exception
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Nu exista manager cu numele dat.');
+        WHEN TOO_MANY_ROWS THEN
+            DBMS_OUTPUT.PUT_LINE('Exista mai multi manageri cu numele dat.');
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Alta eroare.');
+    END gaseste_manager_id;
+    FUNCTION gaseste_salariu(v_dep_id employees.department_id%TYPE) return number is
+        v_salariu employees.salary%TYPE;
+            BEGIN
+                SELECT min(salary) into v_salariu
+                from employees
+                where department_id = v_dep_id;
+                return v_salariu;
+            exception
+            WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Eroare la gasirea salariului.');
+    END gaseste_salariu;
+    FUNCTION gaseste_comision(v_dep_id employees.department_id%TYPE,
+                            v_job_id employees.job_id%TYPE) return number is
+        v_comision employees.commission_pct%TYPE;
+            BEGIN
+                SELECT min(commission_pct) into v_comision
+                from employees
+                where department_id = v_dep_id and job_id = v_job_id;
+                return v_comision;
+            exception
+            WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Eroare la gasirea comisionului.');
+    END gaseste_comision;
+    PROCEDURE adauga_angajat(v_prenume employees.first_name%TYPE,
+                           v_nume employees.last_name%TYPE,
+                           v_phone employees.phone_number%TYPE,
+                           v_email employees.email%TYPE,
+                           v_prenume_manager employees.first_name%TYPE,
+                           v_nume_manager employees.last_name%TYPE,
+                           v_nume_dep departments.department_name%TYPE,
+                           v_nume_job jobs.job_title%TYPE) IS
+        v_dep_id departments.department_id%TYPE := gaseste_dep(v_nume_dep);
+        v_job_id jobs.job_id%TYPE := gaseste_job(v_nume_job);
+        v_manager_id employees.employee_id%TYPE := gaseste_manager_id(v_prenume_manager, v_nume_manager);
+        v_salariu employees.salary%TYPE := gaseste_salariu(v_dep_id);
+    BEGIN
+        INSERT INTO employees
+            VALUES (seq_lsd.NEXTVAL, v_prenume, v_nume, v_email,
+                    v_phone, sysdate, v_job_id, v_salariu,
+                    null, v_manager_id, v_dep_id);
+    EXCEPTION
+        WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Eroare la adaugarea unui nou angajat.');
+    END adauga_angajat;
+    PROCEDURE muta_angajat(v_prenume employees.first_name%TYPE,
+                           v_nume employees.last_name%TYPE,
+                           v_nume_dep departments.department_name%TYPE,
+                           v_nume_job jobs.job_title%TYPE,
+                           v_prenume_manager employees.first_name%TYPE,
+                           v_nume_manager employees.last_name%TYPE) IS
+        v_dep_id departments.department_id%TYPE := gaseste_dep(v_nume_dep);
+        v_job_id jobs.job_id%TYPE := gaseste_job(v_nume_job);
+        v_dep_vechi departments.department_id%TYPE;
+        v_job_vechi jobs.job_id%TYPE;
+        v_manager_id employees.employee_id%TYPE := gaseste_manager_id(v_prenume_manager, v_nume_manager);
+        v_salariu employees.salary%TYPE := gaseste_salariu(v_dep_id);
+        v_comision employees.commission_pct%TYPE := gaseste_comision(v_dep_id, v_job_id);
+        v_id employees.employee_id%TYPE;
+        v_start employees.hire_date%TYPE;
+        v_aux NUMBER;
+        BEGIN
+            SELECT employee_id, salary, hire_date, job_id, department_id
+            INTO v_id, v_aux, v_start, v_job_vechi, v_dep_vechi
+            FROM employees
+            WHERE first_name = v_prenume AND last_name = v_nume;
+            IF v_salariu > v_aux THEN v_salariu := v_aux;
+            END IF;
+            UPDATE employees 
+                SET department_id=v_dep_id, job_id = v_job_id,
+                    manager_id = v_manager_id, salary = v_salariu,
+                    commission_pct = v_comision, hire_date = sysdate
+                where employee_id = v_id;
+            INSERT into job_history
+            values (v_id, v_start, sysdate-1, v_job_vechi, v_dep_vechi);
+        EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Nu exista angajat cu numele dat.');
+        WHEN TOO_MANY_ROWS THEN
+            DBMS_OUTPUT.PUT_LINE('Exista mai multi angajati cu numele dat.');
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Eroare la mutarea angajatului.');
+    END muta_angajat;
+    FUNCTION nr_subalterni(v_prenume employees.first_name%TYPE,
+                           v_nume employees.last_name%TYPE) return number IS
+        fara_subalterni exception;
+        v_manager_id employees.employee_id%TYPE;
+        counter number(10) := -1;
+        PROCEDURE recursie (v_manager_id employees.manager_id%TYPE DEFAULT '108',
+                            counter IN OUT NUMBER) IS
+            CURSOR c_rec IS
+                SELECT employee_id
+                FROM emp_mdr
+                WHERE manager_id = v_manager_id;
+            BEGIN
+                FOR i IN c_rec LOOP
+                    counter := counter+1;
+                    recursie(i.employee_id, counter);
+                END LOOP;
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        RAISE_APPLICATION_ERROR(-20002,'Alta eroare!');
+        END recursie;
+        BEGIN
+            select employee_id into v_manager_id
+            from employees
+            where first_name = v_prenume and last_name = v_nume;
+            FOR i IN (SELECT employee_id
+                    FROM employees
+                    WHERE manager_id = v_manager_id) LOOP
+                counter := counter+1;
+                recursie(i.employee_id, counter);
+            END LOOP;
+            IF(counter = 0) THEN RAISE fara_subalterni;
+            END IF;
+            RETURN counter;
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    RAISE_APPLICATION_ERROR(-20000,'Nu am gasit un angajat cu acest nume.');
+                WHEN fara_subalterni THEN
+                    RAISE_APPLICATION_ERROR(-20001,'Acest angajat nu are subalterni.');
+                WHEN OTHERS THEN
+                    RAISE_APPLICATION_ERROR(-20002,'Eroare la gasirea subalternilor.');
+    END nr_subalterni;
+    PROCEDURE actualizeaza_salariu(v_prenume employees.first_name%TYPE,
+                            v_nume employees.last_name%TYPE,
+                            v_salariu employees.salary%TYPE) IS
+        limita exception;
+        v_sal_min jobs.min_salary%TYPE;
+        v_sal_max jobs.max_salary%TYPE;
+        v_job_id jobs.job_id%TYPE;
+        BEGIN
+            SELECT job_id INTO v_job_id
+            FROM employees
+            WHERE first_name = v_prenume AND last_name = v_nume;
+            SELECT min_salary, max_salary INTO v_sal_min, v_sal_max
+            FROM jobs
+            WHERE job_id = v_job_id;
+            IF(v_salariu < v_sal_min OR v_salariu > v_sal_max) THEN RAISE limita;
+            END IF;
+            UPDATE employees SET salary = v_salariu
+            WHERE first_name = v_prenume AND last_name = v_nume;
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    RAISE_APPLICATION_ERROR(-20000,'Nu am gasit un angajat cu acest nume.');
+                WHEN limita THEN
+                    RAISE_APPLICATION_ERROR(-20001,'Salariul depaseste limitele jobului.');
+                WHEN OTHERS THEN
+                    RAISE_APPLICATION_ERROR(-20002,'Nu am putut actualiza salariul.');
+    END actualizeaza_salariu;
+    PROCEDURE angajati_si_joburi IS v_verif number;
+        BEGIN
+            FOR j IN toate_joburile LOOP
+                DBMS_OUTPUT.PUT_LINE('Jobul "' || j.job_title || '" are angajatii:' || chr(10));
+                FOR e IN angajati_job(j.job_id) LOOP v_verif := 0;
+                    FOR k IN (SELECT * FROM job_history
+                              WHERE employee_id = e.employee_id 
+                              AND job_id = e.job_id) LOOP v_verif:=1;
+                    END LOOP;
+                    IF(v_verif = 1) THEN
+                        DBMS_OUTPUT.PUT_LINE(e.first_name || ' ' || e.last_name
+                                        || ' Acest angajat a mai avut acest job in trecut.');
+                    ELSE 
+                        DBMS_OUTPUT.PUT_LINE(e.first_name || ' ' || e.last_name
+                                        || ' Acest angajat nu a mai avut acest job in trecut.');
+                    END IF;
+                END LOOP;
+                DBMS_OUTPUT.PUT_LINE(chr(10));
+            END LOOP;
+        EXCEPTION
+            WHEN OTHERS THEN
+                RAISE_APPLICATION_ERROR(-20002,'Eroare.');
+    END angajati_si_joburi;      
+    
+END pachet_mdr;
+/
+
+
+
+
+
