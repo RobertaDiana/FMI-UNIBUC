@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-09T08:23:40.134Z" agent="5.0 (Windows)" etag="_-Sz4HsM3HbiPJMfWhUw" version="21.0.2" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-09T08:25:52.543Z" agent="5.0 (Windows)" etag="FevVTAzk2eWYiXYIPBP5" version="21.0.2" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1793" dy="2147" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -237,6 +237,9 @@
         </mxCell>
         <mxCell id="lh_03h9aXR6qwIcZe0lJ-106" value="&lt;div&gt;!!! intrebare : la autor mai punem cva?&lt;/div&gt;&lt;div&gt;la categ lasam nr de carti?&lt;/div&gt;&lt;div&gt;la carte lasam nr de exemplare sau facem altfel?&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="1310" y="-200" width="290" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-108" value="Deci nu avem nevoie de id -uri si kkturi de tabele asociative?" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="1250" y="90" width="170" height="130" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
