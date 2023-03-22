@@ -1,2 +1,2 @@
 # FMI UNIBUC
-Hello! My school projectssss
+Hello! My school projects
