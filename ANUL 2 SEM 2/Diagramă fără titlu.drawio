@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-03-12T12:29:34.106Z" agent="5.0 (Windows)" etag="wIOPPG6G2BOQGM_rC45_" version="21.0.6" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-26T15:06:42.459Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="RTzmh5FD6cQG4w6dTv7I" version="21.1.1" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="3044" dy="2591" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1615" dy="2014" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -123,7 +123,7 @@
             <mxRectangle x="230" y="140" width="160" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-2" value="INT ID_CARTE&#xa;STRING TITLUL&#xa;LIST&lt;AUTOR&gt; AUTOR&#xa;DATA_PUBLICARII&#xa;INT CANTITATE&#xa;BOOL IMPRUMUTAT&#xa;EDITURA EDITURA&#xa;LIST&lt;CATEGORIE&gt; categori&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rounded=0;shadow=0;html=0;" parent="lh_03h9aXR6qwIcZe0lJ-1" vertex="1">
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-2" value="INT ID_CARTE&#xa;STRING TITLUL&#xa;SET&lt;AUTOR&gt; AUTOR&#xa;DATA_PUBLICARII&#xa;BOOL IMPRUMUTAT&#xa;EDITURA EDITURA&#xa;LIST&lt;CATEGORIE&gt; CATEGORIE&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rounded=0;shadow=0;html=0;" parent="lh_03h9aXR6qwIcZe0lJ-1" vertex="1">
           <mxGeometry y="26" width="170" height="134" as="geometry" />
         </mxCell>
         <mxCell id="lh_03h9aXR6qwIcZe0lJ-3" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="lh_03h9aXR6qwIcZe0lJ-1" vertex="1">
@@ -179,19 +179,19 @@
         <mxCell id="lh_03h9aXR6qwIcZe0lJ-16" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="lh_03h9aXR6qwIcZe0lJ-14" vertex="1">
           <mxGeometry y="130" width="170" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-100" value="&lt;div&gt;IMPRUMUTA/RETURNEAZA &lt;br&gt;&lt;/div&gt;&lt;div&gt;CARTE&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="lh_03h9aXR6qwIcZe0lJ-14" vertex="1">
-          <mxGeometry y="138" width="170" height="40" as="geometry" />
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-100" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="lh_03h9aXR6qwIcZe0lJ-14" vertex="1">
+          <mxGeometry y="138" width="170" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-17" value="PERSOANE&#xa;" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="2170" y="160" width="180" height="302" as="geometry">
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-17" value="PERSOANA" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="2170" y="160" width="185" height="302" as="geometry">
             <mxRectangle x="340" y="10" width="160" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-18" value="&lt;div&gt;INT ID(SAU LA FIECARE)&lt;br&gt;&lt;/div&gt;&lt;div&gt;STRING NUME&lt;/div&gt;STRING PRENUME&lt;br&gt;LOCALDATE DATA_NASTERII&lt;br&gt;STRING GEN" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="lh_03h9aXR6qwIcZe0lJ-17" vertex="1">
-          <mxGeometry y="26" width="180" height="90" as="geometry" />
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-18" value="&lt;div&gt;INT ID&lt;br&gt;&lt;/div&gt;&lt;div&gt;STRING NUME&lt;/div&gt;STRING PRENUME&lt;br&gt;LOCALDATE DATA_NASTERII&lt;br&gt;STRING GEN" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="lh_03h9aXR6qwIcZe0lJ-17" vertex="1">
+          <mxGeometry y="26" width="185" height="90" as="geometry" />
         </mxCell>
         <mxCell id="lh_03h9aXR6qwIcZe0lJ-19" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="lh_03h9aXR6qwIcZe0lJ-17" vertex="1">
-          <mxGeometry y="116" width="180" height="186" as="geometry" />
+          <mxGeometry y="116" width="185" height="186" as="geometry" />
         </mxCell>
         <mxCell id="lh_03h9aXR6qwIcZe0lJ-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lh_03h9aXR6qwIcZe0lJ-10" target="lh_03h9aXR6qwIcZe0lJ-17" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -212,7 +212,7 @@
             <mxRectangle x="340" y="10" width="160" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-25" value="INT ID_CATEGORIE&#xa;STRING NUME&#xa;INT NR_CARTI&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="lh_03h9aXR6qwIcZe0lJ-24" vertex="1">
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-25" value="INT ID_CATEGORIE&#xa;STRING NUME&#xa;&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="lh_03h9aXR6qwIcZe0lJ-24" vertex="1">
           <mxGeometry y="26" width="160" height="74" as="geometry" />
         </mxCell>
         <mxCell id="lh_03h9aXR6qwIcZe0lJ-26" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="lh_03h9aXR6qwIcZe0lJ-24" vertex="1">
@@ -229,17 +229,14 @@
             <mxRectangle x="340" y="10" width="160" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-102" value="&lt;div&gt;INT ID_ADRESA&lt;/div&gt;&lt;div&gt;STRING STRADA&lt;/div&gt;&lt;div&gt;INT NR&lt;/div&gt;&lt;div&gt;SRTRING ALTELE&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="lh_03h9aXR6qwIcZe0lJ-101" vertex="1">
-          <mxGeometry y="26" width="173" height="90" as="geometry" />
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-102" value="&lt;div&gt;INT ID_ADRESA&lt;/div&gt;&lt;div&gt;STRING STRADA&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="lh_03h9aXR6qwIcZe0lJ-101" vertex="1">
+          <mxGeometry y="26" width="173" height="70" as="geometry" />
         </mxCell>
         <mxCell id="lh_03h9aXR6qwIcZe0lJ-103" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="lh_03h9aXR6qwIcZe0lJ-101" vertex="1">
-          <mxGeometry y="116" width="173" height="104" as="geometry" />
+          <mxGeometry y="96" width="173" height="104" as="geometry" />
         </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-106" value="&lt;div&gt;!!! intrebare : la autor mai punem cva?&lt;/div&gt;&lt;div&gt;la categ lasam nr de carti?&lt;/div&gt;&lt;div&gt;la carte lasam nr de exemplare sau facem altfel?&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+        <mxCell id="lh_03h9aXR6qwIcZe0lJ-106" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="1310" y="-200" width="290" height="260" as="geometry" />
-        </mxCell>
-        <mxCell id="lh_03h9aXR6qwIcZe0lJ-108" value="Deci nu avem nevoie de id -uri si kkturi de tabele asociative?" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="1250" y="90" width="170" height="130" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
